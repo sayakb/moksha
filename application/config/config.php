@@ -61,7 +61,7 @@ $config['url_suffix'] = '';
 
 /*
 |--------------------------------------------------------------------------
-| Default Language
+| Default Language and Text Direction
 |--------------------------------------------------------------------------
 |
 | This determines which set of language files should be used. Make sure
@@ -69,7 +69,8 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
+$config['language']			= 'english';
+$config['text_direction']	= 'ltr';
 
 /*
 |--------------------------------------------------------------------------
@@ -91,7 +92,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = TRUE;
 
 
 /*

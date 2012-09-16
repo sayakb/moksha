@@ -38,11 +38,15 @@
 |
 */
 
-// $route['news/create'] = 'news/create';
-// $route['news/(:any)'] = 'news/view/$1';
-// $route['news'] = 'news';
-// $route['(:any)'] = 'page/view/$1';
-// $route['default_controller'] = 'default';
+// Administration links
+$route['admin/central/(:any)'] = 'central_admin/$1';
+$route['admin/central'] = 'central_admin';
+$route['admin/(:any)'] = 'site_admin/$1';
+$route['admin'] = 'site_admin';
+
+// Site links - this is also the default route
+$route['(:any)'] = 'sites/process/$1';
+$route['default_controller'] = 'sites/process';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
