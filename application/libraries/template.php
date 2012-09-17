@@ -28,7 +28,7 @@ class Template {
 	 *
 	 * Assigns default values for common template data
 	 *
-	 * @access private
+	 * @access	private
 	 */
 	private function template_defaults()
 	{
@@ -38,18 +38,20 @@ class Template {
 			'page_text_dir'		=> $this->CI->config->item('text_direction'),
 			'page_lang'			=> $this->CI->config->item('language'),
 			'page_charset'		=> $this->CI->config->item('charset'),
-			'page_copyright'	=> $this->CI->lang->line('default_copyright')
+			'page_copyright'	=> $this->CI->lang->line('default_copyright'),
+			'page_notice'		=> NULL,
+			'page_menu'			=> NULL,
 		);
 	}
 
 	/**
 	 * Load the header template
 	 *
-	 * @access public
-	 * @param template Template to be loaded
-	 * @param data Data to be passed to the template
-	 * @param output Output the template as return value
-	 * @return Parsed template, if $output is set to TRUE
+	 * @access	public
+	 * @param	template Template to be loaded
+	 * @param	data Data to be passed to the template
+	 * @param	output Output the template as return value
+	 * @return	Parsed template, if $output is set to TRUE
 	 */
 	public function admin($template, $data = array(), $output = FALSE)
 	{
@@ -62,7 +64,7 @@ class Template {
 		}
 		else
 		{
-			$data = array_merge($data, $this->template_defaults);
+			$data = array_merge($this->template_defaults, $data);
 		}
 
 		// We assume that output is being returned
@@ -73,7 +75,7 @@ class Template {
 		return $output;
 	}
 }
-// END Controller class
+// END Template class
 
 /* End of file template.php */
 /* Location: ./application/libraries/template.php */

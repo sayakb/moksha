@@ -1,3 +1,4 @@
-	<footer><?= $page_copyright ?></footer>
+		<footer><?= $page_copyright ?></footer>
+	</div>
 </body>
 </html>

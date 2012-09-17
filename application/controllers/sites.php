@@ -5,16 +5,16 @@
  *
  * Processes and generates the site output
  * 
- * @package Moksha
- * @category Site
- * @author Moksha Team
+ * @package		Moksha
+ * @category	Site
+ * @author		Moksha Team
  */
 class Sites extends CI_Controller {
 
 	/**
 	* Entry point for the site parser
 	*
-	* @access public
+	* @access	public
 	*/
 	public function process()
 	{
