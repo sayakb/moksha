@@ -39,6 +39,7 @@
 */
 
 // Administration links
+$route['admin/central/sites/delete/(:num)'] = 'central_admin/sites/1/$1';
 $route['admin/central/(:any)'] = 'central_admin/$1';
 $route['admin/central'] = 'central_admin';
 $route['admin/(:any)'] = 'site_admin/$1';

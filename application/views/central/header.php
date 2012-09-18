@@ -13,28 +13,27 @@
 	<script type="text/javascript" src="<?= base_url('assets/js/bootstrap.js') ?>"></script>
 </head>
 <body>
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand" href="<?= base_url('admin/central') ?>">
-					<?= $page_title ?>
-				</a>
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+				<div class="admin-header admin-header-central">
+					<h1><?= $page_title ?></h1>
+					<p><?= $page_desc ?></p>
+				</div>
 
-				<ul class="nav">
+				<?php if (isset($page_notice)): ?>
+					<div class="alert alert-<?= $page_notice['type'] ?>">
+						<?= $page_notice['message'] ?>
+					</div>
+				<?php endif; ?>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="span3">
+				<ul class="nav nav-tabs nav-stacked">
 					<?= $page_menu ?>
 				</ul>
 			</div>
-		</div>
-	</div>
 
-	<div class="container">
-		<h4 class="pull-right">
-			<i class="icon-wrench"></i>
-			<?= $page_desc ?>
-		</h4>
-		
-		<?php if (isset($page_notice)): ?>
-			<div class="alert alert-<?= $page_notice['type'] ?>">
-				<?= $page_notice['message'] ?>
-			</div>
-		<?php endif; ?>
+			<div class="span9">
