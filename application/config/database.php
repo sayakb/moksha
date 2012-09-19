@@ -45,14 +45,14 @@
 | the active record class
 */
 
-$active_group = 'sites';
+$active_group = 'central';
 $active_record = TRUE;
 
-$db['central']['hostname'] = 'localhost';
+$db['central']['hostname'] = '';
 $db['central']['username'] = '';
 $db['central']['password'] = '';
 $db['central']['database'] = '';
-$db['central']['dbdriver'] = 'mysqli';
+$db['central']['dbdriver'] = '';
 $db['central']['dbprefix'] = '';
 $db['central']['pconnect'] = TRUE;
 $db['central']['db_debug'] = TRUE;
@@ -64,11 +64,11 @@ $db['central']['swap_pre'] = '';
 $db['central']['autoinit'] = TRUE;
 $db['central']['stricton'] = FALSE;
 
-$db['sites']['hostname'] = 'localhost';
+$db['sites']['hostname'] = '';
 $db['sites']['username'] = '';
 $db['sites']['password'] = '';
 $db['sites']['database'] = '';
-$db['sites']['dbdriver'] = 'mysqli';
+$db['sites']['dbdriver'] = '';
 $db['sites']['dbprefix'] = '';
 $db['sites']['pconnect'] = TRUE;
 $db['sites']['db_debug'] = TRUE;
