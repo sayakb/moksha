@@ -16,21 +16,26 @@ class Central_admin_model extends CI_Model {
 	 */
 	public function __construct()
 	{
-		$this->load->database('admin');
+		parent::__construct();
+
+		// Connect to the central DB
+		$this->load->database('central');
 	}
 
 	/**
 	 * Get existing sites
 	 *
 	 * @access	public
-	 * @returns Array of rows
+	 * @param	offset Offset for the first item
+	 * @returns	Array of rows
 	 */
-	public function get_sites($start)
+	public function get_sites($page)
 	{
 		$per_page = $this->config->item('per_page');
+		$offset = $per_page * ($page - 1);
 
 		// Apply the limit and get the data
-		$this->db->limit($per_page, $start);
+		$this->db->limit($per_page, $offset);
 		$query = $this->db->get('sites');
 
 		return $query->result_array();
@@ -40,7 +45,7 @@ class Central_admin_model extends CI_Model {
 	 * Return the count of sites from the DB
 	 *
 	 * @access	public
-	 * @returns Integer having the site count
+	 * @returns	Integer having the site count
 	 */
 	public function count_sites()
 	{
@@ -51,13 +56,13 @@ class Central_admin_model extends CI_Model {
 	 * Add a new site to the DB
 	 *
 	 * @access	public
-	 * @returns Boolean: true if successful
+	 * @returns	Boolean: true if successful
 	 */
 	public function add_site()
 	{
 		// Get the URL and generate a slug
 		$url = $this->input->post('site_url');
-		$slug = url_title($url, 'dash', TRUE);
+		$slug = url_title($url, '_', TRUE);
 
 		// Build the insert query
 		$data = array(
@@ -72,7 +77,7 @@ class Central_admin_model extends CI_Model {
 	 * Delete a site from the DB
 	 *
 	 * @access	public
-	 * @returns Boolean: true if successful
+	 * @returns	Boolean: true if successful
 	 */
 	public function delete_site($site_id)
 	{

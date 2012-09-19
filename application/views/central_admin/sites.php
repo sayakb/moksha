@@ -1,4 +1,4 @@
-<?= form_open('admin/central/sites', array('class' => 'form-horizontal')) ?>
+<?= form_open(base_url('admin/central/sites/manage'), array('class' => 'form-horizontal')) ?>
 	<legend>
 		<?= $this->lang->line('add_new_site') ?>
 	</legend>
@@ -9,15 +9,13 @@
 		</label>
 
 		<div class="controls">
-			<input type="text" name="site_url" maxlength="255" />
+			<?= form_input('site_url') ?>
 			<span class="help-block"><?= $this->lang->line('site_url_exp') ?></span>
 		</div>
 	</div>
 
-	<div class="control-group">
-		<div class="controls">
-			<input type="submit" name="add_site" class="btn" text="<?= $this->lang->line('add_site') ?>" />
-		</div>
+	<div class="form-actions">
+		<?= form_submit('add_site', $this->lang->line('add_site'), 'class="btn"') ?>
 	</div>
 
 	<legend>
@@ -59,13 +57,11 @@
 		</table>
 
 		<div class="pagination">
-			<ul>
-				<?= $pagination ?>
-			</ul>
+			<?= $pagination ?>
 		</div>
 	<?php else: ?>
 		<div class="alert alert-info">
 			<?= $this->lang->line('no_sites') ?>
 		</div>
 	<?php endif; ?>
-</form>
+<?= form_close() ?>

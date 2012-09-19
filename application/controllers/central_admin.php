@@ -25,12 +25,27 @@ class Central_admin extends CI_Controller {
 	}
 
 	/**
+	 * Validates user session
+	 *
+	 * @access	private
+	 */
+	private function _validate()
+	{
+		if ($this->session->userdata('authed_%central') !== TRUE)
+		{
+			redirect(base_url('admin/central/login'), 'refresh');
+		}
+	}
+
+	/**
 	* Central admin index page
 	*
 	* @access	public
 	*/
 	public function index()
 	{
+		$this->_validate();
+
 		// Set the template data
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
@@ -39,7 +54,7 @@ class Central_admin extends CI_Controller {
 		);
 
 		// Process the template
-		$this->template->admin('central', 'welcome', $data);
+		$this->template->load('central_admin', 'welcome', $data);
 	}
 
 	/**
@@ -47,33 +62,17 @@ class Central_admin extends CI_Controller {
 	*
 	* @access	public
 	*/
-	public function sites($page = 1, $delete_id = FALSE)
+	public function sites($action = '', $meta = 0)
 	{
-		$this->load->library(array('form_validation', 'admin_pages'));
+		$this->load->library(array('form_validation', 'pagination'));
+		$this->_validate();
 
-		// Set the template data
-		$data = array(
-			'page_title'	=> $this->lang->line('central_adm'),
-			'page_desc'		=> $this->lang->line('manage_sites_exp'),
-			'page_menu'		=> $this->menu->generate('central', 'manage_sites'),
-		);
-
-		if ($delete_id === FALSE)
+		// Process based on action
+		if ($action == 'manage')
 		{
-			// Validation rules:
-			//  - site_url is mandatory
-			//  - site_url should not exceed 255 chars
-			//  - site_url should be unique
-			$this->form_validation->set_rules(
-				'site_url',
-				$this->lang->line('site_url'),
-				'required|max_length[255]|is_unique[sites.site_url]'
-			);
-
-			// Check if validation failed
-			if ($this->form_validation->run() !== FALSE)
+			if ($this->form_validation->run())
 			{
-				if ($this->central_admin_model->add_site() !== FALSE)
+				if ($this->central_admin_model->add_site())
 				{
 					$this->template->success_msgs = $this->lang->line('site_added');
 				}
@@ -83,9 +82,9 @@ class Central_admin extends CI_Controller {
 				}
 			}
 		}
-		else
+		else if ($action == 'delete')
 		{
-			if ($this->central_admin_model->delete_site($delete_id) !== FALSE)
+			if ($this->central_admin_model->delete_site($meta))
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('site_deleted'));
 			}
@@ -94,21 +93,33 @@ class Central_admin extends CI_Controller {
 				$this->session->set_flashdata('error_msg', $this->lang->line('site_del_error'));
 			}
 
-			redirect(base_url('admin/central/sites'), 'refresh');
+			redirect(base_url('admin/central/sites/manage'), 'refresh');
+		}
+		else
+		{
+			redirect(base_url('admin/central/sites/manage'), 'refresh');
 		}
 
-		// Generate pagination
-		$data['pagination'] = $this->admin_pages->generate(
-			base_url('admin/central/sites'),
-			$page,
-			$this->central_admin_model->count_sites()
+		// Initialize pagination
+		$this->pagination->initialize(array(
+			'base_url'			=> base_url('admin/central/sites/manage'),
+			'total_rows'		=> $this->central_admin_model->count_sites(),
+			'per_page'			=> $this->config->item('per_page'),
+			'uri_segment'		=> 5,
+			'use_page_numbers'	=> TRUE
+		));
+
+		// Assign view data
+		$data = array(
+			'page_title'	=> $this->lang->line('central_adm'),
+			'page_desc'		=> $this->lang->line('manage_sites_exp'),
+			'page_menu'		=> $this->menu->generate('central', 'manage_sites'),
+			'sites'			=> $this->central_admin_model->get_sites($meta),
+			'pagination'	=> $this->pagination->create_links()
 		);
 
-		// Load site list
-		$data['sites'] = $this->central_admin_model->get_sites($page);
-
 		// Load the view
-		$this->template->admin('central', 'sites', $data);
+		$this->template->load('central_admin', 'sites', $data);
 	}
 }
 

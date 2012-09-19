@@ -14,7 +14,7 @@ $config['menus']['central'] = array(
 	),
 
 	'manage_sites'	=> array(
-		'url'		=> 'admin/central/sites',
+		'url'		=> 'admin/central/sites/manage',
 		'label'		=> 'manage_sites',
 	),
 );

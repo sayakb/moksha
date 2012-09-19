@@ -40,9 +40,6 @@ class Template {
 		return array(
 			'page_title'		=> $this->CI->lang->line('moksha'),
 			'page_desc'			=> $this->CI->lang->line('moksha_desc'),
-			'page_text_dir'		=> $this->CI->config->item('text_direction'),
-			'page_lang'			=> $this->CI->config->item('language'),
-			'page_charset'		=> $this->CI->config->item('charset'),
 			'page_copyright'	=> $this->CI->lang->line('default_copyright'),
 			'page_notice'		=> NULL,
 			'page_menu'			=> NULL,
@@ -50,18 +47,18 @@ class Template {
 	}
 
 	/**
-	 * Load the header template
+	 * Load the page template
 	 *
 	 * @access	public
-	 * @param	category Category of the template (admin/central)
+	 * @param	controller Controller for the template
 	 * @param	template Template to be loaded
 	 * @param	data Data to be passed to the template
 	 * @param	output Output the template as return value
 	 * @return	Parsed template, if $output is set to TRUE
 	 */
-	public function admin($category, $template, $data = array(), $output = FALSE)
+	public function load($controller, $template, $data = array(), $output = FALSE)
 	{
-		$output = '';
+		$parsed = '';
 
 		// User can pass data as empty string
 		if ( ! is_array($data))
@@ -111,11 +108,23 @@ class Template {
 		}
 
 		// We assume that output is being returned
-		$output .= $this->CI->load->view("{$category}/header", $data, $output);
-		$output .= $this->CI->load->view("{$category}/{$template}", $data, $output);
-		$output .= $this->CI->load->view("{$category}/footer", $data, $output);
+		$parsed .= $this->CI->load->view("common/header", $data, $output);
 
-		return $output;
+		if ($controller != 'common')
+		{
+			$parsed .= $this->CI->load->view("{$controller}/wrapper_top", $data, $output);
+		}
+
+		$parsed .= $this->CI->load->view("{$controller}/{$template}", $data, $output);
+
+		if ($controller != 'common')
+		{
+			$parsed .= $this->CI->load->view("{$controller}/wrapper_bottom", $data, $output);
+		}
+
+		$parsed .= $this->CI->load->view("common/footer", $data, $output);
+
+		return $parsed;
 	}
 }
 // END Template class

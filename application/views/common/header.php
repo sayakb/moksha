@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
-<html dir="<?= $page_text_dir ?>" lang="<?= $page_lang ?>">
+<html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=<?= $page_charset ?>" />
+	<meta http-equiv="content-type" content="text/html; charset=UTF8" />
 	<meta name="description" content="Moksha: <?= $page_desc ?>" />
 
 	<title><?= $page_title ?></title>
@@ -16,7 +16,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="span12">
-				<div class="admin-header admin-header-central">
+				<div class="page-header">
 					<h1><?= $page_title ?></h1>
 					<p><?= $page_desc ?></p>
 				</div>
@@ -28,12 +28,3 @@
 				<?php endif; ?>
 			</div>
 		</div>
-
-		<div class="row">
-			<div class="span3">
-				<ul class="nav nav-tabs nav-stacked">
-					<?= $page_menu ?>
-				</ul>
-			</div>
-
-			<div class="span9">

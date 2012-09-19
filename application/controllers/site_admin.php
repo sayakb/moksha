@@ -18,7 +18,7 @@ class Site_admin extends CI_Controller {
 	*/
 	public function index()
 	{
-		$this->template->admin('admin', 'welcome');
+		$this->template->load('site_admin', 'welcome');
 	}
 }
 

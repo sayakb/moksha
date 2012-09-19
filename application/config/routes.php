@@ -38,14 +38,17 @@
 |
 */
 
-// Administration links
-$route['admin/central/sites/delete/(:num)'] = 'central_admin/sites/1/$1';
+// Administration pages
+$route['admin/central/login'] = 'auth/login/admin+central/%central';
+$route['admin/central/logout'] = 'auth/logout/admin+central+login/%central';
 $route['admin/central/(:any)'] = 'central_admin/$1';
 $route['admin/central'] = 'central_admin';
+$route['admin/login'] = 'auth/login/admin';
+$route['admin/logout'] = 'auth/logout/admin+login';
 $route['admin/(:any)'] = 'site_admin/$1';
 $route['admin'] = 'site_admin';
 
-// Site links - this is also the default route
+// Site pages - this is also the default route
 $route['(:any)'] = 'sites/process/$1';
 $route['default_controller'] = 'sites/process';
 
