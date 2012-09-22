@@ -15,8 +15,8 @@ class Auth_model extends CI_Model {
 	 * Validate user based on context
 	 *
 	 * @access	public
-	 * @param	context Validation context
-	 * @returns	Boolean: true if valid
+	 * @param	string	Validation context
+	 * @return	bool	true if valid
 	 */
 	public function validate_user($context)
 	{
@@ -24,23 +24,30 @@ class Auth_model extends CI_Model {
 		$password = $this->input->post('password');
 		$hash = password_hash($password);
 
+		// Central DB uses the users table
 		if ($context == '%central')
 		{
-			$this->load->database('central');
+			$db = $this->db_c;
+			$table = 'users';
 		}
+
+		// We are connecting to sites DB - use the site_<slug>_users table
 		else
 		{
-			$this->load->database('sites');
-
-			if ( ! $this->db->table_exists("site_{$context}_users"))
+			if ($this->db_s->table_exists("site_{$context}_users"))
+			{
+				$db = $this->db_s;
+				$table = "site_{$context}_users";
+			}
+			else
 			{
 				return FALSE;
 			}
 		}
 
-		$this->db->where('user_name', $username);
-		$this->db->where('user_password', $hash);
+		$db->where('user_name', $username);
+		$db->where('user_password', $hash);
 
-		return ($this->db->count_all_results('users') == 1);
+		return ($db->count_all_results($table) == 1);
 	}
 }

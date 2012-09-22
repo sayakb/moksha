@@ -19,7 +19,7 @@ class Auth extends CI_Controller {
 		parent::__construct();
 
 		// Load stuff we need for auth controller
-		$this->load->model('auth_model');
+		$this->load->model('user/auth_model');
 		$this->lang->load('auth');
 		$this->load->library('form_validation');
 	}
@@ -28,13 +28,13 @@ class Auth extends CI_Controller {
 	* Processes user login
 	*
 	* @access	public
-	* @param	redirect URL to be opened on successful auth
-	* @param	is_central Flag indicating whether we are logging in to central
+	* @param	string	URL to be opened on successful auth
+	* @param	bool	Flag indicating whether we are logging in to central
 	*/
 	public function login($redirect, $is_central = FALSE)
 	{
 		// Check if we have a context and redirect set
-		if ($this->form_validation->run('auth/login'))
+		if ($this->form_validation->run('user/auth/login'))
 		{
 			$context = $this->_context($is_central);
 
@@ -56,15 +56,15 @@ class Auth extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('common', 'login', $data);
+		$this->template->load('user/login', $data);
 	}
 
 	/**
 	 * Processes user logout
 	 *
 	 * @access	public
-	* @param	redirect URL to be opened on successful auth
-	* @param	is_central Flag indicating whether we are logging in to central
+	* @param	string	URL to be opened on successful auth
+	* @param	bool	Flag indicating whether we are logging in to central
 	 */
 	public function logout($redirect, $is_central = FALSE)
 	{

@@ -6,8 +6,8 @@
 -- Central admin tables
 -------------------------
 
--- Replace Admin_DB with the name of your Moksha admin DB
-USE Admin_DB;
+-- Replace Central_DB with the name of your Moksha central admin DB
+USE Central_DB;
 
 -- Session table
 CREATE TABLE `sessions` (
@@ -37,5 +37,6 @@ CREATE TABLE `users` (
   `user_password` varchar(128) NOT NULL,
   `user_email` varchar(225) NOT NULL,
   PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_name_idx` (`user_name`),
   KEY `user_auth_idx` (`user_name`,`user_password`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -39,18 +39,18 @@
 */
 
 // Administration pages
-$route['admin/central/login'] = 'auth/login/admin+central/%central';
-$route['admin/central/logout'] = 'auth/logout/admin+central+login/%central';
+$route['admin/central/login'] = 'user/auth/login/admin+central/%central';
+$route['admin/central/logout'] = 'user/auth/logout/admin+central+login/%central';
 $route['admin/central/(:any)'] = 'central_admin/$1';
-$route['admin/central'] = 'central_admin';
-$route['admin/login'] = 'auth/login/admin';
-$route['admin/logout'] = 'auth/logout/admin+login';
+$route['admin/central'] = 'central_admin/welcome';
+$route['admin/login'] = 'user/auth/login/admin';
+$route['admin/logout'] = 'user/auth/logout/admin+login';
 $route['admin/(:any)'] = 'site_admin/$1';
-$route['admin'] = 'site_admin';
+$route['admin'] = 'site_admin/welcome';
 
 // Site pages - this is also the default route
-$route['(:any)'] = 'sites/process/$1';
-$route['default_controller'] = 'sites/process';
+$route['(:any)'] = 'sites/parser/$1';
+$route['default_controller'] = 'sites/parser';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

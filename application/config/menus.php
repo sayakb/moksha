@@ -7,15 +7,20 @@
 |
 */
 
-$config['menus']['central'] = array(
-	'welcome'		=> array(
-		'url'		=> 'admin/central',
-		'label'		=> 'homepage',
+$config['menus']['central_admin'] = array(
+	'welcome'	=> array(
+		'url'	=> 'admin/central',
+		'label'	=> 'homepage',
 	),
 
-	'manage_sites'	=> array(
-		'url'		=> 'admin/central/sites/manage',
-		'label'		=> 'manage_sites',
+	'sites'		=> array(
+		'url'	=> 'admin/central/sites/manage',
+		'label'	=> 'manage_sites',
+	),
+
+	'users'		=> array(
+		'url'	=> 'admin/central/users/manage',
+		'label'	=> 'manage_users',
 	),
 );
 

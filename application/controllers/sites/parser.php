@@ -18,7 +18,7 @@ class Sites extends CI_Controller {
 	*/
 	public function process()
 	{
-		die('site->main');
+		die('site->main1');
 	}
 }
 

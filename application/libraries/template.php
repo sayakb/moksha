@@ -12,7 +12,6 @@
 class Template {
 
 	var $CI;
-	var $template_defaults;
 	var $error_msgs;
 	var $success_msgs;
 
@@ -22,8 +21,6 @@ class Template {
 	function __construct()
 	{
 		$this->CI =& get_instance();
-		$this->template_defaults = $this->template_defaults();
-
 		$this->error_msgs = NULL;
 		$this->success_msgs = NULL;
 	}
@@ -41,33 +38,71 @@ class Template {
 			'page_title'		=> $this->CI->lang->line('moksha'),
 			'page_desc'			=> $this->CI->lang->line('moksha_desc'),
 			'page_copyright'	=> $this->CI->lang->line('default_copyright'),
+			'page_menu'			=> $this->fetch_menu(),
 			'page_notice'		=> NULL,
-			'page_menu'			=> NULL,
 		);
+	}
+
+	/**
+	 * Displays a confirmation box
+	 *
+	 * @access	public
+	 * @param	string	Message to be displayed
+	 * @param	string	Caption (heading) of the message box
+	 * @return	bool	True if user confirms
+	 */
+	public function confirm_box($message, $caption = '')
+	{
+		if (isset($_POST['yes']))
+		{
+			return TRUE;
+		}
+
+		if (isset($_POST['no']))
+		{
+			return FALSE;
+		}
+
+		if (empty($caption))
+		{
+			$caption = $this->CI->lang->line('confirm');
+		}
+
+		if (strpos($message, 'lang:') == 0)
+		{
+			$message = $this->CI->lang->line(substr($message, 5));
+		}
+
+		// Assign view data
+		$data = array(
+			'message'		=> $message,
+			'caption'		=> $caption,
+		);
+
+		exit($this->load('system/confirm_box', $data, TRUE));
 	}
 
 	/**
 	 * Load the page template
 	 *
 	 * @access	public
-	 * @param	controller Controller for the template
-	 * @param	template Template to be loaded
-	 * @param	data Data to be passed to the template
-	 * @param	output Output the template as return value
-	 * @return	Parsed template, if $output is set to TRUE
+	 * @param	string	View to be loaded
+	 * @param	array	Data to be passed to the template
+	 * @param	bool	Output the template as return value
+	 * @return	string	Parsed template, if $output is set to TRUE
 	 */
-	public function load($controller, $template, $data = array(), $output = FALSE)
+	public function load($view, $data = array(), $output = FALSE)
 	{
 		$parsed = '';
 
-		// User can pass data as empty string
-		if ( ! is_array($data))
+		// No data was passed
+		if (count($data) == 0)
 		{
-			$data = $this->template_defaults;
+			$data = $this->template_defaults();
 		}
 		else
 		{
-			$data = array_merge($this->template_defaults, $data);
+			$data = array_merge($this->template_defaults(), $data);
 		}
 
 		// Get validation errors
@@ -76,6 +111,9 @@ class Template {
 		// Read error and success messages from session
 		$error_flash = $this->CI->session->flashdata('error_msg');
 		$success_flash = $this->CI->session->flashdata('success_msg');
+
+		// Get the current sub-directory
+		$subdir = $this->CI->router->fetch_directory();
 
 		// Override local error messages with validation/session messages
 		if ( ! empty($validation_msgs))
@@ -108,23 +146,69 @@ class Template {
 		}
 
 		// We assume that output is being returned
-		$parsed .= $this->CI->load->view("common/header", $data, $output);
+		$parsed .= $this->CI->load->view("layout/header", $data, $output);
 
-		if ($controller != 'common')
+		if ($subdir == 'central_admin/' OR $subdir == 'site_admin/')
 		{
-			$parsed .= $this->CI->load->view("{$controller}/wrapper_top", $data, $output);
+			$parsed .= $this->CI->load->view("layout/header_admin", $data, $output);
 		}
 
-		$parsed .= $this->CI->load->view("{$controller}/{$template}", $data, $output);
+		$parsed .= $this->CI->load->view($view, $data, $output);
 
-		if ($controller != 'common')
+		if ($subdir == 'central_admin/' OR $subdir == 'site_admin/')
 		{
-			$parsed .= $this->CI->load->view("{$controller}/wrapper_bottom", $data, $output);
+			$parsed .= $this->CI->load->view("layout/footer_admin", $data, $output);
 		}
 
-		$parsed .= $this->CI->load->view("common/footer", $data, $output);
+		$parsed .= $this->CI->load->view("layout/footer", $data, $output);
 
 		return $parsed;
+	}
+
+	/**
+	 * Menu generator
+	 *
+	 * Returns a menu for the current route, if defined
+	 *
+	 * @access	public
+	 */
+	public function fetch_menu()
+	{
+		$output = '';
+
+		// Get current route info
+		$subdir = substr($this->CI->router->fetch_directory(), 0, -1);
+		$controller = $this->CI->router->fetch_class();
+
+		// Load the menu configuration
+		$this->CI->config->load('menus');
+
+		// Grab all the menus
+		$menus = $this->CI->config->item('menus');
+
+		if (isset($menus[$subdir]) AND is_array($menus[$subdir]))
+		{
+			foreach ($menus[$subdir] as $key => $item)
+			{
+				$label = $this->CI->lang->line($item['label']);
+
+				if ($key == $controller)
+				{
+					$active = ' class="active"';
+					$href = '';
+				}
+				else
+				{
+					$active = '';
+					$href = 'href="' . base_url($item['url']) . '"';
+				}
+
+				// Generate the item
+				$output .= "<li{$active}><a {$href}>{$label}</a></li>";
+			}
+		}
+
+		return $output;
 	}
 }
 // END Template class

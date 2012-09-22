@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Central administration model
+ * Sites management model
  *
- * Handles database interactions for central
+ * Model for fetching, adding and deleting all Moksha sites
  *
  * @package		Moksha
  * @category	Administration
  * @author		Moksha Team
  */
-class Central_admin_model extends CI_Model {
+class Sites_model extends CI_Model {
 
 	/**
 	 * Constructor
@@ -17,17 +17,14 @@ class Central_admin_model extends CI_Model {
 	public function __construct()
 	{
 		parent::__construct();
-
-		// Connect to the central DB
-		$this->load->database('central');
 	}
 
 	/**
 	 * Get existing sites
 	 *
 	 * @access	public
-	 * @param	offset Offset for the first item
-	 * @returns	Array of rows
+	 * @param	int		Offset for the first item
+	 * @return	array	List of sites
 	 */
 	public function get_sites($page)
 	{
@@ -35,8 +32,8 @@ class Central_admin_model extends CI_Model {
 		$offset = $per_page * ($page - 1);
 
 		// Apply the limit and get the data
-		$this->db->limit($per_page, $offset);
-		$query = $this->db->get('sites');
+		$this->db_c->limit($per_page, $offset);
+		$query = $this->db_c->get('sites');
 
 		return $query->result_array();
 	}
@@ -45,18 +42,18 @@ class Central_admin_model extends CI_Model {
 	 * Return the count of sites from the DB
 	 *
 	 * @access	public
-	 * @returns	Integer having the site count
+	 * @return	int		having the site count
 	 */
 	public function count_sites()
 	{
-		return $this->db->count_all_results('sites');
+		return $this->db_c->count_all_results('sites');
 	}
 
 	/**
 	 * Add a new site to the DB
 	 *
 	 * @access	public
-	 * @returns	Boolean: true if successful
+	 * @return	bool	true if successful
 	 */
 	public function add_site()
 	{
@@ -70,19 +67,19 @@ class Central_admin_model extends CI_Model {
 			'site_slug'	=> $slug
 		);
 
-		return $this->db->insert('sites', $data);
+		return $this->db_c->insert('sites', $data);
 	}
 
 	/**
 	 * Delete a site from the DB
 	 *
 	 * @access	public
-	 * @returns	Boolean: true if successful
+	 * @return	bool	true if successful
 	 */
 	public function delete_site($site_id)
 	{
-		$this->db->where('site_id', $site_id);
+		$this->db_c->where('site_id', $site_id);
 
-		return $this->db->delete('sites');
+		return $this->db_c->delete('sites');
 	}
-} 
+}

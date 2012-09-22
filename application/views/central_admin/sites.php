@@ -1,4 +1,4 @@
-<?= form_open(base_url('admin/central/sites/manage'), array('class' => 'form-horizontal')) ?>
+<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 	<legend>
 		<?= $this->lang->line('add_new_site') ?>
 	</legend>
@@ -9,7 +9,7 @@
 		</label>
 
 		<div class="controls">
-			<?= form_input('site_url') ?>
+			<?= form_input('site_url', set_value('site_url')) ?>
 			<span class="help-block"><?= $this->lang->line('site_url_exp') ?></span>
 		</div>
 	</div>
@@ -46,8 +46,7 @@
 						</td>
 
 						<td>
-							<a href="<?= base_url('admin/central/sites/delete/' . $site['site_id']) ?>"
-								onclick="return confirm('<?= $this->lang->line('confirm_action') ?>')">
+							<a href="<?= base_url('admin/central/sites/delete/' . $site['site_id']) ?>">
 								<?= $this->lang->line('delete') ?>
 							</a>
 						</td>
