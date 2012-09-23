@@ -46,7 +46,7 @@
 						</td>
 
 						<td>
-							<a href="<?= base_url('admin/central/sites/delete/' . $site->site_id) ?>">
+							<a href="<?= base_url('admin/central/sites/delete/' . $site->site_id) ?>" class="btn btn-mini">
 								<?= $this->lang->line('delete') ?>
 							</a>
 						</td>

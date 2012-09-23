@@ -25,13 +25,13 @@ class Auth_model extends CI_Model {
 		$hash = password_hash($password);
 
 		// Central DB uses the users table
+		// If we are connecting to sites DB - use the site_<slug>_users table_exists
+
 		if ($context == '%central')
 		{
 			$db = $this->db_c;
 			$table = 'users';
 		}
-
-		// We are connecting to sites DB - use the site_<slug>_users table
 		else
 		{
 			if ($this->db_s->table_exists("site_{$context}_users"))
@@ -45,9 +45,11 @@ class Auth_model extends CI_Model {
 			}
 		}
 
-		$db->where('user_name', $username);
-		$db->where('user_password', $hash);
+		$filter = array(
+			'user_name'		=> $username,
+			'user_password'	=> $hash
+		);
 
-		return ($db->count_all_results($table) == 1);
+		return $db->where($filter)->count_all_results($table) === 1;
 	}
 }

@@ -23,7 +23,7 @@ class Sites_model extends CI_Model {
 	 * Get existing sites
 	 *
 	 * @access	public
-	 * @param	int		Offset for the first item
+	 * @param	int		Page number for the list
 	 * @return	array	List of sites
 	 */
 	public function get_sites($page)
@@ -31,10 +31,7 @@ class Sites_model extends CI_Model {
 		$per_page = $this->config->item('per_page');
 		$offset = $per_page * ($page - 1);
 
-		// Apply the limit and get the data
-		$this->db_c->limit($per_page, $offset);
-		$query = $this->db_c->get('sites');
-
+		$query = $this->db_c->limit($per_page, $offset)->get('sites');
 		return $query->result();
 	}
 
@@ -78,8 +75,6 @@ class Sites_model extends CI_Model {
 	 */
 	public function delete_site($site_id)
 	{
-		$this->db_c->where('site_id', $site_id);
-
-		return $this->db_c->delete('sites');
+		return $this->db_c->delete('sites', array('site_id' => $site_id));
 	}
 }

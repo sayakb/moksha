@@ -1,5 +1,11 @@
 <?= form_open(current_url(), array('class' => 'form-horizontal', 'autocomplete' => 'off')) ?>
-	<legend><?= $this->lang->line('add_user') ?></legend>
+	<legend>
+		<a href="<?= base_url('admin/central/users/manage') ?>" class="small pull-right">
+			&laquo; <?= $this->lang->line('back_user_mgmt') ?>
+		</a>
+
+		<?= $this->lang->line('add_user') ?>
+	</legend>
 
 	<div class="control-group">
 		<div class="control-label">

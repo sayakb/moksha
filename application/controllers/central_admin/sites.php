@@ -20,7 +20,7 @@ class Sites extends CI_Controller {
 
 		// Load stuff we need for central
 		$this->load->model('central_admin/sites_model');
-		$this->load->library('menu');
+		$this->load->library(array('menu', 'pagination'));
 		$this->lang->load('central_admin');
 	}
 
@@ -32,8 +32,6 @@ class Sites extends CI_Controller {
 	 */
 	public function manage($page = 1)
 	{
-		$this->load->library('pagination');
-
 		if ($this->form_validation->run('central_admin/sites/manage'))
 		{
 			if ($this->sites_model->add_site())

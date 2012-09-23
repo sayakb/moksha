@@ -20,7 +20,7 @@ class Users extends CI_Controller {
 
 		// Load stuff we need for central
 		$this->load->model('central_admin/users_model');
-		$this->load->library('menu');
+		$this->load->library(array('menu', 'pagination'));
 		$this->lang->load('central_admin');
 	}
 
@@ -32,10 +32,21 @@ class Users extends CI_Controller {
 	 */
 	public function manage($page = 1)
 	{
+		// Initialize pagination
+		$this->pagination->initialize(array(
+			'base_url'			=> base_url('admin/central/users/manage'),
+			'total_rows'		=> $this->users_model->count_users(),
+			'per_page'			=> $this->config->item('per_page'),
+			'uri_segment'		=> 5,
+			'use_page_numbers'	=> TRUE
+		));
+
 		// Assign view data
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
+			'users'			=> $this->users_model->get_users($page),
+			'pagination'	=> $this->pagination->create_links()
 		);
 
 		// Load the view
@@ -78,6 +89,7 @@ class Users extends CI_Controller {
 	 * Update an existing user
 	 *
 	 * @access	public
+	 * @param	int		User ID
 	 */
 	public function edit($user_id)
 	{
@@ -113,6 +125,33 @@ class Users extends CI_Controller {
 
 		// Load the view
 		$this->template->load('central_admin/users_editor', $data);
+	}
+
+	/**
+	 * Delete a central admin user
+	 *
+	 * @access	public
+	 * @param	int		User ID
+	 */
+	public function delete($user_id)
+	{
+		if ($this->users_model->check_founder($user_id))
+		{
+			$this->session->set_flashdata('error_msg', $this->lang->line('cannot_del_founder'));
+		}
+		else if ($this->template->confirm_box('lang:user_del_confirm'))
+		{
+			if ($this->users_model->delete_user($user_id))
+			{
+				$this->session->set_flashdata('success_msg', $this->lang->line('user_deleted'));
+			}
+			else
+			{
+				$this->session->set_flashdata('error_msg', $this->lang->line('user_del_error'));
+			}
+		}
+
+		redirect(base_url('admin/central/users/manage'), 'refresh');
 	}
 }
 

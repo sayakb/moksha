@@ -23,6 +23,13 @@ $lang['user_added']			= 'User has been added successfully';
 $lang['user_add_error']		= 'An error occurred while adding the user';
 $lang['user_updated']		= 'User has been updated successfully';
 $lang['user_update_error']	= 'An error occurred while updating the administrator';
+$lang['user_deleted']		= 'User has been deleted successfully';
+$lang['user_del_error']		= 'An error occurred while deleting the user';
+$lang['cannot_del_founder']	= 'You cannot delete the founder user';
+$lang['user_del_confirm']	= 'Are you sure you want to delete this user?';
+$lang['filter_by_username']	= 'Filter by username';
+$lang['back_user_mgmt']		= 'Back to user management';
+$lang['no_users']			= 'No users found matching the username filter';
 
 
 /* End of file central_admin_lang.php */

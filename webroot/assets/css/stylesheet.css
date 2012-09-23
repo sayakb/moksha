@@ -1101,6 +1101,9 @@ legend small {
   font-size: 15px;
   color: #999999;
 }
+legend .small {
+  font-size: 14px;
+}
 label,
 input,
 button,
@@ -4887,6 +4890,18 @@ button.close {
 .visible-desktop {
   display: inherit !important;
 }
+.page-header {
+  padding: 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #eeeeee;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
+.alert p {
+  margin: 0;
+}
 @media (min-width: 768px) and (max-width: 979px) {
   .hidden-desktop {
     display: inherit !important;
@@ -5549,16 +5564,4 @@ button.close {
   .row-fluid .thumbnails {
     margin-left: 0;
   }
-}
-.page-header {
-  padding: 30px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  background-color: #eeeeee;
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
-}
-.alert p {
-  margin: 0;
 }

@@ -7,7 +7,7 @@
 | Sets the number of entries to show in a list per page
 |
 */
-$config['per_page'] = 4;
+$config['per_page'] = 10;
 
 
 /* End of file hooks.php */
