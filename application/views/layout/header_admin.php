@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="span3">
-		<ul class="nav nav-tabs nav-stacked">
+		<ul class="nav nav-pills nav-stacked">
 			<?= $page_menu ?>
 		</ul>
 	</div>
