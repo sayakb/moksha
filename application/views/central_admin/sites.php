@@ -9,13 +9,13 @@
 		</label>
 
 		<div class="controls">
-			<?= form_input('site_url', set_value('site_url')) ?>
+			<?= form_input('site_url', set_value('site_url', '')) ?>
 			<span class="help-block"><?= $this->lang->line('site_url_exp') ?></span>
 		</div>
 	</div>
 
 	<div class="form-actions">
-		<?= form_submit('add_site', $this->lang->line('add_site'), 'class="btn"') ?>
+		<?= form_submit('add_site', $this->lang->line('add_site'), 'class="btn btn-primary"') ?>
 	</div>
 
 	<legend>
@@ -40,13 +40,13 @@
 				<?php foreach ($sites as $site): ?>
 					<tr>
 						<td>
-							<a href="//<?= $site['site_url'] ?>">
-								<?= $site['site_url'] ?>
+							<a href="//<?= $site->site_url ?>">
+								<?= $site->site_url ?>
 							</a>
 						</td>
 
 						<td>
-							<a href="<?= base_url('admin/central/sites/delete/' . $site['site_id']) ?>">
+							<a href="<?= base_url('admin/central/sites/delete/' . $site->site_id) ?>">
 								<?= $this->lang->line('delete') ?>
 							</a>
 						</td>

@@ -9,7 +9,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Sites extends Moksha_Controller {
+class Sites extends CI_Controller {
 
 	/**
 	 * Constructor
@@ -32,8 +32,7 @@ class Sites extends Moksha_Controller {
 	 */
 	public function manage($page = 1)
 	{
-		$this->load->library(array('form_validation', 'pagination'));
-		$this->_validate();
+		$this->load->library('pagination');
 
 		if ($this->form_validation->run('central_admin/sites/manage'))
 		{

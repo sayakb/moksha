@@ -47,14 +47,14 @@ $autoload['packages'] = array();
 | These are the classes located in the system/libraries folder
 | or in your application/libraries folder.
 |
-| !! IMPORTANT !! Always load the bootstrap library first
+| !! IMPORTANT !! Always load the bootstrap library last
 |
 | Prototype:
 |
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('bootstrap', 'template', 'session');
+$autoload['libraries'] = array('template', 'session', 'bootstrap', 'form_validation');
 
 
 /*

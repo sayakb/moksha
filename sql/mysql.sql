@@ -36,7 +36,8 @@ CREATE TABLE `users` (
   `user_name` varchar(100) NOT NULL,
   `user_password` varchar(128) NOT NULL,
   `user_email` varchar(225) NOT NULL,
+  `user_founder` tinyint(1) NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `user_name_idx` (`user_name`),
+  UNIQUE KEY `user_name` (`user_name`),
   KEY `user_auth_idx` (`user_name`,`user_password`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

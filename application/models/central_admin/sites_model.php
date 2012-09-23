@@ -35,7 +35,7 @@ class Sites_model extends CI_Model {
 		$this->db_c->limit($per_page, $offset);
 		$query = $this->db_c->get('sites');
 
-		return $query->result_array();
+		return $query->result();
 	}
 
 	/**

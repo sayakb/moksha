@@ -77,9 +77,9 @@ class Auth extends CI_Controller {
 	/**
 	 * Gets current authentication context
 	 *
-	 * @access	private
+	 * @access	protected
 	 */
-	private function _context($is_central)
+	protected function _context($is_central)
 	{
 		if ($is_central)
 		{
@@ -87,7 +87,7 @@ class Auth extends CI_Controller {
 		}
 		else
 		{
-			// Implement slug logic here
+			return $this->bootstrap->site_slug;
 		}
 	}
 

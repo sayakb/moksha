@@ -11,8 +11,37 @@
 class Bootstrap {
 
 	var $CI;
+
+	/**
+	 * Current context
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $context;
+
+	/**
+	 * Current site ID
+	 *
+	 * @access public
+	 * @var int
+	 */	
 	var $site_id;
+
+	/**
+	 * Current site slug identifier
+	 *
+	 * @access public
+	 * @var string
+	 */
 	var $site_slug;
+
+	/**
+	 * Base url for the current site
+	 *
+	 * @access public
+	 * @var string
+	 */
 	var $site_url;
 
 	/**
@@ -24,14 +53,15 @@ class Bootstrap {
 
 		$this->setup_db();
 		$this->check_site();
+		$this->check_admin();
 	}
 
 	/**
 	 * Sets up moksha database paths
 	 *
-	 * @access	public
+	 * @access	private
 	 */
-	public function setup_db()
+	private function setup_db()
 	{
 		$this->CI->db_c = $this->CI->load->database('central', TRUE);
 		$this->CI->db_s = $this->CI->load->database('sites', TRUE);
@@ -40,9 +70,9 @@ class Bootstrap {
 	/**
 	 * Initializes the site identification and ACL
 	 *
-	 * @access	public
+	 * @access	private
 	 */
-	public function check_site()
+	private function check_site()
 	{
 		// Determine current protocol
 		if (isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] == 'on')
@@ -77,6 +107,40 @@ class Bootstrap {
 		else if ($this->CI->router->fetch_directory() != 'central_admin/')
 		{
 			show_error($this->CI->lang->line('invalid_site'));
+		}
+	}
+
+	/**
+	 * Validates administration sessions
+	 *
+	 * @access	private
+	 */
+	private function check_admin()
+	{
+		$subdir = $this->CI->router->fetch_directory();
+
+		if ($subdir == 'central_admin/' || $subdir == 'site_admin/')
+		{
+			// Determine the context of the current request
+			$is_central = ($subdir == 'central_admin/');
+
+			// Set the login page based on whether we are in central
+			if ($is_central)
+			{
+				$this->context = '%central';
+				$url = 'admin/central/login';
+			}
+			else
+			{
+				$this->context = $this->site_slug;
+				$url = 'admin/login';
+			}
+
+			// Make sure the user is authed, else serve the login page
+			if ($this->CI->session->userdata("authed_{$this->context}") !== TRUE)
+			{
+				redirect(base_url($url), 'refresh');
+			}
 		}
 	}
 }

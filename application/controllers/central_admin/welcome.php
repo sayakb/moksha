@@ -7,7 +7,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Welcome extends Moksha_Controller {
+class Welcome extends CI_Controller {
 
 	/**
 	 * Constructor
@@ -28,8 +28,6 @@ class Welcome extends Moksha_Controller {
 	*/
 	public function index()
 	{
-		$this->_validate();
-
 		// Set the template data
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),

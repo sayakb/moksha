@@ -12,7 +12,21 @@
 class Template {
 
 	var $CI;
+
+	/**
+	 * Error messages for the view
+	 *
+	 * @access public
+	 * @var string
+	 */
 	var $error_msgs;
+
+	/**
+	 * Success messages for the view
+	 *
+	 * @access public
+	 * @var string
+	 */
 	var $success_msgs;
 
 	/**
@@ -21,6 +35,7 @@ class Template {
 	function __construct()
 	{
 		$this->CI =& get_instance();
+
 		$this->error_msgs = NULL;
 		$this->success_msgs = NULL;
 	}

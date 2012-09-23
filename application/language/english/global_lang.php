@@ -11,6 +11,11 @@ $lang['yes']				= 'Yes';
 $lang['no']					= 'No';
 $lang['confirm_action']		= 'Are you sure you want to carry out this operation?';
 $lang['invalid_site']		= 'The site you are trying to access is not set up yet.';
+$lang['username']			= 'Username';
+$lang['password']			= 'Password';
+$lang['confirm_password']	= 'Confirm Password';
+$lang['email_address']		= 'Email address';
+
 
 /* End of file global_lang.php */
 /* Location: ./application/language/english/global_lang.php */

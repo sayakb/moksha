@@ -18,6 +18,11 @@ $lang['site_del_error']		= 'An error occurred while deleting the site';
 $lang['site_list']			= 'List of sites';
 $lang['no_sites']			= 'No sites have been added';
 $lang['site_del_confirm']	= 'This will delete all data related to this site permanently and this action cannot be undone. Do you want to continue?';
+$lang['add_user']			= 'Add new administrator';
+$lang['user_added']			= 'User has been added successfully';
+$lang['user_add_error']		= 'An error occurred while adding the user';
+$lang['user_updated']		= 'User has been updated successfully';
+$lang['user_update_error']	= 'An error occurred while updating the administrator';
 
 
 /* End of file central_admin_lang.php */
