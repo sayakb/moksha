@@ -16,6 +16,10 @@
 		<div class="row">
 			<div class="span12">
 				<div class="page-header">
+					<div class="page-logout">
+						<?= $page_logout ?>
+					</div>
+
 					<h1><?= $page_title ?></h1>
 					<p><?= $page_desc ?></p>
 				</div>

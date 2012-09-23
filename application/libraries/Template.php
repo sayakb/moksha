@@ -54,6 +54,7 @@ class Template {
 			'page_desc'			=> $this->CI->lang->line('moksha_desc'),
 			'page_copyright'	=> $this->CI->lang->line('default_copyright'),
 			'page_menu'			=> $this->fetch_menu(),
+			'page_logout'		=> $this->fetch_logout(),
 			'page_notice'		=> NULL,
 		);
 	}
@@ -224,6 +225,39 @@ class Template {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * Generates a logout link
+	 *
+	 * @access	public
+	 */
+	public function fetch_logout()
+	{
+		$subdir = $this->CI->router->fetch_directory();
+
+		if ($subdir == 'central_admin/')
+		{
+			$url = base_url('admin/central/logout');
+		}
+		else if ($subdir == 'site_admin/')
+		{
+			$url = base_url('admin/logout');
+		}
+		else
+		{
+			// Implement logout logic here
+		}
+
+		if (isset($url))
+		{
+			return "<i class='icon-user'></i><a href='{$url}'>" .
+					$this->CI->lang->line('logout') . '</a>';
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 }
 // END Template class

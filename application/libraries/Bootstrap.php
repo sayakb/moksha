@@ -13,14 +13,6 @@ class Bootstrap {
 	var $CI;
 
 	/**
-	 * Current context
-	 *
-	 * @access public
-	 * @var string
-	 */
-	var $context;
-
-	/**
 	 * Current site ID
 	 *
 	 * @access public
@@ -121,23 +113,13 @@ class Bootstrap {
 
 		if ($subdir == 'central_admin/' || $subdir == 'site_admin/')
 		{
-			// Determine the context of the current request
-			$is_central = ($subdir == 'central_admin/');
-
-			// Set the login page based on whether we are in central
-			if ($is_central)
-			{
-				$this->context = '%central';
-				$url = 'admin/central/login';
-			}
-			else
-			{
-				$this->context = $this->site_slug;
-				$url = 'admin/login';
-			}
+			// Determine the context and URL of the current request
+			$is_central = $subdir == 'central_admin/';
+			$context = get_context($is_central);
+			$url = $is_central ? 'admin/central/login' : 'admin/login';
 
 			// Make sure the user is authed, else serve the login page
-			if ($this->CI->session->userdata("authed_{$this->context}") !== TRUE)
+			if ($this->CI->session->userdata("authed_{$context}") !== TRUE)
 			{
 				redirect(base_url($url), 'refresh');
 			}

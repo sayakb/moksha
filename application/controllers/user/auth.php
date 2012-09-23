@@ -36,12 +36,12 @@ class Auth extends CI_Controller {
 		// Check if we have a context and redirect set
 		if ($this->form_validation->run('user/auth/login'))
 		{
-			$context = $this->_context($is_central);
+			$context = get_context($is_central);
 
 			if ($this->auth_model->validate_user($context))
 			{
 				$this->session->set_userdata("authed_{$context}", TRUE);
-				redirect($this->_redir($redirect), 'refresh');
+				redirect(auth_redir($redirect), 'refresh');
 			}
 			else
 			{
@@ -68,37 +68,8 @@ class Auth extends CI_Controller {
 	 */
 	public function logout($redirect, $is_central = FALSE)
 	{
-		$context = $this->_context($is_central);
-
-		$this->session->unset_userdata("authed_{$context}");
-		redirect($this->_redir($redirect), 'refresh');
-	}
-
-	/**
-	 * Gets current authentication context
-	 *
-	 * @access	protected
-	 */
-	protected function _context($is_central)
-	{
-		if ($is_central)
-		{
-			return '%central';
-		}
-		else
-		{
-			return $this->bootstrap->site_slug;
-		}
-	}
-
-	/**
-	 * Converts a URL sheme to an actual URL
-	 *
-	 * @access	private
-	 */
-	private function _redir($redirect)
-	{
-		return base_url(str_replace('+', '/', $redirect));
+		$this->session->unset_userdata('authed_' . get_context($is_central));
+		redirect(auth_redir($redirect), 'refresh');
 	}
 }
 
