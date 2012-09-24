@@ -13,8 +13,8 @@
  * Generate a password hash
  *
  * @access	public
- * @param	string	Password for which has is to be generated
- * @return	string	Generated hash
+ * @param	string	password for which has is to be generated
+ * @return	string	generated hash
  */
 function password_hash($password)
 {
@@ -25,31 +25,10 @@ function password_hash($password)
 }
 
 /**
- * Gets the current context
- *
- * @access	public
- * @param	bool	Flag indicating whether we are in central
- * @return	string	Current context identifier
- */
-function get_context($is_central)
-{
-	$CI =& get_instance();
-
-	if ($is_central)
-	{
-		return '%central';
-	}
-	else
-	{
-		return $CI->bootstrap->site_slug;
-	}
-}
-
-/**
  * Converts an auth URL sheme to a redirect route
  *
  * @access	public
- * @param	string	URL scheme to process
+ * @param	string	auth URL scheme to process
  */
 function auth_redir($redirect)
 {

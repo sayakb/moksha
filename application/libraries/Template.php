@@ -63,9 +63,9 @@ class Template {
 	 * Displays a confirmation box
 	 *
 	 * @access	public
-	 * @param	string	Message to be displayed
-	 * @param	string	Caption (heading) of the message box
-	 * @return	bool	True if user confirms
+	 * @param	string	message to be displayed
+	 * @param	string	caption (heading) of the message box
+	 * @return	bool	true if user confirms
 	 */
 	public function confirm_box($message, $caption = '')
 	{
@@ -102,10 +102,10 @@ class Template {
 	 * Load the page template
 	 *
 	 * @access	public
-	 * @param	string	View to be loaded
-	 * @param	array	Data to be passed to the template
-	 * @param	bool	Output the template as return value
-	 * @return	string	Parsed template, if $output is set to TRUE
+	 * @param	string	view to be loaded
+	 * @param	array	data to be passed to the template
+	 * @param	bool	output the template as return value
+	 * @return	string	parsed template, if $output is set to TRUE
 	 */
 	public function load($view, $data = array(), $output = FALSE)
 	{

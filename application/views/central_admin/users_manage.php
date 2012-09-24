@@ -1,9 +1,9 @@
 <legend>
 	<a href="<?= base_url('admin/central/users/add') ?>" class="btn btn-primary pull-right">
-		<?= $this->lang->line('add_user') ?>
+		<?= $this->lang->line('add_new_user') ?>
 	</a>
 
-	<?= $this->lang->line('manage_users') ?>
+	<?= $this->lang->line('user_list') ?>
 </legend>
 
 <?= form_open(current_url(), array('class' => 'well form-horizontal')) ?>

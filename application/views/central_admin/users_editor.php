@@ -4,7 +4,7 @@
 			&laquo; <?= $this->lang->line('back_user_mgmt') ?>
 		</a>
 
-		<?= $this->lang->line('add_user') ?>
+		<?= $this->lang->line('add_new_user') ?>
 	</legend>
 
 	<div class="control-group">
@@ -48,6 +48,6 @@
 	</div>
 
 	<div class="form-actions">
-		<?= form_submit('user_submit', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
+		<?= form_submit('user_submit', $this->lang->line('add_user'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>

@@ -36,6 +36,20 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
+/*
+|--------------------------------------------------------------------------
+| Hub data types
+|--------------------------------------------------------------------------
+|
+| These define the different data types supported by hubs
+|
+ */
+
+define('HUB_DATABASE',		0);
+define('HUB_RSS',			1);
+define('HUB_ATOM',			2);
+define('HUB_ACTIVE_DIR',	3);
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

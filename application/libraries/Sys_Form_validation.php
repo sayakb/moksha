@@ -24,6 +24,7 @@ class Sys_Form_validation extends CI_Form_validation {
 	 * This function does all the work.
 	 *
 	 * @access	public
+	 * @param	string	validation group
 	 * @return	bool
 	 */
 	public function run($group = '')
@@ -121,8 +122,8 @@ class Sys_Form_validation extends CI_Form_validation {
 	 * and site databases based on context
 	 *
 	 * @access	public
-	 * @param	string	Value to be validated
-	 * @param	string	Field to be validated
+	 * @param	string	value to be validated
+	 * @param	string	field to be validated
 	 * @return	bool	true if unique
 	 */
 	public function is_unique($str, $field)

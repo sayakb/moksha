@@ -23,8 +23,8 @@ class Sites_model extends CI_Model {
 	 * Get existing sites
 	 *
 	 * @access	public
-	 * @param	int		Page number for the list
-	 * @return	array	List of sites
+	 * @param	int		page number for the list
+	 * @return	array	list of sites
 	 */
 	public function get_sites($page)
 	{
@@ -47,6 +47,20 @@ class Sites_model extends CI_Model {
 	}
 
 	/**
+	 * Get site details against a specific site ID
+	 *
+	 * @access	public
+	 * @param	int		site identifier
+	 * @return	array	containing user details
+	 */
+	public function get_site($site_id)
+	{
+		$query = $this->db_c->get_where('sites', array('site_id' => $site_id));
+
+		return $query->row();
+	}
+
+	/**
 	 * Add a new site to the DB
 	 *
 	 * @access	public
@@ -54,17 +68,25 @@ class Sites_model extends CI_Model {
 	 */
 	public function add_site()
 	{
-		// Get the URL and generate a slug
-		$url = $this->input->post('site_url');
-		$slug = url_title($url, '_', TRUE);
-
-		// Build the insert query
 		$data = array(
-			'site_url'	=> $url,
-			'site_slug'	=> $slug
+			'site_url'	=> $this->input->post('site_url'),
+			'site_slug'	=> $this->input->post('site_slug')
 		);
 
 		return $this->db_c->insert('sites', $data);
+	}
+
+	/**
+	 * Update a specific site's URL
+	 *
+	 * @access	public
+	 * @return	bool	true if successful
+	 */
+	public function update_site($site_id)
+	{
+		$data = array('site_url' => $this->input->post('site_url'));
+
+		return $this->db_c->where('site_id', $site_id)->update('sites', $data);
 	}
 
 	/**

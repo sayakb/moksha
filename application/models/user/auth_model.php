@@ -15,29 +15,30 @@ class Auth_model extends CI_Model {
 	 * Validate user based on context
 	 *
 	 * @access	public
-	 * @param	string	Validation context
+	 * @param	string	validation context
 	 * @return	bool	true if valid
 	 */
-	public function validate_user($context)
+	public function validate_user()
 	{
 		$username = $this->input->post('username');
 		$password = $this->input->post('password');
 		$hash = password_hash($password);
 
-		// Central DB uses the users table
-		// If we are connecting to sites DB - use the site_<slug>_users table_exists
+		// Choose the database based on whether we are in central or not
+		//  - Central DB uses the users table
+		//  - If we are connecting to sites DB - use the site_<slug>_users table_exists
 
-		if ($context == '%central')
+		if ($this->bootstrap->in_central)
 		{
 			$db = $this->db_c;
 			$table = 'users';
 		}
 		else
 		{
-			if ($this->db_s->table_exists("site_{$context}_users"))
+			if ($this->db_s->table_exists("site_{$this->bootstrap->context}_users"))
 			{
 				$db = $this->db_s;
-				$table = "site_{$context}_users";
+				$table = "site_{$this->bootstrap->context}_users";
 			}
 			else
 			{

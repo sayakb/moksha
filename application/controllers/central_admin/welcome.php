@@ -17,7 +17,6 @@ class Welcome extends CI_Controller {
 		parent::__construct();
 
 		// Load stuff we need for central
-		$this->load->library('menu');
 		$this->lang->load('central_admin');
 	}
 

@@ -29,18 +29,15 @@ class Auth extends CI_Controller {
 	*
 	* @access	public
 	* @param	string	URL to be opened on successful auth
-	* @param	bool	Flag indicating whether we are logging in to central
 	*/
-	public function login($redirect, $is_central = FALSE)
+	public function login($redirect)
 	{
 		// Check if we have a context and redirect set
 		if ($this->form_validation->run('user/auth/login'))
 		{
-			$context = get_context($is_central);
-
-			if ($this->auth_model->validate_user($context))
+			if ($this->auth_model->validate_user())
 			{
-				$this->session->set_userdata("authed_{$context}", TRUE);
+				$this->session->set_userdata("authed_{$this->bootstrap->context}", TRUE);
 				redirect(auth_redir($redirect), 'refresh');
 			}
 			else
@@ -63,12 +60,11 @@ class Auth extends CI_Controller {
 	 * Processes user logout
 	 *
 	 * @access	public
-	* @param	string	URL to be opened on successful auth
-	* @param	bool	Flag indicating whether we are logging in to central
+	 * @param	string	URL to be opened on successful auth
 	 */
-	public function logout($redirect, $is_central = FALSE)
+	public function logout($redirect)
 	{
-		$this->session->unset_userdata('authed_' . get_context($is_central));
+		$this->session->unset_userdata("authed_{$this->bootstrap->context}");
 		redirect(auth_redir($redirect), 'refresh');
 	}
 }

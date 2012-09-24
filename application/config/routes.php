@@ -39,8 +39,8 @@
 */
 
 // Administration pages
-$route['admin/central/login'] = 'user/auth/login/admin+central/true';
-$route['admin/central/logout'] = 'user/auth/logout/admin+central+login/true';
+$route['admin/central/login'] = 'user/auth/login/admin+central';
+$route['admin/central/logout'] = 'user/auth/logout/admin+central+login';
 $route['admin/central/(:any)'] = 'central_admin/$1';
 $route['admin/central'] = 'central_admin/welcome';
 $route['admin/login'] = 'user/auth/login/admin';

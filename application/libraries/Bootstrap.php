@@ -37,6 +37,30 @@ class Bootstrap {
 	var $site_url;
 
 	/**
+	 * Flag indicating whether we are in admin interface
+	 *
+	 * @access public
+	 * @var bool
+	 */
+	var $in_admin;
+
+	/**
+	 * Flag indicating whether we are in central
+	 *
+	 * @access public
+	 * @var bool
+	 */
+	var $in_central;
+
+	/**
+	 * Context of the current request
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $context;
+
+	/**
 	 * Constructor
 	 */
 	function __construct()
@@ -83,6 +107,9 @@ class Bootstrap {
 		$this->site_url = str_replace(':80/', '/', $this->site_url);
 		$this->site_url = rtrim($this->site_url, '/');
 
+		// Determine whether we are in central
+		$this->in_central = strpos(current_url(), base_url() . 'admin/central') == 0;
+		
 		// Now we fetch the site slug and ID
 		$query = $this->CI->db_c->get_where('sites', array('site_url' => $this->site_url));
 
@@ -96,10 +123,13 @@ class Bootstrap {
 		}
 
 		// Site wasn't found. We kill the session if we are not in central
-		else if ($this->CI->router->fetch_directory() != 'central_admin/')
+		else if ( ! $this->in_central)
 		{
 			show_error($this->CI->lang->line('invalid_site'));
 		}
+
+		// Set the current context
+		$this->context = $this->in_central ? '%central' : $this->site_slug;
 	}
 
 	/**
@@ -113,20 +143,21 @@ class Bootstrap {
 
 		if ($subdir == 'central_admin/' || $subdir == 'site_admin/')
 		{
-			// Determine the context and URL of the current request
-			$is_central = $subdir == 'central_admin/';
-			$context = get_context($is_central);
-			$url = $is_central ? 'admin/central/login' : 'admin/login';
+			// Set the admin flag
+			$this->in_admin = true;
+		
+			// Determine the context and fallback URL of the current request
+			$fallback = $this->in_central ? 'admin/central/login' : 'admin/login';
 
 			// Make sure the user is authed, else serve the login page
-			if ($this->CI->session->userdata("authed_{$context}") !== TRUE)
+			if ($this->CI->session->userdata("authed_{$this->context}") !== TRUE)
 			{
-				redirect(base_url($url), 'refresh');
+				redirect(base_url($fallback), 'refresh');
 			}
 		}
 	}
 }
-// END Site class
+// END Bootstrap class
 
 /* End of file bootstrap.php */
 /* Location: ./application/libraries/bootstrap.php */

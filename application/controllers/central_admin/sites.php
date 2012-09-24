@@ -20,7 +20,7 @@ class Sites extends CI_Controller {
 
 		// Load stuff we need for central
 		$this->load->model('central_admin/sites_model');
-		$this->load->library(array('menu', 'pagination'));
+		$this->load->library('pagination');
 		$this->lang->load('central_admin');
 	}
 
@@ -28,22 +28,10 @@ class Sites extends CI_Controller {
 	 * Site management screen
 	 *
 	 * @access	public
-	 * @param	int	Page number for the site list
+	 * @param	int		page number for the site list
 	 */
 	public function manage($page = 1)
 	{
-		if ($this->form_validation->run('central_admin/sites/manage'))
-		{
-			if ($this->sites_model->add_site())
-			{
-				$this->template->success_msgs = $this->lang->line('site_added');
-			}
-			else
-			{
-				$this->template->error_msgs = $this->lang->line('site_add_error');
-			}
-		}
-
 		// Initialize pagination
 		$this->pagination->initialize(array(
 			'base_url'			=> base_url('admin/central/sites/manage'),
@@ -62,7 +50,84 @@ class Sites extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('central_admin/sites', $data);
+		$this->template->load('central_admin/sites_manage', $data);
+	}
+
+	/**
+	 * Add a new Moksha site
+	 *
+	 * @access	public
+	 */
+	public function add()
+	{
+		if ($this->form_validation->run('central_admin/sites/add'))
+		{
+			if ($this->sites_model->add_site())
+			{
+				$this->session->set_flashdata('success_msg', $this->lang->line('site_added'));
+				redirect(base_url('admin/central/sites/manage'), 'refresh');
+			}
+			else
+			{
+				$this->template->error_msgs = $this->lang->line('site_add_error');
+			}
+		}
+
+		// Assign view data
+		$data = array(
+			'page_title'	=> $this->lang->line('central_adm'),
+			'page_desc'		=> $this->lang->line('manage_sites_exp'),
+			'site_url'		=> set_value('site_url'),
+			'site_slug'		=> set_value('site_slug'),
+			'slug_disabled'	=> ''
+		);
+
+		// Load the view
+		$this->template->load('central_admin/sites_editor', $data);
+	}
+
+	/**
+	 * Update an existing site
+	 *
+	 * @access	public
+	 * @param	int		site identifier
+	 */
+	public function edit($site_id)
+	{
+		// Get site data
+		$site = $this->sites_model->get_site($site_id);
+
+		// Set exempts for email and name fields
+		$this->form_validation->unique_exempts = array(
+			'site_url'	=> $site->site_url,
+			'site_slug'	=> $site->site_slug
+		);
+
+		// Process the request
+		if ($this->form_validation->run('central_admin/sites/edit'))
+		{
+			if ($this->sites_model->update_site($site_id))
+			{
+				$this->session->set_flashdata('success_msg', $this->lang->line('site_updated'));
+				redirect(base_url('admin/central/sites/manage'), 'refresh');
+			}
+			else
+			{
+				$this->template->error_msgs = $this->lang->line('site_update_error');
+			}
+		}
+
+		// Assign view data
+		$data = array(
+			'page_title'	=> $this->lang->line('central_adm'),
+			'page_desc'		=> $this->lang->line('manage_sites_exp'),
+			'site_url'		=> set_value('site_url', $site->site_url),
+			'site_slug'		=> $site->site_slug,
+			'slug_disabled'	=> 'disabled="disabled"'
+		);
+
+		// Load the view
+		$this->template->load('central_admin/sites_editor', $data);
 	}
 
 	/**
@@ -71,7 +136,7 @@ class Sites extends CI_Controller {
 	 * Deletes a specific site and redirects to site management screen
 	 *
 	 * @access	public
-	 * @param	int	Site ID to delete
+	 * @param	int		site id to delete
 	 */
 	public function delete($site_id)
 	{

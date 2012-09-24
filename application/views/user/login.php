@@ -20,6 +20,6 @@
 	</div>
 
 	<div class="form-actions">
-		<?= form_submit('login_submit', $this->lang->line('submit'), 'class="btn"') ?>
+		<?= form_submit('login_submit', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>

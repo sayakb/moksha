@@ -20,7 +20,7 @@ class Users extends CI_Controller {
 
 		// Load stuff we need for central
 		$this->load->model('central_admin/users_model');
-		$this->load->library(array('menu', 'pagination'));
+		$this->load->library('pagination');
 		$this->lang->load('central_admin');
 	}
 
@@ -28,7 +28,7 @@ class Users extends CI_Controller {
 	 * Central admins management screen
 	 *
 	 * @access	public
-	 * @param	int	Page number for the user list
+	 * @param	int		page number for the user list
 	 */
 	public function manage($page = 1)
 	{
@@ -89,7 +89,7 @@ class Users extends CI_Controller {
 	 * Update an existing user
 	 *
 	 * @access	public
-	 * @param	int		User ID
+	 * @param	int		user identifier
 	 */
 	public function edit($user_id)
 	{
@@ -102,6 +102,7 @@ class Users extends CI_Controller {
 			'user_email'	=> $user->user_email
 		);
 
+		// Process the request
 		if ($this->form_validation->run('central_admin/users/edit'))
 		{
 			if ($this->users_model->update_user($user_id))
@@ -131,14 +132,17 @@ class Users extends CI_Controller {
 	 * Delete a central admin user
 	 *
 	 * @access	public
-	 * @param	int		User ID
+	 * @param	int		user id to delete
 	 */
 	public function delete($user_id)
 	{
+		// Founder cannot be deleted
 		if ($this->users_model->check_founder($user_id))
 		{
 			$this->session->set_flashdata('error_msg', $this->lang->line('cannot_del_founder'));
 		}
+
+		// Process the request
 		else if ($this->template->confirm_box('lang:user_del_confirm'))
 		{
 			if ($this->users_model->delete_user($user_id))

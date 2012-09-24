@@ -9,16 +9,16 @@
  * @category	Site
  * @author		Moksha Team
  */
-class Sites extends CI_Controller {
+class Parser extends CI_Controller {
 
 	/**
 	* Entry point for the site parser
 	*
 	* @access	public
 	*/
-	public function process()
+	public function index()
 	{
-		die('site->main1');
+		die('site->main');
 	}
 }
 

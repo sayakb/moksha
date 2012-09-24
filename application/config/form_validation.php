@@ -8,12 +8,14 @@
 */
 
 $config = array(
+	// Login pages
 	'user/auth/login' => array(
 		array(
 			'field' =>	'username',
 			'label' =>	'lang:username',
 			'rules' =>	'required|' .
-						'max_length[100]|'
+						'min_length[3]|' .
+						'max_length[100]'
 		),
 		array(
 			'field' =>	'password',
@@ -22,7 +24,31 @@ $config = array(
 		)
 	),
 
-	'central_admin/sites/manage' => array(
+	// Central: add site
+	'central_admin/sites/add' => array(
+		array(
+			'field' =>	'site_url',
+			'label' =>	'lang:site_url',
+			'rules' =>	'required|' .
+						'max_length[255]|' .
+						'is_unique[sites.site_url]|' .
+						'trim|' .
+						'htmlspecialchars'
+		),
+		array(
+			'field' =>	'site_slug',
+			'label' =>	'lang:site_slug',
+			'rules' =>	'required|' .
+						'min_length[5]|' .
+						'max_length[20]|' .
+						'is_unique[sites.site_slug]|' .
+						'alpha_numeric|' .
+						'trim'
+		)
+	),
+
+	// Central: edit site
+	'central_admin/sites/edit' => array(
 		array(
 			'field' =>	'site_url',
 			'label' =>	'lang:site_url',
@@ -34,11 +60,13 @@ $config = array(
 		)
 	),
 
+	// Central: add user
 	'central_admin/users/add' => array(
 		array(
 			'field' =>	'username',
 			'label' =>	'lang:username',
 			'rules' =>	'required|' .
+						'min_length[3]|' .
 						'max_length[100]|' .
 						'is_unique[users.user_name]|' .
 						'alpha_dash'
@@ -63,11 +91,13 @@ $config = array(
 		),
 	),
 
+	// Central: edit user
 	'central_admin/users/edit' => array(
 		array(
 			'field' =>	'username',
 			'label' =>	'lang:username',
 			'rules' =>	'required|' .
+						'min_length[3]|' .
 						'max_length[100]|' .
 						'alpha_dash|' .
 						'is_unique[users.user_name]'

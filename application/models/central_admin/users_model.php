@@ -23,8 +23,8 @@ class Users_model extends CI_Model {
 	 * Get existing users
 	 *
 	 * @access	public
-	 * @param	int		Page number for the list
-	 * @return	array	List of users
+	 * @param	int		page number for the list
+	 * @return	array	list of users
 	 */
 	public function get_users($page)
 	{
@@ -56,7 +56,7 @@ class Users_model extends CI_Model {
 	 * Checks if a user is the founder
 	 *
 	 * @access	public
-	 * @param	int		User ID
+	 * @param	int		user identifier
 	 * @return	bool	true if user is founder
 	 */
 	public function check_founder($user_id)
@@ -77,8 +77,8 @@ class Users_model extends CI_Model {
 	 * Get user details against a specific user ID
 	 *
 	 * @access	public
-	 * @param	int	User ID
-	 * @return	array	Containing user details
+	 * @param	int		user idenfitier
+	 * @return	array	containing user details
 	 */
 	public function get_user($user_id)
 	{
@@ -95,45 +95,31 @@ class Users_model extends CI_Model {
 	 */
 	public function add_user()
 	{
-		// Get user data
-		$user_name = $this->input->post('username');
-		$user_email = $this->input->post('email');
-		$password = $this->input->post('password');
-		$password_hash = password_hash($password);
-
-		// Build the insert query
 		$data = array(
-			'user_name'		=> $user_name,
-			'user_password'	=> $password_hash,
-			'user_email'	=> $user_email
+			'user_name'		=> $this->input->post('username'),
+			'user_password'	=> password_hash($this->input->post('password')),
+			'user_email'	=> $this->input->post('email')
 		);
 
 		return $this->db_c->insert('users', $data);
 	}
 
 	/**
-	 * Update a central admi user
+	 * Update a central admin user
 	 *
 	 * @access	public
 	 * @return	bool	true if successful
 	 */
 	public function update_user($user_id)
 	{
-		// Get user data
-		$user_name = $this->input->post('username');
-		$user_email = $this->input->post('email');
-		$password = $this->input->post('password');
-		$password_hash = password_hash($password);
-
-		// Build the insert query
 		$data = array(
-			'user_name'		=> $user_name,
-			'user_email'	=> $user_email
+			'user_name'		=> $this->input->post('username'),
+			'user_email'	=> $this->input->post('email')
 		);
 
 		if (!empty($password))
 		{
-			$data['user_password'] = $password_hash;
+			$data['user_password'] = password_hash($this->input->post('password'));
 		}
 
 		return $this->db_c->where('user_id', $user_id)->update('users', $data);

@@ -17,7 +17,7 @@ CREATE TABLE `sessions` (
   `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
   `user_data` text NOT NULL,
   PRIMARY KEY (`session_id`),
-  KEY `last_activity_idx` (`last_activity`)
+  KEY `sessions_last_activity_idx` (`last_activity`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Sites table
@@ -26,8 +26,8 @@ CREATE TABLE `sites` (
   `site_url` varchar(255) NOT NULL,
   `site_slug` varchar(255) NOT NULL,
   PRIMARY KEY (`site_id`),
-  UNIQUE KEY `site_url_idx` (`site_url`),
-  UNIQUE KEY `site_slug_idx` (`site_slug`)
+  UNIQUE KEY `sites_url_idx` (`site_url`),
+  UNIQUE KEY `sites_slug_idx` (`site_slug`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Central users table
@@ -38,6 +38,37 @@ CREATE TABLE `users` (
   `user_email` varchar(225) NOT NULL,
   `user_founder` tinyint(1) NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `user_name` (`user_name`),
-  KEY `user_auth_idx` (`user_name`,`user_password`)
+  UNIQUE KEY `users_name_idx` (`user_name`),
+  KEY `users_auth_idx` (`user_name`,`user_password`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- Insert admin user (username: admin / password: admin)
+INSERT INTO `users` (
+  `user_name`, 
+  `user_password`, 
+  `user_email`, 
+  `user_founder`
+)
+VALUES (
+  'admin', 
+  '5d32bfc39d0b8dd2d5d48595aa086f58e0f57dcbf6b108ba8f7873b4ae85e85d72beaa9a736cbe17600bad19f26172b0b97a0c1f165c4d06f4974809eda69e27', 
+  'admin@webmaster.local', 
+  1
+);
+
+------------------------
+-- Site related tables
+------------------------
+
+-- Replace Site_DB with the name of your Moksha site DB name
+USE Site_DB;
+
+-- Index table for hubs
+CREATE TABLE `hubs` (
+  `hub_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `site_id` bigint(20) NOT NULL,
+  `hub_type` tinyint(1) NOT NULL,
+  `hub_source` varchar(225) NOT NULL,
+  PRIMARY KEY (`hub_id`),
+  KEY `hubs_siteid_idx` (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
