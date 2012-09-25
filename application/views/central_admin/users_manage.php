@@ -34,12 +34,12 @@
 					<td><?= $user->user_name ?></td>
 					<td><?= $user->user_email ?></td>
 					<td>
-						<a href="<?= base_url('admin/central/users/edit/' . $user->user_id) ?>" class="btn btn-mini">
+						<a href="<?= base_url('admin/central/users/edit/'.$user->user_id) ?>" class="btn btn-mini">
 							<?= $this->lang->line('edit') ?>
 						</a>
 
 						<?php if ($user->user_founder == 0): ?>
-							<a href="<?= base_url('admin/central/users/delete/' . $user->user_id) ?>" class="btn btn-mini">
+							<a href="<?= base_url('admin/central/users/delete/'.$user->user_id) ?>" class="btn btn-mini">
 								<?= $this->lang->line('delete') ?>
 							</a>
 						<?php endif; ?>

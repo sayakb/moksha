@@ -230,7 +230,7 @@ class Template {
 				else
 				{
 					$active = '';
-					$href = 'href="' . base_url($item['url']) . '"';
+					$href = 'href="'.base_url($item['url']).'"';
 				}
 
 				// Generate the item
@@ -268,7 +268,7 @@ class Template {
 		if (isset($url))
 		{
 			return "<i class='icon-user'></i><a href='{$url}'>" .
-					$this->CI->lang->line('logout') . '</a>';
+					$this->CI->lang->line('logout').'</a>';
 		}
 		else
 		{

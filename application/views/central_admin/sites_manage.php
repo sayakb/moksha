@@ -31,11 +31,11 @@
 					</td>
 					
 					<td>
-						<a href="<?= base_url('admin/central/sites/edit/' . $site->site_id) ?>" class="btn btn-mini">
+						<a href="<?= base_url('admin/central/sites/edit/'.$site->site_id) ?>" class="btn btn-mini">
 							<?= $this->lang->line('edit') ?>
 						</a>
 
-						<a href="<?= base_url('admin/central/sites/delete/' . $site->site_id) ?>" class="btn btn-mini">
+						<a href="<?= base_url('admin/central/sites/delete/'.$site->site_id) ?>" class="btn btn-mini">
 							<?= $this->lang->line('delete') ?>
 						</a>
 					</td>

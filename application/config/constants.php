@@ -50,6 +50,20 @@ define('HUB_RSS',			'rss');
 define('HUB_ATOM',			'atom');
 define('HUB_ACTIVE_DIR',	'ad');
 
+/*
+|--------------------------------------------------------------------------
+| Hub data types
+|--------------------------------------------------------------------------
+|
+| These define the different data types supported by the hub DB driver
+|
+ */
+
+define('DBTYPE_KEY',		0);
+define('DBTYPE_TEXT',		1);
+define('DBTYPE_INT',		2);
+define('DBTYPE_DATETIME',	3);
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

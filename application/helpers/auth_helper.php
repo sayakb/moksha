@@ -21,7 +21,7 @@ function password_hash($password)
 	$CI =& get_instance();
 	$key = $CI->config->item('encryption_key');
 
-	return hash('SHA512', $password . $key);
+	return hash('SHA512', $password.$key);
 }
 
 // --------------------------------------------------------------------

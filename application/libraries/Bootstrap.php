@@ -116,7 +116,7 @@ class Bootstrap {
 		$this->site_url = rtrim($this->site_url, '/');
 
 		// Determine whether we are in central
-		$this->in_central = strpos(current_url(), base_url() . 'admin/central') == 0;
+		$this->in_central = strpos(current_url(), base_url().'admin/central') == 0;
 		
 		// Now we fetch the site ID
 		$query = $this->CI->db_c->get_where('sites', array('site_url' => $this->site_url));
