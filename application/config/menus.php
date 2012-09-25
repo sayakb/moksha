@@ -25,5 +25,5 @@ $config['menus']['central_admin'] = array(
 );
 
 
-/* End of file hooks.php */
-/* Location: ./application/config/hooks.php */
+/* End of file menus.php */
+/* Location: ./application/config/menus.php */

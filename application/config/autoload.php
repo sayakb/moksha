@@ -54,7 +54,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('template', 'session', 'form_validation', 'hub', 'bootstrap');
+$autoload['libraries'] = array('template', 'session', 'form_validation', 'hub', 'bootstrap', 'pagination');
 
 
 /*
@@ -82,7 +82,7 @@ $autoload['helper'] = array('url', 'form', 'auth');
 |
 */
 
-$autoload['config'] = array('moksha');
+$autoload['config'] = array('moksha', 'pagination');
 
 
 /*

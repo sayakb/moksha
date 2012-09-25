@@ -20,7 +20,6 @@ class Users extends CI_Controller {
 
 		// Load stuff we need for central
 		$this->load->model('central_admin/users_model');
-		$this->load->library('pagination');
 		$this->lang->load('central_admin');
 	}
 
@@ -35,13 +34,14 @@ class Users extends CI_Controller {
 	public function manage($page = 1)
 	{
 		// Initialize pagination
-		$this->pagination->initialize(array(
-			'base_url'			=> base_url('admin/central/users/manage'),
-			'total_rows'		=> $this->users_model->count_users(),
-			'per_page'			=> $this->config->item('per_page'),
-			'uri_segment'		=> 5,
-			'use_page_numbers'	=> TRUE
-		));
+		$this->pagination->initialize(
+			array_merge($this->config->item('pagination'), array(
+				'base_url'			=> base_url('admin/central/sites/manage'),
+				'total_rows'		=> $this->users_model->count_users(),
+				'per_page'			=> $this->config->item('per_page'),
+				'uri_segment'		=> 5,
+			))
+		);
 
 		// Assign view data
 		$data = array(

@@ -76,7 +76,7 @@ class Hub {
 	private function _get_instance($driver)
 	{
 		$driver = "Hub_{$driver}";
-		$driver_path = APPPATH . "libraries/Hub/drivers/{$driver}.php";
+		$driver_path = APPPATH . "libraries/hub/drivers/{$driver}.php";
 
 		if ( ! isset($this->_drivers[$driver]) AND file_exists($driver_path))
 		{
