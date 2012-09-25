@@ -18,17 +18,6 @@
 		</div>
 	</div>
 
-	<div class="control-group">
-		<label class="control-label">
-			<?= $this->lang->line('site_slug') ?>
-		</label>
-
-		<div class="controls">
-			<?= form_input('site_slug', $site_slug, $slug_disabled) ?>
-			<span class="help-block"><?= $this->lang->line('site_slug_exp') ?></span>
-		</div>
-	</div>
-
 	<div class="form-actions">
 		<?= form_submit('add_site', $this->lang->line('add_site'), 'class="btn btn-primary"') ?>
 	</div>

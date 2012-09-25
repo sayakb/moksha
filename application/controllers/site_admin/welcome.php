@@ -18,6 +18,8 @@ class Welcome extends CI_Controller {
 	{
 		$this->template->load('site_admin/welcome');
 	}
+
+	// --------------------------------------------------------------------
 }
 
 ?> 

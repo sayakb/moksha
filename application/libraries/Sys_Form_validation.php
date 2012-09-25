@@ -140,7 +140,7 @@ class Sys_Form_validation extends CI_Form_validation {
 		else
 		{
 			$db = $this->CI->db_s;
-			$context = $this->CI->bootstrap->site_slug;
+			$context = $this->CI->bootstrap->site_id;
 			$table = "site_{$context}_{$table}";
 		}
 
@@ -152,8 +152,10 @@ class Sys_Form_validation extends CI_Form_validation {
 		$query = $db->limit(1)->get_where($table, array($field => $str));
 		return $query->num_rows() === 0;
     }
+
+	// --------------------------------------------------------------------
 }
 // END Form Validation Class
 
-/* End of file Moksha_Form_validation.php */
-/* Location: ./application/libraries/Moksha_Form_validation.php */
+/* End of file Sys_Form_validation.php */
+/* Location: ./application/libraries/Sys_Form_validation.php */

@@ -24,6 +24,8 @@ class Users extends CI_Controller {
 		$this->lang->load('central_admin');
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Central admins management screen
 	 *
@@ -52,6 +54,8 @@ class Users extends CI_Controller {
 		// Load the view
 		$this->template->load('central_admin/users_manage', $data);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Add new central administrator
@@ -84,6 +88,8 @@ class Users extends CI_Controller {
 		// Load the view
 		$this->template->load('central_admin/users_editor', $data);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Update an existing user
@@ -128,6 +134,8 @@ class Users extends CI_Controller {
 		$this->template->load('central_admin/users_editor', $data);
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Delete a central admin user
 	 *
@@ -157,6 +165,8 @@ class Users extends CI_Controller {
 
 		redirect(base_url('admin/central/users/manage'), 'refresh');
 	}
+
+	// --------------------------------------------------------------------
 }
 
 ?>

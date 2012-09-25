@@ -19,6 +19,8 @@ class Users_model extends CI_Model {
 		parent::__construct();
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Get existing users
 	 *
@@ -41,6 +43,8 @@ class Users_model extends CI_Model {
 		return $query->result();
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Return the count of users from the DB
 	 *
@@ -51,6 +55,8 @@ class Users_model extends CI_Model {
 	{
 		return $this->db_c->count_all_results('users');
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Checks if a user is the founder
@@ -73,6 +79,8 @@ class Users_model extends CI_Model {
 		}
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Get user details against a specific user ID
 	 *
@@ -86,6 +94,8 @@ class Users_model extends CI_Model {
 
 		return $query->row();
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Add a new central admin
@@ -103,6 +113,8 @@ class Users_model extends CI_Model {
 
 		return $this->db_c->insert('users', $data);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Update a central admin user
@@ -125,6 +137,8 @@ class Users_model extends CI_Model {
 		return $this->db_c->where('user_id', $user_id)->update('users', $data);
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Delete a user from the DB
 	 *
@@ -135,4 +149,6 @@ class Users_model extends CI_Model {
 	{
 		return $this->db_c->where('user_id', $user_id)->delete('users');
 	}
+
+	// --------------------------------------------------------------------
 }

@@ -19,6 +19,8 @@ class Sites_model extends CI_Model {
 		parent::__construct();
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Get existing sites
 	 *
@@ -35,6 +37,8 @@ class Sites_model extends CI_Model {
 		return $query->result();
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Return the count of sites from the DB
 	 *
@@ -45,6 +49,8 @@ class Sites_model extends CI_Model {
 	{
 		return $this->db_c->count_all_results('sites');
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Get site details against a specific site ID
@@ -60,6 +66,8 @@ class Sites_model extends CI_Model {
 		return $query->row();
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Add a new site to the DB
 	 *
@@ -68,13 +76,10 @@ class Sites_model extends CI_Model {
 	 */
 	public function add_site()
 	{
-		$data = array(
-			'site_url'	=> $this->input->post('site_url'),
-			'site_slug'	=> $this->input->post('site_slug')
-		);
-
-		return $this->db_c->insert('sites', $data);
+		return $this->db_c->insert('sites', array('site_url' => $this->input->post('site_url')));
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Update a specific site's URL
@@ -88,6 +93,8 @@ class Sites_model extends CI_Model {
 
 		return $this->db_c->where('site_id', $site_id)->update('sites', $data);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Delete a site from the DB

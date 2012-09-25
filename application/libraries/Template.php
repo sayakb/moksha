@@ -13,6 +13,8 @@ class Template {
 
 	var $CI;
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Error messages for the view
 	 *
@@ -21,6 +23,8 @@ class Template {
 	 */
 	var $error_msgs;
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Success messages for the view
 	 *
@@ -28,6 +32,8 @@ class Template {
 	 * @var string
 	 */
 	var $success_msgs;
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Constructor
@@ -39,6 +45,8 @@ class Template {
 		$this->error_msgs = NULL;
 		$this->success_msgs = NULL;
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Default template key initializer
@@ -58,6 +66,8 @@ class Template {
 			'page_notice'		=> NULL,
 		);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Displays a confirmation box
@@ -97,6 +107,8 @@ class Template {
 
 		exit($this->load('system/confirm_box', $data, TRUE));
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Load the page template
@@ -181,6 +193,8 @@ class Template {
 		return $parsed;
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Menu generator
 	 *
@@ -227,6 +241,8 @@ class Template {
 		return $output;
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Generates a logout link
 	 *
@@ -259,8 +275,10 @@ class Template {
 			return NULL;
 		}
 	}
+
+	// --------------------------------------------------------------------
 }
 // END Template class
 
-/* End of file template.php */
-/* Location: ./application/libraries/template.php */
+/* End of file Template.php */
+/* Location: ./application/libraries/Template.php */

@@ -24,6 +24,8 @@ function password_hash($password)
 	return hash('SHA512', $password . $key);
 }
 
+// --------------------------------------------------------------------
+
 /**
  * Converts an auth URL sheme to a redirect route
  *
@@ -35,6 +37,7 @@ function auth_redir($redirect)
 	return base_url(str_replace('+', '/', $redirect));
 }
 
+// --------------------------------------------------------------------
 
 /* End of file auth_helper.php */
 /* Location: ./application/helpers/auth_helper.php */

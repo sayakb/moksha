@@ -17,7 +17,6 @@
 		<thead>
 			<tr>
 				<th><?= $this->lang->line('site_url') ?></th>
-				<th><?= $this->lang->line('site_slug') ?></th>
 				<th><?= $this->lang->line('actions') ?></th>
 			</tr>
 		</thead>
@@ -31,10 +30,6 @@
 						</a>
 					</td>
 					
-					<td>
-						<?= $site->site_slug ?>
-					</td>
-
 					<td>
 						<a href="<?= base_url('admin/central/sites/edit/' . $site->site_id) ?>" class="btn btn-mini">
 							<?= $this->lang->line('edit') ?>

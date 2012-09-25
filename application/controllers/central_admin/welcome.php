@@ -20,6 +20,8 @@ class Welcome extends CI_Controller {
 		$this->lang->load('central_admin');
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	* Central admin index page
 	*
@@ -36,6 +38,8 @@ class Welcome extends CI_Controller {
 		// Process the template
 		$this->template->load('central_admin/welcome', $data);
 	}
+
+	// --------------------------------------------------------------------
 }
 
 ?>

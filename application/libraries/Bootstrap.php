@@ -12,6 +12,8 @@ class Bootstrap {
 
 	var $CI;
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Current site ID
 	 *
@@ -20,13 +22,7 @@ class Bootstrap {
 	 */	
 	var $site_id;
 
-	/**
-	 * Current site slug identifier
-	 *
-	 * @access public
-	 * @var string
-	 */
-	var $site_slug;
+	// --------------------------------------------------------------------
 
 	/**
 	 * Base url for the current site
@@ -36,6 +32,8 @@ class Bootstrap {
 	 */
 	var $site_url;
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Flag indicating whether we are in admin interface
 	 *
@@ -43,6 +41,8 @@ class Bootstrap {
 	 * @var bool
 	 */
 	var $in_admin;
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Flag indicating whether we are in central
@@ -52,6 +52,8 @@ class Bootstrap {
 	 */
 	var $in_central;
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Context of the current request
 	 *
@@ -59,6 +61,8 @@ class Bootstrap {
 	 * @var string
 	 */
 	var $context;
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Constructor
@@ -72,6 +76,8 @@ class Bootstrap {
 		$this->check_admin();
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Sets up moksha database paths
 	 *
@@ -82,6 +88,8 @@ class Bootstrap {
 		$this->CI->db_c = $this->CI->load->database('central', TRUE);
 		$this->CI->db_s = $this->CI->load->database('sites', TRUE);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Initializes the site identification and ACL
@@ -110,16 +118,13 @@ class Bootstrap {
 		// Determine whether we are in central
 		$this->in_central = strpos(current_url(), base_url() . 'admin/central') == 0;
 		
-		// Now we fetch the site slug and ID
+		// Now we fetch the site ID
 		$query = $this->CI->db_c->get_where('sites', array('site_url' => $this->site_url));
 
 		// We expect exactly one entry for this site
 		if ($query->num_rows() == 1)
 		{
-			$row = $query->row();
-
-			$this->site_id = $row->site_id;
-			$this->site_slug = $row->site_slug;
+			$this->site_id = $query->row()->site_id;
 		}
 
 		// Site wasn't found. We kill the session if we are not in central
@@ -129,8 +134,10 @@ class Bootstrap {
 		}
 
 		// Set the current context
-		$this->context = $this->in_central ? '%central' : $this->site_slug;
+		$this->context = $this->in_central ? 0 : $this->site_id;
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Validates administration sessions
@@ -156,8 +163,10 @@ class Bootstrap {
 			}
 		}
 	}
+
+	// --------------------------------------------------------------------
 }
 // END Bootstrap class
 
-/* End of file bootstrap.php */
-/* Location: ./application/libraries/bootstrap.php */
+/* End of file Bootstrap.php */
+/* Location: ./application/libraries/Bootstrap.php */

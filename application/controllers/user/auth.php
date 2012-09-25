@@ -24,6 +24,8 @@ class Auth extends CI_Controller {
 		$this->load->library('form_validation');
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	* Processes user login
 	*
@@ -56,6 +58,8 @@ class Auth extends CI_Controller {
 		$this->template->load('user/login', $data);
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Processes user logout
 	 *
@@ -67,6 +71,8 @@ class Auth extends CI_Controller {
 		$this->session->unset_userdata("authed_{$this->bootstrap->context}");
 		redirect(auth_redir($redirect), 'refresh');
 	}
+
+	// --------------------------------------------------------------------
 }
 
 ?> 

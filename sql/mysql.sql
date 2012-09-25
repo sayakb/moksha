@@ -24,11 +24,18 @@ CREATE TABLE `sessions` (
 CREATE TABLE `sites` (
   `site_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `site_url` varchar(255) NOT NULL,
-  `site_slug` varchar(255) NOT NULL,
   PRIMARY KEY (`site_id`),
-  UNIQUE KEY `sites_url_idx` (`site_url`),
-  UNIQUE KEY `sites_slug_idx` (`site_slug`)
+  UNIQUE KEY `sites_url_idx` (`site_url`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- Insert default site
+-- Change 'localhost/moksha' to whatever applies in your case
+INSERT INTO `sites` (
+  `site_url`
+)
+VALUES (
+  'localhost/moksha'
+);
 
 -- Central users table
 CREATE TABLE `users` (
@@ -64,11 +71,12 @@ VALUES (
 USE Site_DB;
 
 -- Index table for hubs
-CREATE TABLE `hubs` (
+CREATE TABLE `hubs_1` (
   `hub_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `site_id` bigint(20) NOT NULL,
-  `hub_type` tinyint(1) NOT NULL,
-  `hub_source` varchar(225) NOT NULL,
+  `hub_name` varchar(100) NOT NULL,
+  `hub_type` char(4) NOT NULL,
+  `hub_source` varchar(225),
   PRIMARY KEY (`hub_id`),
   KEY `hubs_siteid_idx` (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

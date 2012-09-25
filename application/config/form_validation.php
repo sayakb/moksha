@@ -34,16 +34,6 @@ $config = array(
 						'is_unique[sites.site_url]|' .
 						'trim|' .
 						'htmlspecialchars'
-		),
-		array(
-			'field' =>	'site_slug',
-			'label' =>	'lang:site_slug',
-			'rules' =>	'required|' .
-						'min_length[5]|' .
-						'max_length[20]|' .
-						'is_unique[sites.site_slug]|' .
-						'alpha_numeric|' .
-						'trim'
 		)
 	),
 

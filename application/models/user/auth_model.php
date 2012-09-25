@@ -26,7 +26,7 @@ class Auth_model extends CI_Model {
 
 		// Choose the database based on whether we are in central or not
 		//  - Central DB uses the users table
-		//  - If we are connecting to sites DB - use the site_<slug>_users table_exists
+		//  - If we are connecting to sites DB - use the site_<siteID>_users table_exists
 
 		if ($this->bootstrap->in_central)
 		{
@@ -35,10 +35,10 @@ class Auth_model extends CI_Model {
 		}
 		else
 		{
-			if ($this->db_s->table_exists("site_{$this->bootstrap->context}_users"))
+			if ($this->db_s->table_exists("users_{$this->bootstrap->context}"))
 			{
 				$db = $this->db_s;
-				$table = "site_{$this->bootstrap->context}_users";
+				$table = "users_{$this->bootstrap->context}";
 			}
 			else
 			{
@@ -53,4 +53,6 @@ class Auth_model extends CI_Model {
 
 		return $db->where($filter)->count_all_results($table) === 1;
 	}
+
+	// --------------------------------------------------------------------
 }

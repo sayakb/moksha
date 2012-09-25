@@ -49,9 +49,9 @@ $active_group = 'central';
 $active_record = TRUE;
 
 $db['central']['hostname'] = 'localhost';
-$db['central']['username'] = '';
-$db['central']['password'] = '';
-$db['central']['database'] = '';
+$db['central']['username'] = 'root';
+$db['central']['password'] = 'bizarre';
+$db['central']['database'] = 'moksha_admin';
 $db['central']['dbdriver'] = 'mysqli';
 $db['central']['dbprefix'] = '';
 $db['central']['pconnect'] = TRUE;
@@ -65,9 +65,9 @@ $db['central']['autoinit'] = TRUE;
 $db['central']['stricton'] = FALSE;
 
 $db['sites']['hostname'] = 'localhost';
-$db['sites']['username'] = '';
-$db['sites']['password'] = '';
-$db['sites']['database'] = '';
+$db['sites']['username'] = 'root';
+$db['sites']['password'] = 'bizarre';
+$db['sites']['database'] = 'moksha_sites';
 $db['sites']['dbdriver'] = 'mysqli';
 $db['sites']['dbprefix'] = '';
 $db['sites']['pconnect'] = TRUE;

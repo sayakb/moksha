@@ -38,17 +38,17 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 /*
 |--------------------------------------------------------------------------
-| Hub data types
+| Hub data driver names
 |--------------------------------------------------------------------------
 |
-| These define the different data types supported by hubs
+| These define the different data drivers supported by the Hub library
 |
  */
 
-define('HUB_DATABASE',		0);
-define('HUB_RSS',			1);
-define('HUB_ATOM',			2);
-define('HUB_ACTIVE_DIR',	3);
+define('HUB_DATABASE',		'db');
+define('HUB_RSS',			'rss');
+define('HUB_ATOM',			'atom');
+define('HUB_ACTIVE_DIR',	'ad');
 
 
 /* End of file constants.php */

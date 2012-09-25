@@ -24,6 +24,8 @@ class Sites extends CI_Controller {
 		$this->lang->load('central_admin');
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Site management screen
 	 *
@@ -53,6 +55,8 @@ class Sites extends CI_Controller {
 		$this->template->load('central_admin/sites_manage', $data);
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Add a new Moksha site
 	 *
@@ -77,14 +81,14 @@ class Sites extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_sites_exp'),
-			'site_url'		=> set_value('site_url'),
-			'site_slug'		=> set_value('site_slug'),
-			'slug_disabled'	=> ''
+			'site_url'		=> set_value('site_url')
 		);
 
 		// Load the view
 		$this->template->load('central_admin/sites_editor', $data);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Update an existing site
@@ -98,10 +102,7 @@ class Sites extends CI_Controller {
 		$site = $this->sites_model->get_site($site_id);
 
 		// Set exempts for email and name fields
-		$this->form_validation->unique_exempts = array(
-			'site_url'	=> $site->site_url,
-			'site_slug'	=> $site->site_slug
-		);
+		$this->form_validation->unique_exempts = array('site_url' => $site->site_url);
 
 		// Process the request
 		if ($this->form_validation->run('central_admin/sites/edit'))
@@ -121,14 +122,14 @@ class Sites extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_sites_exp'),
-			'site_url'		=> set_value('site_url', $site->site_url),
-			'site_slug'		=> $site->site_slug,
-			'slug_disabled'	=> 'disabled="disabled"'
+			'site_url'		=> set_value('site_url', $site->site_url)
 		);
 
 		// Load the view
 		$this->template->load('central_admin/sites_editor', $data);
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Delete a site
@@ -154,6 +155,8 @@ class Sites extends CI_Controller {
 
 		redirect(base_url('admin/central/sites/manage'), 'refresh');
 	}
+
+	// --------------------------------------------------------------------
 }
 
 ?>
