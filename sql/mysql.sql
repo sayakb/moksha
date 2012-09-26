@@ -73,7 +73,6 @@ USE Site_DB;
 -- Index table for hubs
 CREATE TABLE `hubs_1` (
   `hub_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `site_id` bigint(20) NOT NULL,
   `hub_name` varchar(100) NOT NULL,
   `hub_driver` char(5) NOT NULL,
   `hub_source` varchar(225),

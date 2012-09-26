@@ -1,2 +1,2 @@
-webroot/cache/*
+application/cache/*
 application/config/database.php

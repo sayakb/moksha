@@ -22,13 +22,29 @@ class Users_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Get user details against a specific user ID
+	 *
+	 * @access	public
+	 * @param	int		user idenfitier
+	 * @return	array	containing user details
+	 */
+	public function fetch_user($user_id)
+	{
+		$query = $this->db_c->get_where('users', array('user_id' => $user_id));
+
+		return $query->row();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Get existing users
 	 *
 	 * @access	public
 	 * @param	int		page number for the list
 	 * @return	array	list of users
 	 */
-	public function get_users($page)
+	public function fetch_users($page)
 	{
 		$per_page = $this->config->item('per_page');
 		$offset = $per_page * ($page - 1);
@@ -82,22 +98,6 @@ class Users_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Get user details against a specific user ID
-	 *
-	 * @access	public
-	 * @param	int		user idenfitier
-	 * @return	array	containing user details
-	 */
-	public function get_user($user_id)
-	{
-		$query = $this->db_c->get_where('users', array('user_id' => $user_id));
-
-		return $query->row();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Add a new central admin
 	 *
 	 * @access	public
@@ -134,7 +134,7 @@ class Users_model extends CI_Model {
 			$data['user_password'] = password_hash($this->input->post('password'));
 		}
 
-		return $this->db_c->where('user_id', $user_id)->update('users', $data);
+		return $this->db_c->update('users', $data, array('user_id' => $user_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -147,7 +147,7 @@ class Users_model extends CI_Model {
 	 */
 	public function delete_user($user_id)
 	{
-		return $this->db_c->where('user_id', $user_id)->delete('users');
+		return $this->db_c->delete('users', array('user_id' => $user_id));
 	}
 
 	// --------------------------------------------------------------------

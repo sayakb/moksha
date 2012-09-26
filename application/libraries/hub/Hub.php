@@ -24,15 +24,6 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Currently active hub data
-	 *
-	 * @var	array
-	 */
-	var $_context = array();
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Constructor
 	 */
 	function __construct()
@@ -41,39 +32,29 @@ class Hub {
 	}
 
 	// --------------------------------------------------------------------
-
-	/**
-	 * Loads a hub and sets the current driver
-	 *
-	 * @access	public
-	 * @param	string	hub name
-	 * @return	object	of class Hub
-	 */
-	public function load($hub)
-	{
-		$this->CI->db_s->where('hub_name', $name);
-		$this->CI->db_s->where('site_id', $this->CI->bootstrap->site_id);
-
-		$_context = $this->CI->db_s->get("hubs_{$this->CI->bootstrap->site_id}")->row_array();
-
-		return $this;
-	}
-
-	// --------------------------------------------------------------------
 	
 	/**
-	 * Check if a hub exists in the DB for the current site
+	 * Gets all details for the specified hub
 	 *
 	 * @access	public
-	 * @param	string	name of the hub
-	 * @return	bool	true if the hub exists
+	 * @param	int		unique identifier for the hub
+	 * @return	mixed	returns hub details, or false if not found
 	 */
-	public function hub_exists($name)
+	public function fetch_hub($hub_id)
 	{
-		$this->CI->db_s->where('hub_name', $name);
-		$this->CI->db_s->where('site_id', $this->CI->bootstrap->site_id);
-		
-		return $this->CI->count_all_results("hubs_{$this->CI->bootstrap->site_id}") === 1;
+		if ( ! $hub =  $this->CI->cache->get("tbl_hubs_{$this->CI->bootstrap->site_id}_{$hub_id}"))
+		{
+			$hub = $this->CI->db_s->get_where("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id))->row();
+
+			if ($hub->hub_driver == HUB_DATABASE)
+			{
+				$hub->schema = $this->CI->db_s->field_data("hub_{$this->CI->bootstrap->site_id}_{$hub->hub_id}");
+			}
+			
+			$this->CI->cache->save("tbl_hubs_{$this->CI->bootstrap->site_id}_{$hub_id}", $hub);
+		}
+
+		return $hub;
 	}
 
 	// --------------------------------------------------------------------
@@ -85,11 +66,39 @@ class Hub {
 	 * @param	string	name of the hub
 	 * @param	string	hub driver name (see constants.php)
 	 * @param	mixed	metadata related to the hub
-	 * @return	object	of class Hub_driver
+	 * @return	void
 	 */
 	public function create($name, $driver, $data = FALSE)
 	{
-		$this->_get_instance($driver)->create($name, $data);
+		$this->_obj_by_driver($driver)->create($name, $data);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Deletes a hub from the database, and related tables, if any
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	void
+	 */
+	public function delete($hub_id)
+	{
+		$this->_obj_by_hub($hub_id)->delete($hub_id);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Deletes a hub from the database, and related tables, if any
+	 *
+	 * @access	private
+	 * @param	int		hub unique identifier
+	 * @return	object	instance of the driver class
+	 */
+	private function _obj_by_hub($hub_id)
+	{
+		return $this->_obj_by_driver($this->fetch_hub($hub_id)->hub_driver);
 	}
 
 	// --------------------------------------------------------------------
@@ -101,13 +110,14 @@ class Hub {
 	 * @param	string	driver to load
 	 * @return	object	instance of the driver class
 	 */
-	private function _get_instance($driver)
+	private function _obj_by_driver($driver)
 	{
 		$driver = "Hub_{$driver}";
 		$driver_path = APPPATH."libraries/hub/drivers/{$driver}.php";
 
 		if ( ! isset($this->_drivers[$driver]) AND file_exists($driver_path))
 		{
+			include_once(APPPATH.'libraries/hub/Hub_driver.php');
 			include_once($driver_path);
 			
 			if (class_exists($driver))
@@ -117,41 +127,6 @@ class Hub {
 		}
 		
 		return $this->_drivers[$driver];
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * __call
-	 *
-	 * Relays the driver object so that it's directly accessible
-	 *
-	 * @access	private
-	 * @param	string	method name
-	 * @param	mixed	method arguments
-	 */
-	function __call($name, $args)
-	{
-		// Check if a method exists locally
-		if (method_exists($this, $name))
-		{
-			return $this->$name($args);
-		}
-
-		// Method doesn't exist, check if we have a hub loaded
-		// If we do, we relay the driver's methods
-		else if (isset($this->_context['hub_id']))
-		{
-			$driver = $this->_get_instance($this->_context['hub_driver']);
-
-			if (method_exists($driver, $name))
-			{
-				return $driver->$name($args);
-			}
-		}
-
-		// Invalid method, die die die!!
-		throw new Exception("Call to undefined method: {$name}");
 	}
 
 	// --------------------------------------------------------------------

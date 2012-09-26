@@ -19,6 +19,6 @@
 	</div>
 
 	<div class="form-actions">
-		<?= form_submit('add_site', $this->lang->line('add_site'), 'class="btn btn-primary"') ?>
+		<?= form_submit('add_site', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>

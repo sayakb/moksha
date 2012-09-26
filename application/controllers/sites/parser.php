@@ -9,7 +9,7 @@
  * @category	Site
  * @author		Moksha Team
  */
-class Parser extends CI_Controller {
+class Parser extends Sys_Controller {
 
 	/**
 	* Entry point for the site parser
@@ -18,15 +18,6 @@ class Parser extends CI_Controller {
 	*/
 	public function index()
 	{
-		$schema = array(
-			'one_col' => DBTYPE_KEY,
-			'another_col' => DBTYPE_INT,
-			'third_col' => DBTYPE_TEXT,
-			'fourth_col' => DBTYPE_DATETIME,
-		);
-
-		$this->hub->create('myhub', HUB_DATABASE, $schema);
-		
 		die('site->main');
 	}
 

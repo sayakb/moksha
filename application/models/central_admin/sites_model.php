@@ -22,13 +22,29 @@ class Sites_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Get site details against a specific site ID
+	 *
+	 * @access	public
+	 * @param	int		site identifier
+	 * @return	array	containing user details
+	 */
+	public function fetch_site($site_id)
+	{
+		$query = $this->db_c->get_where('sites', array('site_id' => $site_id));
+
+		return $query->row();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Get existing sites
 	 *
 	 * @access	public
 	 * @param	int		page number for the list
 	 * @return	array	list of sites
 	 */
-	public function get_sites($page)
+	public function fetch_sites($page)
 	{
 		$per_page = $this->config->item('per_page');
 		$offset = $per_page * ($page - 1);
@@ -48,22 +64,6 @@ class Sites_model extends CI_Model {
 	public function count_sites()
 	{
 		return $this->db_c->count_all_results('sites');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Get site details against a specific site ID
-	 *
-	 * @access	public
-	 * @param	int		site identifier
-	 * @return	array	containing user details
-	 */
-	public function get_site($site_id)
-	{
-		$query = $this->db_c->get_where('sites', array('site_id' => $site_id));
-
-		return $query->row();
 	}
 
 	// --------------------------------------------------------------------
@@ -91,7 +91,7 @@ class Sites_model extends CI_Model {
 	{
 		$data = array('site_url' => $this->input->post('site_url'));
 
-		return $this->db_c->where('site_id', $site_id)->update('sites', $data);
+		return $this->db_c->update('sites', $data, array('site_id' => $site_id));
 	}
 
 	// --------------------------------------------------------------------

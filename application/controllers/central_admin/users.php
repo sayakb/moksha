@@ -9,7 +9,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Users extends CI_Controller {
+class Users extends Sys_Controller {
 
 	/**
 	 * Constructor
@@ -47,7 +47,7 @@ class Users extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
-			'users'			=> $this->users_model->get_users($page),
+			'users'			=> $this->users_model->fetch_users($page),
 			'pagination'	=> $this->pagination->create_links()
 		);
 
@@ -100,7 +100,7 @@ class Users extends CI_Controller {
 	public function edit($user_id)
 	{
 		// Get user data
-		$user = $this->users_model->get_user($user_id);
+		$user = $this->users_model->fetch_user($user_id);
 
 		// Set exempts for email and name fields
 		$this->form_validation->unique_exempts = array(

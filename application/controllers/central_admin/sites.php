@@ -9,7 +9,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Sites extends CI_Controller {
+class Sites extends Sys_Controller {
 
 	/**
 	 * Constructor
@@ -47,7 +47,7 @@ class Sites extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_sites_exp'),
-			'sites'			=> $this->sites_model->get_sites($page),
+			'sites'			=> $this->sites_model->fetch_sites($page),
 			'pagination'	=> $this->pagination->create_links()
 		);
 
@@ -99,7 +99,7 @@ class Sites extends CI_Controller {
 	public function edit($site_id)
 	{
 		// Get site data
-		$site = $this->sites_model->get_site($site_id);
+		$site = $this->sites_model->fetch_site($site_id);
 
 		// Set exempts for email and name fields
 		$this->form_validation->unique_exempts = array('site_url' => $site->site_url);

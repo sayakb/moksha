@@ -8,21 +8,7 @@
  * @category	Libraries
  * @author		Moksha Team
  */
-class Hub_rss {
-
-	var $CI;
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Constructor
-	 */
-	function __construct()
-	{
-		$this->CI =& get_instance();
-	}
-
-	// --------------------------------------------------------------------
+class Hub_rss extends Hub_driver {
 
 	/**
 	 * Creates a new RSS hub for this site in the DB
@@ -38,7 +24,6 @@ class Hub_rss {
 		{
 			// First, insert into the index table
 			$data = array(
-				'site_id'		=> $this->CI->bootstrap->site_id,
 				'hub_name'		=> $name,
 				'hub_type'		=> HUB_RSS,
 				'hub_source'	=> $source
@@ -49,8 +34,22 @@ class Hub_rss {
 	}
 
 	// --------------------------------------------------------------------
+
+	/**
+	 * Deletes a hub from the database, and related tables, if any
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	void
+	 */
+	public function delete($hub_id)
+	{
+		$this->CI->db_s->delete("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+	}
+
+	// --------------------------------------------------------------------
 }
 // END Hub_rss class
 
 /* End of file Hub_rss.php */
-/* Location: ./application/libraries/Hub_rss.php */
+/* Location: ./application/libraries/hub/drivers/Hub_rss.php */

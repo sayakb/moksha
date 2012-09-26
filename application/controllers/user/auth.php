@@ -9,7 +9,7 @@
  * @category	Authentication
  * @author		Moksha Team
  */
-class Auth extends CI_Controller {
+class Auth extends Sys_Controller {
 
 	/**
 	 * Constructor
