@@ -24,37 +24,30 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Array containing hub details in case multiple requests are
+	 * made for the same hub
+	 *
+	 * @var	array
+	 */
+	var $_hub_details = array();
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Array containing the result of the last query
+	 *
+	 * @var	array
+	 */
+	var $_result = array();
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Constructor
 	 */
 	function __construct()
 	{
 		$this->CI =& get_instance();
-	}
-
-	// --------------------------------------------------------------------
-	
-	/**
-	 * Gets all details for the specified hub
-	 *
-	 * @access	public
-	 * @param	int		unique identifier for the hub
-	 * @return	mixed	returns hub details, or false if not found
-	 */
-	public function fetch_hub($hub_id)
-	{
-		if ( ! $hub =  $this->CI->cache->get("tbl_hubs_{$this->CI->bootstrap->site_id}_{$hub_id}"))
-		{
-			$hub = $this->CI->db_s->get_where("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id))->row();
-
-			if ($hub->hub_driver == HUB_DATABASE)
-			{
-				$hub->schema = $this->CI->db_s->field_data("hub_{$this->CI->bootstrap->site_id}_{$hub->hub_id}");
-			}
-			
-			$this->CI->cache->save("tbl_hubs_{$this->CI->bootstrap->site_id}_{$hub_id}", $hub);
-		}
-
-		return $hub;
 	}
 
 	// --------------------------------------------------------------------
@@ -66,25 +59,135 @@ class Hub {
 	 * @param	string	name of the hub
 	 * @param	string	hub driver name (see constants.php)
 	 * @param	mixed	metadata related to the hub
-	 * @return	void
+	 * @return	object	of class Hub
 	 */
 	public function create($name, $driver, $data = FALSE)
 	{
 		$this->_obj_by_driver($driver)->create($name, $data);
+
+		return $this;
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Deletes a hub from the database, and related tables, if any
+	 * Fetches the schema for a hub
 	 *
 	 * @access	public
-	 * @param	int		hub unique identifier
-	 * @return	void
+	 * @param	string	name of the hub
+	 * @return	array	hub schema
 	 */
-	public function delete($hub_id)
+	public function schema($name)
 	{
-		$this->_obj_by_hub($hub_id)->delete($hub_id);
+		if ( ! $schema = $this->CI->cache->get("hubschema_{$this->CI->bootstrap->site_id}_{$name}"))
+		{
+			$schema = $this->_obj_by_hub($name)->schema($this->_details($name)->hub_id);
+			$this->CI->cache->write($schema, "hubschema_{$this->CI->bootstrap->site_id}_{$name}");
+		}
+
+		return $schema;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Selects data from a hub
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @param	array	where claus for data selection
+	 * @param	array	order by claus
+	 * @param	array	limit to be applied
+	 * @return	object	of class Hub
+	 */
+	public function get($name, $where = FALSE, $order_by = FALSE, $limit = FALSE)
+	{
+		// Determine the cache key
+		$serial_where = serialize($where);
+		$serial_order = serialize($order_by);
+		$serial_limit = serialize($limit);
+
+		$key = "hubdata_{$this->CI->bootstrap->site_id}_{$name}_{$serial_where}{$serial_order}{$serial_limit}";
+		
+		if ( ! $this->_result = $this->CI->cache->get($key))
+		{
+			$this->_result = $this->_obj_by_hub($name)->get($this->_details($name)->hub_id, $where, $order_by, $limit);
+			$this->CI->cache->write($this->_result, $key);
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch the result of the last query
+	 *
+	 * @access	public
+	 * @return	array	result of the query
+	 */
+	public function result()
+	{
+		return $this->_result;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch the first row from the last query
+	 *
+	 * @access	public
+	 * @return	object	stdClass object for the first row
+	 */
+	public function row()
+	{
+		if (is_array($this->_result) AND count($this->_result) > 0)
+		{
+			return $this->_result[0];
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Drops a hub from the database, and related tables, if any
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @return	object	of class Hub
+	 */
+	public function drop($name)
+	{
+		$this->_obj_by_hub($name)->drop($this->_details($name)->hub_id);
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Gets all details for the specified hub
+	 *
+	 * @access	private
+	 * @param	string	name of the hub
+	 * @return	mixed	returns hub details, or false if not found
+	 */
+	private function _details($name)
+	{
+		// Check if we have the data locally set, this is always faster
+		if (isset($this->_hub_details[$name]))
+		{
+			return $this->_hub_details[$name];
+		}
+
+		// Look up the data from cache or DB
+		else if ( ! $hub = $this->CI->cache->get("hubdetails_{$this->CI->bootstrap->site_id}_{$name}"))
+		{
+			$hub = $this->CI->db_s->get_where("hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $name))->row();
+			$this->CI->cache->write($hub, "hubdetails_{$this->CI->bootstrap->site_id}_{$name}");
+		}
+
+		return $hub;
 	}
 
 	// --------------------------------------------------------------------
@@ -93,12 +196,12 @@ class Hub {
 	 * Deletes a hub from the database, and related tables, if any
 	 *
 	 * @access	private
-	 * @param	int		hub unique identifier
+	 * @param	string	name of the hub
 	 * @return	object	instance of the driver class
 	 */
-	private function _obj_by_hub($hub_id)
+	private function _obj_by_hub($name)
 	{
-		return $this->_obj_by_driver($this->fetch_hub($hub_id)->hub_driver);
+		return $this->_obj_by_driver($this->_details($name)->hub_driver);
 	}
 
 	// --------------------------------------------------------------------
@@ -117,7 +220,6 @@ class Hub {
 
 		if ( ! isset($this->_drivers[$driver]) AND file_exists($driver_path))
 		{
-			include_once(APPPATH.'libraries/hub/Hub_driver.php');
 			include_once($driver_path);
 			
 			if (class_exists($driver))

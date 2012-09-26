@@ -9,7 +9,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Sites extends Sys_Controller {
+class Sites extends CI_Controller {
 
 	/**
 	 * Constructor

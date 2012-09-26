@@ -7,7 +7,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Welcome extends Sys_Controller {
+class Welcome extends CI_Controller {
 
 	/**
 	* Site admin index page

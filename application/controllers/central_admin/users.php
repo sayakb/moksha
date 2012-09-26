@@ -9,7 +9,7 @@
  * @category	Administration
  * @author		Moksha Team
  */
-class Users extends Sys_Controller {
+class Users extends CI_Controller {
 
 	/**
 	 * Constructor

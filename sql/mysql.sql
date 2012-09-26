@@ -77,5 +77,5 @@ CREATE TABLE `hubs_1` (
   `hub_driver` char(5) NOT NULL,
   `hub_source` varchar(225),
   PRIMARY KEY (`hub_id`),
-  KEY `hubs_siteid_idx` (`site_id`)
+  KEY `hubs_name_idx` (`hub_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

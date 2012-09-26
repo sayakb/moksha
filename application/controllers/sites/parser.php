@@ -9,7 +9,7 @@
  * @category	Site
  * @author		Moksha Team
  */
-class Parser extends Sys_Controller {
+class Parser extends CI_Controller {
 
 	/**
 	* Entry point for the site parser
@@ -18,7 +18,11 @@ class Parser extends Sys_Controller {
 	*/
 	public function index()
 	{
-		die('site->main');
+		echo var_dump($this->hub->get('mydot', array(
+			'AND' => array(
+				'title [LIKE]' => 'Randa'
+			)
+		))->result());
 	}
 
 	// --------------------------------------------------------------------
