@@ -71,9 +71,23 @@ class Bootstrap {
 	{
 		$this->CI =& get_instance();
 
+		$this->init();
 		$this->setup_db();
 		$this->check_site();
 		$this->check_admin();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Initialize environment variables we need later
+	 *
+	 * @access	private
+	 */
+	private function init()
+	{
+		// Set the default timezone to GMT
+		date_default_timezone_set('GMT');
 	}
 
 	// --------------------------------------------------------------------

@@ -34,6 +34,15 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Contains all filter criteria for the query
+	 *
+	 * @var	array
+	 */
+	var $_filters = array();
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Array containing the result of the last query
 	 *
 	 * @var	array
@@ -48,6 +57,7 @@ class Hub {
 	function __construct()
 	{
 		$this->CI =& get_instance();
+		$this->reset();
 	}
 
 	// --------------------------------------------------------------------
@@ -63,7 +73,7 @@ class Hub {
 	 */
 	public function create($name, $driver, $data = FALSE)
 	{
-		$this->_obj_by_driver($driver)->create($name, $data);
+		$this->obj_by_driver($driver)->create($name, $data);
 
 		return $this;
 	}
@@ -81,7 +91,7 @@ class Hub {
 	{
 		if ( ! $schema = $this->CI->cache->get("hubschema_{$this->CI->bootstrap->site_id}_{$name}"))
 		{
-			$schema = $this->_obj_by_hub($name)->schema($this->_details($name)->hub_id);
+			$schema = $this->obj_by_hub($name)->schema($this->details($name)->hub_id);
 			$this->CI->cache->write($schema, "hubschema_{$this->CI->bootstrap->site_id}_{$name}");
 		}
 
@@ -95,26 +105,122 @@ class Hub {
 	 *
 	 * @access	public
 	 * @param	string	name of the hub
-	 * @param	array	where claus for data selection
-	 * @param	array	order by claus
-	 * @param	array	limit to be applied
+	 * @param	array	where claus of the query
+	 * @param	array	order by claus of the query
+	 * @param	array	limit claus of the query
 	 * @return	object	of class Hub
 	 */
-	public function get($name, $where = FALSE, $order_by = FALSE, $limit = FALSE)
+	public function get($name, $_where = FALSE, $_order_by = FALSE, $_limit = FALSE)
 	{
+		// Get the filter data for this query
+		$where = $this->_filters['where'];
+		$order_by = $this->_filters['order_by'];
+		$limit = $this->_filters['limit'];
+		
+		// Merge local filter data
+		if (is_array($_where))
+		{
+			if (isset($_where['AND']) AND is_array($_where['AND']))
+			{
+				$where['AND'] = array_merge($where['AND'], $_where['AND']);
+			}
+
+			if (isset($_where['OR']) AND is_array($_where['OR']))
+			{
+				$where['OR'] = array_merge($where['OR'], $_where['OR']);
+			}
+		}
+
+		if (is_array($_order_by))
+		{
+			$order_by = array_merge($order_by, $_order_by);
+		}
+
+		if (is_array($_limit))
+		{
+			$limit = $_limit;
+		}
+
 		// Determine the cache key
 		$serial_where = serialize($where);
 		$serial_order = serialize($order_by);
 		$serial_limit = serialize($limit);
 
+		// Get the hub data and store locally
 		$key = "hubdata_{$this->CI->bootstrap->site_id}_{$name}_{$serial_where}{$serial_order}{$serial_limit}";
 		
 		if ( ! $this->_result = $this->CI->cache->get($key))
 		{
-			$this->_result = $this->_obj_by_hub($name)->get($this->_details($name)->hub_id, $where, $order_by, $limit);
+			$this->_result = $this->obj_by_hub($name)->get($this->details($name)->hub_id, $where, $order_by, $limit);
 			$this->CI->cache->write($this->_result, $key);
 		}
 
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add WHERE claus to the hub query
+	 * This will be typically added as "AND WHERE"
+	 *
+	 * @access	public
+	 * @param	string	column name and operator (optional)
+	 * @param	string	column value
+	 * @return	object	of class Hub
+	 */
+	public function where($column, $value)
+	{
+		$this->_filters['where']['AND'][$column] = $value;
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add WHERE claus to the hub query
+	 * This will be typically added as "OR WHERE"
+	 *
+	 * @access	public
+	 * @param	string	column name and operator (optional)
+	 * @param	string	column value
+	 * @return	object	of class Hub
+	 */
+	public function or_where($column, $value)
+	{
+		$this->_filters['where']['OR'][$column] = $value;
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add ORDER BY claus to the query
+	 *
+	 * @access	public
+	 * @param	string	column name and operator (optional)
+	 * @param	string	sort direction
+	 * @return	object	of class Hub
+	 */
+	public function order_by($column, $dir = 'ASC')
+	{
+		$this->_filters['order_by'][$column] = $dir;
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add LIMIT claus to the query
+	 *
+	 * @access	public
+	 * @param	int		number of rows to fetch
+	 * @param	int		offset for first row
+	 * @return	object	of class Hub
+	 */
+	public function limit($max_rows, $offset = 0)
+	{
+		$this->_filters['limit'] = array($max_rows, $offset);
 		return $this;
 	}
 
@@ -128,7 +234,10 @@ class Hub {
 	 */
 	public function result()
 	{
-		return $this->_result;
+		$result = $this->_result;
+		$this->reset();
+
+		return $result;
 	}
 
 	// --------------------------------------------------------------------
@@ -143,7 +252,10 @@ class Hub {
 	{
 		if (is_array($this->_result) AND count($this->_result) > 0)
 		{
-			return $this->_result[0];
+			$row = $this->_result[0];
+			$this->reset();
+
+			return $row;
 		}
 	}
 
@@ -158,7 +270,30 @@ class Hub {
 	 */
 	public function drop($name)
 	{
-		$this->_obj_by_hub($name)->drop($this->_details($name)->hub_id);
+		$this->obj_by_hub($name)->drop($this->details($name)->hub_id);
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Resets local data to start a fresh query
+	 *
+	 * @access	private
+	 * @return	object	of class Hub
+	 */
+	private function reset()
+	{
+		$this->_result	= array();
+		$this->_filters	= array(
+			'where'		=> array(
+				'AND'	=> array(),
+				'OR'	=> array()
+			),
+			'order_by'	=> array(),
+			'limit'		=> FALSE,
+		);
 
 		return $this;
 	}
@@ -172,7 +307,7 @@ class Hub {
 	 * @param	string	name of the hub
 	 * @return	mixed	returns hub details, or false if not found
 	 */
-	private function _details($name)
+	private function details($name)
 	{
 		// Check if we have the data locally set, this is always faster
 		if (isset($this->_hub_details[$name]))
@@ -199,9 +334,9 @@ class Hub {
 	 * @param	string	name of the hub
 	 * @return	object	instance of the driver class
 	 */
-	private function _obj_by_hub($name)
+	private function obj_by_hub($name)
 	{
-		return $this->_obj_by_driver($this->_details($name)->hub_driver);
+		return $this->obj_by_driver($this->details($name)->hub_driver);
 	}
 
 	// --------------------------------------------------------------------
@@ -213,7 +348,7 @@ class Hub {
 	 * @param	string	driver to load
 	 * @return	object	instance of the driver class
 	 */
-	private function _obj_by_driver($driver)
+	private function obj_by_driver($driver)
 	{
 		$driver = "Hub_{$driver}";
 		$driver_path = APPPATH."libraries/hub/drivers/{$driver}.php";

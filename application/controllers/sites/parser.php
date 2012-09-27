@@ -18,11 +18,6 @@ class Parser extends CI_Controller {
 	*/
 	public function index()
 	{
-		echo var_dump($this->hub->get('mydot', array(
-			'AND' => array(
-				'title [LIKE]' => 'Randa'
-			)
-		))->result());
 	}
 
 	// --------------------------------------------------------------------

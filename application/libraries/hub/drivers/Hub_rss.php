@@ -11,6 +11,8 @@
 class Hub_rss {
 
 	var $CI;
+	var $_sort_column = NULL;
+	var $_sort_dir = NULL;
 
 	// --------------------------------------------------------------------
 
@@ -91,17 +93,9 @@ class Hub_rss {
 	 */
 	public function get($hub_id, $where, $order_by, $limit)
 	{
-		// Get the feed URI from DB
-		$this->CI->db_s->where('hub_id', $hub_id);
-		$query 		= $this->CI->db_s->get("hubs_{$this->CI->bootstrap->site_id}");
-		$feed_uri	= $query->row()->hub_source;
-
-		// Fetch the raw feed from the URL
-		$raw_feed = file_get_contents($feed_uri);
-		$xml = new SimpleXmlElement($raw_feed);
+		$xml = new SimpleXmlElement($this->fetch_feed($hub_id));
 		$output = array();
 
-		// Populate feed data
 		if ($xml->channel)
 		{
 			foreach ($xml->channel->item as $item)
@@ -133,66 +127,105 @@ class Hub_rss {
 			}
 		}
 
-		// Generate the WHERE claus
-		$relations = array('AND', 'OR');
-		$first = TRUE;
-		$expr = '';
-
-		foreach ($relations as $relation)
+		// Process the WHERE claus
+		if (is_array($where))
 		{
-			if (isset($where[$relation]) AND is_array($where[$relation]))
-			{
-				foreach ($where[$relation] as $column => $value)
-				{
-					if (strpos($column, '[LIKE]') === FALSE)
-					{
-						$column = "\$item->{$column}";
+			$relations = array('AND', 'OR');
+			$first = TRUE;
+			$expr = '';
 
+			foreach ($relations as $relation)
+			{
+				if (isset($where[$relation]) AND is_array($where[$relation]))
+				{
+					foreach ($where[$relation] as $column => $value)
+					{
+						// Add the equality operator, as it will not be added explicitly
 						if (strpos($column, ' ') === FALSE)
 						{
 							$column = "{$column} ==";
 						}
 
-						$condition = "{$column} '{$value}' ";
-					}
-					else
-					{
-						$column = str_replace(' [LIKE]', '', $column);
-						$condition = "strpos(\$item->{$column}, '{$value}') !== FALSE ";
-					}
+						// Do we have a like query?
+						if (strpos($column, '[LIKE]') === FALSE)
+						{
+							$space = strpos($column, ' ');
+							$colname = substr($column, 0, $space);
+							$operator = substr($column, $space);
 
-					if (!$first)
-					{
-						$expr .= "{$relation} {$condition}";
-					}
-					else
-					{
-						$expr .= $condition;
-						$first = FALSE;
+							$condition = "strtolower(\$item->{$colname}) {$operator} strtolower('{$value}') ";
+						}
+						else
+						{
+							$column = str_replace(' [LIKE]', '', $column);
+							$condition = "stripos(\$item->{$column}, '{$value}') !== FALSE ";
+						}
+
+						if (!$first)
+						{
+							$expr .= "{$relation} {$condition}";
+						}
+						else
+						{
+							$expr .= $condition;
+							$first = FALSE;
+						}
 					}
 				}
 			}
-		}
 
-		// Apply the WHERE claus
-		if ( ! empty($expr))
-		{
-			$output_where = array();
-
-			foreach ($output as $item)
+			// Apply the WHERE claus
+			if ( ! empty($expr))
 			{
-				eval("\$success = ({$expr});");
+				$output_where = array();
 
-				if ($success)
-				{
-					$output_where[] = $item;
+				foreach ($output as $item)
+				{		
+					eval("\$success = ({$expr});");
+
+					if ($success)
+					{
+						$output_where[] = $item;
+					}
 				}
-			}
 
-			$output = $output_where;
+				$output = $output_where;
+			}
+		}
+		
+		// Process the ORDER BY claus
+		if (is_array($order_by))
+		{
+			foreach ($order_by as $column => $dir)
+			{
+				$this->_sort_column	= $column;
+				$this->_sort_dir	= $dir;
+		
+				uasort($output, array($this, 'rss_sort'));		
+			}
 		}
 
-		// Implement order by and limit logic
+		// Process LIMIT claus
+		if (is_array($limit) AND $limit[1] < count($output))
+		{
+			$output_limit = array();
+			
+			// Get the upper limit
+			$upper_limit = $limit[0] + $limit[1];
+			
+			if ($upper_limit > count($output))
+			{
+				$upper_limit = count($output);
+			}
+
+			// Filter objects
+			for ($idx = $limit[1]; $idx < $upper_limit; $idx++)
+			{
+				$output_limit[] = $output[$idx];
+			}
+			
+			$output = $output_limit;
+		}
 
 		return $output;
 	}
@@ -212,8 +245,65 @@ class Hub_rss {
 	}
 
 	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches raw feed data for a specific hub
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	string	raw feed data
+	 */
+	public function fetch_feed($hub_id)
+	{
+		if ( ! $raw_feed = $this->CI->cache->get("hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}"))
+		{
+			$query = $this->CI->db_s->where('hub_id', $hub_id)->get("hubs_{$this->CI->bootstrap->site_id}");
+			
+			if ($query->num_rows() === 1)
+			{
+				$raw_feed = file_get_contents($query->row()->hub_source);
+				$this->CI->cache->write($raw_feed, "hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}");
+			}
+		}
+		
+		return $raw_feed;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Sorts an array based on a stdClass field
+	 *
+	 * @access	private
+	 * @param	mixed	first item to compare
+	 * @param	mixed	second item to compare
+	 * @return	void
+	 */
+	private function rss_sort($first, $second) 
+	{
+		$column	= $this->_sort_column;
+		$dir	= $this->_sort_dir;
+		
+		if (isset($column) AND isset($dir))
+		{
+			if ($dir == 'ASC')
+			{
+				return strcasecmp($first->$column, $second->$column);
+			}
+			else
+			{
+				return strcasecmp($second->$column, $first->$column);
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	// --------------------------------------------------------------------
 }
-// END Hub_rss class
+// END Hub_feed class
 
 /* End of file Hub_rss.php */
 /* Location: ./application/libraries/hub/drivers/Hub_rss.php */

@@ -177,16 +177,9 @@ class Hub_db {
 		}
 
 		// Generate LIMIT claus
-		if ($limit !== FALSE)
+		if (is_array($limit))
 		{
-			if (count($limit) == 1)
-			{
-				$this->CI->db_s->limit($limit[0]);
-			}
-			else if (count($limit) == 2)
-			{
-				$this->CI->db_s->limit($limit[0], $limit[1]);
-			}
+			$this->CI->db_s->limit($limit[0], $limit[1]);
 		}
 
 		// Finally. let's query the table
