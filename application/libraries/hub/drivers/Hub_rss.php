@@ -52,6 +52,20 @@ class Hub_rss {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Drops a hub from the database, and related tables, if any
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	void
+	 */
+	public function drop($hub_id)
+	{
+		$this->CI->db_s->delete("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Fetches the schema for a hub
 	 *
 	 * @access	public
@@ -192,7 +206,7 @@ class Hub_rss {
 				$output = $output_where;
 			}
 		}
-		
+
 		// Process the ORDER BY claus
 		if (is_array($order_by))
 		{
@@ -200,7 +214,7 @@ class Hub_rss {
 			{
 				$this->_sort_column	= $column;
 				$this->_sort_dir	= $dir;
-		
+
 				uasort($output, array($this, 'rss_sort'));		
 			}
 		}
@@ -209,7 +223,7 @@ class Hub_rss {
 		if (is_array($limit) AND $limit[1] < count($output))
 		{
 			$output_limit = array();
-			
+
 			// Get the upper limit
 			$upper_limit = $limit[0] + $limit[1];
 			
@@ -223,25 +237,11 @@ class Hub_rss {
 			{
 				$output_limit[] = $output[$idx];
 			}
-			
+
 			$output = $output_limit;
 		}
 
 		return $output;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Drops a hub from the database, and related tables, if any
-	 *
-	 * @access	public
-	 * @param	int		hub unique identifier
-	 * @return	void
-	 */
-	public function drop($hub_id)
-	{
-		$this->CI->db_s->delete("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -265,7 +265,7 @@ class Hub_rss {
 				$this->CI->cache->write($raw_feed, "hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}");
 			}
 		}
-		
+
 		return $raw_feed;
 	}
 

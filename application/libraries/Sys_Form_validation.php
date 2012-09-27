@@ -118,8 +118,7 @@ class Sys_Form_validation extends CI_Form_validation {
 
 	/**
 	 * Match one field to another
-	 * This is an extension of the core to have it work with central
-	 * and site databases based on context
+	 * This is an extension of the core to support update exempts
 	 *
 	 * @access	public
 	 * @param	string	value to be validated
@@ -130,26 +129,19 @@ class Sys_Form_validation extends CI_Form_validation {
 	{
 		list($table, $field) = explode('.', $field);
 
-		// Determine the sub dir we are in
-		$subdir = $this->CI->router->fetch_directory();
-
-		if ($subdir == 'central_admin/')
+		// Non-central tables have a _siteId suffix
+		if ( ! $this->CI->bootstrap->in_central)
 		{
-			$db = $this->CI->db_c;
-		}
-		else
-		{
-			$db = $this->CI->db_s;
-			$context = $this->CI->bootstrap->site_id;
-			$table = "site_{$context}_{$table}";
+			$table = "{$table}_{$this->CI->bootstrap->site_id}";
 		}
 
+		// Check for exempts and apply them in the query
 		if (isset($this->unique_exempts[$field]))
 		{
-			$db->where("{$field} !=", $this->unique_exempts[$field]);
+			$this->CI->db->where("{$field} !=", $this->unique_exempts[$field]);
 		}
 		
-		$query = $db->limit(1)->get_where($table, array($field => $str));
+		$query = $this->CI->db->limit(1)->get_where($table, array($field => $str));
 		return $query->num_rows() === 0;
     }
 

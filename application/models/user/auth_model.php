@@ -12,10 +12,9 @@
 class Auth_model extends CI_Model {
 
 	/**
-	 * Validate user based on context
+	 * Validates the user credentials
 	 *
 	 * @access	public
-	 * @param	string	validation context
 	 * @return	bool	true if valid
 	 */
 	public function validate_user()
@@ -26,24 +25,15 @@ class Auth_model extends CI_Model {
 
 		// Choose the database based on whether we are in central or not
 		//  - Central DB uses the users table
-		//  - If we are connecting to sites DB - use the site_<siteID>_users table_exists
+		//  - If we are connecting to sites DB - use the users_siteId table
 
 		if ($this->bootstrap->in_central)
 		{
-			$db = $this->db_c;
 			$table = 'users';
 		}
 		else
 		{
-			if ($this->db_s->table_exists("users_{$this->bootstrap->context}"))
-			{
-				$db = $this->db_s;
-				$table = "users_{$this->bootstrap->context}";
-			}
-			else
-			{
-				return FALSE;
-			}
+			$table = "users_{$this->bootstrap->site_id}";
 		}
 
 		$filter = array(
@@ -51,7 +41,7 @@ class Auth_model extends CI_Model {
 			'user_password'	=> $hash
 		);
 
-		return $db->where($filter)->count_all_results($table) === 1;
+		return $this->db->where($filter)->count_all_results($table) === 1;
 	}
 
 	// --------------------------------------------------------------------

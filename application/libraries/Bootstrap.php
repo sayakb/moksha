@@ -55,12 +55,12 @@ class Bootstrap {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Context of the current request
+	 * Identifier required for authentication
 	 *
 	 * @access public
 	 * @var string
 	 */
-	var $context;
+	var $auth_id;
 
 	// --------------------------------------------------------------------
 
@@ -112,7 +112,6 @@ class Bootstrap {
 	 */
 	private function check_site()
 	{
-		// Determine current protocol
 		if (isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] == 'on')
 		{
 			$protocol = "https://";
@@ -129,26 +128,21 @@ class Bootstrap {
 		$this->site_url = str_replace(':80/', '/', $this->site_url);
 		$this->site_url = rtrim($this->site_url, '/');
 
-		// Determine whether we are in central
-		$this->in_central = strpos(current_url(), base_url().'admin/central') == 0;
-		
-		// Now we fetch the site ID
+		$this->in_central = $this->CI->uri->segment(1) == 'admin' AND $this->CI->uri->segment(2) == 'central';
 		$query = $this->CI->db_c->get_where('sites', array('site_url' => $this->site_url));
 
-		// We expect exactly one entry for this site
 		if ($query->num_rows() == 1)
 		{
 			$this->site_id = $query->row()->site_id;
 		}
-
-		// Site wasn't found. We kill the session if we are not in central
 		else if ( ! $this->in_central)
 		{
+			// Show error if site isn't found
 			show_error($this->CI->lang->line('invalid_site'));
 		}
 
-		// Set the current context
-		$this->context = $this->in_central ? 0 : $this->site_id;
+		$this->auth_id = 'authed_'.($this->in_central ? '0' : $this->site_id);
+		$this->CI->db = $this->in_central ? $this->CI->db_c : $this->CI->db_s;
 	}
 
 	// --------------------------------------------------------------------
@@ -164,16 +158,14 @@ class Bootstrap {
 
 		if ($subdir == 'central_admin/' || $subdir == 'site_admin/')
 		{
-			// Set the admin flag
 			$this->in_admin = true;
-		
-			// Determine the context and fallback URL of the current request
-			$fallback = $this->in_central ? 'admin/central/login' : 'admin/login';
 
 			// Make sure the user is authed, else serve the login page
-			if ($this->CI->session->userdata("authed_{$this->context}") !== TRUE)
+			if ($this->CI->session->userdata($this->auth_id) !== TRUE)
 			{
-				redirect(base_url($fallback), 'refresh');
+				$login_url = $this->in_central ? 'admin/central/login' : 'admin/login';
+
+				redirect(base_url($login_url), 'refresh');
 			}
 		}
 	}

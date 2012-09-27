@@ -34,12 +34,11 @@ class Auth extends CI_Controller {
 	*/
 	public function login($redirect)
 	{
-		// Check if we have a context and redirect set
 		if ($this->form_validation->run('user/auth/login'))
 		{
 			if ($this->auth_model->validate_user())
 			{
-				$this->session->set_userdata("authed_{$this->bootstrap->context}", TRUE);
+				$this->session->set_userdata($this->bootstrap->auth_id, TRUE);
 				redirect(auth_redir($redirect), 'refresh');
 			}
 			else
@@ -68,7 +67,7 @@ class Auth extends CI_Controller {
 	 */
 	public function logout($redirect)
 	{
-		$this->session->unset_userdata("authed_{$this->bootstrap->context}");
+		$this->session->unset_userdata($this->bootstrap->auth_id);
 		redirect(auth_redir($redirect), 'refresh');
 	}
 

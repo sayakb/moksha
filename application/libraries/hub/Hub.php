@@ -52,12 +52,67 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Array containing all writable hubs
+	 *
+	 * @var	array
+	 */
+	var $_writable_hubs = array(HUB_DATABASE);
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Constructor
 	 */
 	function __construct()
 	{
 		$this->CI =& get_instance();
 		$this->reset();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Gets all details for the specified hub
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @return	mixed	returns hub details, or false if not found
+	 */
+	public function details($hub_name)
+	{
+		// Check if we have the data locally set, this is always faster
+		if (isset($this->_hub_details[$hub_name]))
+		{
+			return $this->_hub_details[$hub_name];
+		}
+
+		// Look up the data from cache or DB
+		else if ( ! $hub = $this->CI->cache->get("hubidx_{$this->CI->bootstrap->site_id}_{$hub_name}"))
+		{
+			$hub = $this->CI->db_s->get_where("hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $hub_name))->row();
+			$this->CI->cache->write($hub, "hubidx_{$this->CI->bootstrap->site_id}_{$hub_name}");
+		}
+
+		return $hub;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Gets a list of hubs
+	 *
+	 * @access	public
+	 * @return	array	containing list of hubs
+	 */
+	public function get_list()
+	{
+		if ( ! $list = $this->CI->cache->get("hubidx_{$this->CI->bootstrap->site_id}"))
+		{
+			$list = $this->CI->db_s->get("hubs_{$this->CI->bootstrap->site_id}")->result();
+			$this->CI->cache->write($list, "hubidx_{$this->CI->bootstrap->site_id}");
+		}
+
+		return $list;
 	}
 
 	// --------------------------------------------------------------------
@@ -71,9 +126,91 @@ class Hub {
 	 * @param	mixed	metadata related to the hub
 	 * @return	object	of class Hub
 	 */
-	public function create($name, $driver, $data = FALSE)
+	public function create($hub_name, $driver, $data = FALSE)
 	{
-		$this->obj_by_driver($driver)->create($name, $data);
+		$this->obj_by_driver($driver)->create($hub_name, $data);
+		$this->CI->cache->delete_group("hubidx_{$this->CI->bootstrap->site_id}");
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Drops a hub from the database, and related tables, if any
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @return	object	of class Hub
+	 */
+	public function drop($hub_name)
+	{
+		$this->obj_by_hub($hub_name)->drop($this->details($hub_name)->hub_id);
+		$this->CI->cache->delete_group("hubidx_{$this->CI->bootstrap->site_id}");
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Adds a column to the hub
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @param	array	new column data
+	 * @return	object	of class Hub
+	 */
+	public function add_column($hub_name, $columns)
+	{
+		if ($this->is_writable($hub_name))
+		{
+			$this->obj_by_hub($hub_name)->add_column($this->details($hub_name)->hub_id, $columns);
+			$this->CI->cache->delete_group("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Drops a column from the hub
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @param	string	column name
+	 * @return	object	of class Hub
+	 */
+	public function drop_column($hub_name, $column)
+	{
+		if ($this->is_writable($hub_name))
+		{
+			$this->obj_by_hub($hub_name)->drop_column($this->details($hub_name)->hub_id, $column);
+			$this->CI->cache->delete_group("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Renames a hub column
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @param	string	old column name
+	 * @param	string	new column name
+	 * @return	object	of class Hub
+	 */
+	public function rename_column($hub_name, $old_col, $new_col)
+	{
+		if ($this->is_writable($hub_name))
+		{
+			$this->obj_by_hub($hub_name)->rename_column($this->details($hub_name)->hub_id, $old_col, $new_col);
+			$this->CI->cache->delete_group("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+		}
 
 		return $this;
 	}
@@ -87,12 +224,12 @@ class Hub {
 	 * @param	string	name of the hub
 	 * @return	array	hub schema
 	 */
-	public function schema($name)
+	public function schema($hub_name)
 	{
-		if ( ! $schema = $this->CI->cache->get("hubschema_{$this->CI->bootstrap->site_id}_{$name}"))
+		if ( ! $schema = $this->CI->cache->get("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}"))
 		{
-			$schema = $this->obj_by_hub($name)->schema($this->details($name)->hub_id);
-			$this->CI->cache->write($schema, "hubschema_{$this->CI->bootstrap->site_id}_{$name}");
+			$schema = $this->obj_by_hub($hub_name)->schema($this->details($hub_name)->hub_id);
+			$this->CI->cache->write($schema, "hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
 		}
 
 		return $schema;
@@ -110,7 +247,7 @@ class Hub {
 	 * @param	array	limit claus of the query
 	 * @return	object	of class Hub
 	 */
-	public function get($name, $_where = FALSE, $_order_by = FALSE, $_limit = FALSE)
+	public function get($hub_name, $_where = FALSE, $_order_by = FALSE, $_limit = FALSE)
 	{
 		// Get the filter data for this query
 		$where = $this->_filters['where'];
@@ -142,17 +279,115 @@ class Hub {
 		}
 
 		// Determine the cache key
-		$serial_where = serialize($where);
-		$serial_order = serialize($order_by);
-		$serial_limit = serialize($limit);
+		$s_where = serialize($where);
+		$s_order = serialize($order_by);
+		$s_limit = serialize($limit);
 
 		// Get the hub data and store locally
-		$key = "hubdata_{$this->CI->bootstrap->site_id}_{$name}_{$serial_where}{$serial_order}{$serial_limit}";
+		$key = "hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}_{$s_where}{$s_order}{$s_limit}";
 		
 		if ( ! $this->_result = $this->CI->cache->get($key))
 		{
-			$this->_result = $this->obj_by_hub($name)->get($this->details($name)->hub_id, $where, $order_by, $limit);
+			$this->_result = $this->obj_by_hub($hub_name)->get($this->details($hub_name)->hub_id, $where, $order_by, $limit);
 			$this->CI->cache->write($this->_result, $key);
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Inserts data into a writable hub
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @param	array	data to be inserted
+	 * @return	object	of class Hub
+	 */
+	public function insert($hub_name, $data)
+	{
+		if ($this->is_writable($hub_name))
+		{
+			$this->obj_by_hub($hub_name)->insert($this->details($hub_name)->hub_id, $data);
+			$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Updates data to a writable hub
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @param	array	data to be updated
+	 * @param	array	where claus of the query
+	 * @return	object	of class Hub
+	 */
+	public function update($hub_name, $data, $_where = FALSE)
+	{
+		if ($this->is_writable($hub_name))
+		{
+			// Get the filter data for this query
+			$where = $this->_filters['where'];
+
+			// Merge local filter data
+			if (is_array($_where))
+			{
+				if (isset($_where['AND']) AND is_array($_where['AND']))
+				{
+					$where['AND'] = array_merge($where['AND'], $_where['AND']);
+				}
+
+				if (isset($_where['OR']) AND is_array($_where['OR']))
+				{
+					$where['OR'] = array_merge($where['OR'], $_where['OR']);
+				}
+			}
+
+			$this->obj_by_hub($hub_name)->update($this->details($hub_name)->hub_id, $data, $where);
+			$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+		}
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Delete data from a writable hub
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @param	array	where claus of the query
+	 * @return	object	of class Hub
+	 */
+	public function delete($hub_name, $_where = FALSE)
+	{
+		if ($this->is_writable($hub_name))
+		{
+			// Get the filter data for this query
+			$where = $this->_filters['where'];
+
+			// Merge local filter data
+			if (is_array($_where))
+			{
+				if (isset($_where['AND']) AND is_array($_where['AND']))
+				{
+					$where['AND'] = array_merge($where['AND'], $_where['AND']);
+				}
+
+				if (isset($_where['OR']) AND is_array($_where['OR']))
+				{
+					$where['OR'] = array_merge($where['OR'], $_where['OR']);
+				}
+			}
+
+			$this->obj_by_hub($hub_name)->delete($this->details($hub_name)->hub_id, $where);
+			$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
 		}
 
 		return $this;
@@ -262,22 +497,6 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Drops a hub from the database, and related tables, if any
-	 *
-	 * @access	public
-	 * @param	string	name of the hub
-	 * @return	object	of class Hub
-	 */
-	public function drop($name)
-	{
-		$this->obj_by_hub($name)->drop($this->details($name)->hub_id);
-
-		return $this;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Resets local data to start a fresh query
 	 *
 	 * @access	private
@@ -301,28 +520,15 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Gets all details for the specified hub
+	 * Checks if a hub is writable
 	 *
 	 * @access	private
 	 * @param	string	name of the hub
-	 * @return	mixed	returns hub details, or false if not found
+	 * @return	bool	true if hub is writable
 	 */
-	private function details($name)
+	private function is_writable($hub_name)
 	{
-		// Check if we have the data locally set, this is always faster
-		if (isset($this->_hub_details[$name]))
-		{
-			return $this->_hub_details[$name];
-		}
-
-		// Look up the data from cache or DB
-		else if ( ! $hub = $this->CI->cache->get("hubdetails_{$this->CI->bootstrap->site_id}_{$name}"))
-		{
-			$hub = $this->CI->db_s->get_where("hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $name))->row();
-			$this->CI->cache->write($hub, "hubdetails_{$this->CI->bootstrap->site_id}_{$name}");
-		}
-
-		return $hub;
+		return in_array($this->details($hub_name)->hub_driver, $this->_writable_hubs);
 	}
 
 	// --------------------------------------------------------------------
@@ -334,9 +540,9 @@ class Hub {
 	 * @param	string	name of the hub
 	 * @return	object	instance of the driver class
 	 */
-	private function obj_by_hub($name)
+	private function obj_by_hub($hub_name)
 	{
-		return $this->obj_by_driver($this->details($name)->hub_driver);
+		return $this->obj_by_driver($this->details($hub_name)->hub_driver);
 	}
 
 	// --------------------------------------------------------------------
