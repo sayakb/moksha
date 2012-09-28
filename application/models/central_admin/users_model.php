@@ -30,7 +30,7 @@ class Users_model extends CI_Model {
 	 */
 	public function fetch_user($user_id)
 	{
-		$query = $this->db_c->get_where('users', array('user_id' => $user_id));
+		$query = $this->db->get_where('central_users', array('user_id' => $user_id));
 
 		return $query->row();
 	}
@@ -52,10 +52,10 @@ class Users_model extends CI_Model {
 		
 		if ( ! empty($filter))
 		{
-			$this->db_c->like('user_name', $filter);
+			$this->db->like('user_name', $filter);
 		}
 
-		$query = $this->db_c->limit($per_page, $offset)->order_by('user_name')->get('users');
+		$query = $this->db->limit($per_page, $offset)->order_by('user_name')->get('central_users');
 		return $query->result();
 	}
 
@@ -69,7 +69,7 @@ class Users_model extends CI_Model {
 	 */
 	public function count_users()
 	{
-		return $this->db_c->count_all_results('users');
+		return $this->db->count_all_results('central_users');
 	}
 
 	// --------------------------------------------------------------------
@@ -83,7 +83,7 @@ class Users_model extends CI_Model {
 	 */
 	public function check_founder($user_id)
 	{
-		$query = $this->db_c->get_where('users', array('user_id' => $user_id));
+		$query = $this->db->get_where('central_users', array('user_id' => $user_id));
 
 		if ($query->num_rows() == 1)
 		{
@@ -111,7 +111,7 @@ class Users_model extends CI_Model {
 			'user_email'	=> $this->input->post('email')
 		);
 
-		return $this->db_c->insert('users', $data);
+		return $this->db->insert('central_users', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -134,7 +134,7 @@ class Users_model extends CI_Model {
 			$data['user_password'] = password_hash($this->input->post('password'));
 		}
 
-		return $this->db_c->update('users', $data, array('user_id' => $user_id));
+		return $this->db->update('central_users', $data, array('user_id' => $user_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -147,7 +147,7 @@ class Users_model extends CI_Model {
 	 */
 	public function delete_user($user_id)
 	{
-		return $this->db_c->delete('users', array('user_id' => $user_id));
+		return $this->db->delete('central_users', array('user_id' => $user_id));
 	}
 
 	// --------------------------------------------------------------------

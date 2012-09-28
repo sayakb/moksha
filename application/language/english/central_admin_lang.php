@@ -1,7 +1,6 @@
 <?php
 
 $lang['central_adm']		= 'Moksha Central';
-$lang['homepage']			= 'Home';
 $lang['manage_sites']		= 'Manage sites';
 $lang['manage_sites_exp']	= 'Manage your websites';
 $lang['manage_users']		= 'Manage users';
@@ -11,7 +10,7 @@ $lang['add_new_site']		= 'Add new site';
 $lang['add_site']			= 'Add site';
 $lang['site_url']			= 'Site URL';
 $lang['site_url_exp']		= 'Enter the site URL without protocol, leading or trailing slashes.<br />For example: consoto.com';
-$lang['site_added']			= 'Site has been added successfully';
+$lang['site_added']			= 'Site has been added successfully. You can login with your central admin credentials into the site admin interface.';
 $lang['site_add_error']		= 'An error occurred while adding the site';
 $lang['site_updated']		= 'Site has been updated successfully';
 $lang['site_update_error']	= 'An error occurred while updating the site URL';

@@ -45,40 +45,24 @@
 | the active record class
 */
 
-$active_group = 'central';
+$active_group = 'default';
 $active_record = TRUE;
 
-$db['central']['hostname'] = 'localhost';
-$db['central']['username'] = 'user';
-$db['central']['password'] = 'password';
-$db['central']['database'] = 'moksha_admin';
-$db['central']['dbdriver'] = 'mysqli';
-$db['central']['dbprefix'] = '';
-$db['central']['pconnect'] = TRUE;
-$db['central']['db_debug'] = TRUE;
-$db['central']['cache_on'] = FALSE;
-$db['central']['cachedir'] = '';
-$db['central']['char_set'] = 'utf8';
-$db['central']['dbcollat'] = 'utf8_general_ci';
-$db['central']['swap_pre'] = '';
-$db['central']['autoinit'] = TRUE;
-$db['central']['stricton'] = FALSE;
-
-$db['sites']['hostname'] = 'localhost';
-$db['sites']['username'] = 'user';
-$db['sites']['password'] = 'password';
-$db['sites']['database'] = 'moksha_sites';
-$db['sites']['dbdriver'] = 'mysqli';
-$db['sites']['dbprefix'] = '';
-$db['sites']['pconnect'] = TRUE;
-$db['sites']['db_debug'] = TRUE;
-$db['sites']['cache_on'] = FALSE;
-$db['sites']['cachedir'] = '';
-$db['sites']['char_set'] = 'utf8';
-$db['sites']['dbcollat'] = 'utf8_general_ci';
-$db['sites']['swap_pre'] = '';
-$db['sites']['autoinit'] = TRUE;
-$db['sites']['stricton'] = FALSE;
+$db['default']['hostname'] = 'localhost';
+$db['default']['username'] = 'user';
+$db['default']['password'] = 'password';
+$db['default']['database'] = 'moksha';
+$db['default']['dbdriver'] = 'mysqli';
+$db['default']['dbprefix'] = '';
+$db['default']['pconnect'] = TRUE;
+$db['default']['db_debug'] = TRUE;
+$db['default']['cache_on'] = FALSE;
+$db['default']['cachedir'] = '';
+$db['default']['char_set'] = 'utf8';
+$db['default']['dbcollat'] = 'utf8_general_ci';
+$db['default']['swap_pre'] = '';
+$db['default']['autoinit'] = TRUE;
+$db['default']['stricton'] = FALSE;
 
 
 /* End of file database.php */

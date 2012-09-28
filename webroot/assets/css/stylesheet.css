@@ -818,6 +818,16 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+table th {
+  padding: 8px;
+  line-height: 20px;
+  text-align: left;
+  vertical-align: top;  
+}
+table td {
+  padding-left: 8px;
+  padding-right: 8px;
+}
 .table {
   width: 100%;
   margin-bottom: 20px;
@@ -3026,7 +3036,7 @@ input[type="submit"].btn.btn-mini {
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover {
   color: #555555;
-  background-color: #ffffff;
+  background-color: #fcfcfc;
   border: 1px solid #ddd;
   border-bottom-color: transparent;
   cursor: default;

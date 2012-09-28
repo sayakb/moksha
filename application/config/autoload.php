@@ -47,14 +47,23 @@ $autoload['packages'] = array();
 | These are the classes located in the system/libraries folder
 | or in your application/libraries folder.
 |
-| !! IMPORTANT !! Always load the bootstrap library last
+| !! IMPORTANT !! Always load the bootstrap library first
 |
 | Prototype:
 |
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('cache', 'template', 'session', 'form_validation', 'hub', 'bootstrap', 'pagination');
+$autoload['libraries'] = array(
+	'bootstrap',
+	'database',
+	'cache',
+	'template',
+	'session',
+	'form_validation',
+	'hub',
+	'pagination'
+);
 
 
 /*
@@ -66,7 +75,11 @@ $autoload['libraries'] = array('cache', 'template', 'session', 'form_validation'
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url', 'form', 'auth');
+$autoload['helper'] = array(
+	'url',
+	'form',
+	'auth'
+);
 
 
 /*
@@ -82,7 +95,11 @@ $autoload['helper'] = array('url', 'form', 'auth');
 |
 */
 
-$autoload['config'] = array('moksha', 'pagination', 'cache');
+$autoload['config'] = array(
+	'moksha',
+	'pagination',
+	'cache'
+);
 
 
 /*
@@ -98,7 +115,9 @@ $autoload['config'] = array('moksha', 'pagination', 'cache');
 |
 */
 
-$autoload['language'] = array('global');
+$autoload['language'] = array(
+	'global'
+);
 
 
 /*

@@ -44,7 +44,7 @@ class Hub_db {
 				'hub_driver'	=> HUB_DATABASE
 			);
 
-			if ($this->CI->db_s->insert("hubs_{$this->CI->bootstrap->site_id}", $data))
+			if ($this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data))
 			{
 				$ci_schema	= $this->resolve_schema($schema);
 				$fields		= $ci_schema->fields;
@@ -59,8 +59,8 @@ class Hub_db {
 				}
 
 				// Now we determine the hub ID and table name, and create the table.
-				$hub_id = $this->CI->db_s->insert_id();
-				$this->CI->dbforge->create_table("hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
+				$hub_id = $this->CI->db->insert_id();
+				$this->CI->dbforge->create_table("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
 			}
 		}
 	}
@@ -81,13 +81,13 @@ class Hub_db {
 		// Drop data table, if it exists
 		$table = "hub_{$this->CI->bootstrap->site_id}_{$hub_id}";
 
-		if ($this->CI->db_s->table_exists($table))
+		if ($this->CI->db->table_exists($table))
 		{
 			$this->CI->dbforge->drop_table($table);
 		}
 
 		// Remove the hub entry from hub index table
-		$this->CI->db_s->delete("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+		$this->CI->db->delete("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -154,7 +154,7 @@ class Hub_db {
 	 */
 	public function schema($hub_id)
 	{
-		return $this->CI->db_s->field_data("hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
+		return $this->CI->db->field_data("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -179,18 +179,32 @@ class Hub_db {
 		{
 			foreach ($order_by as $column => $dir)
 			{
-				$this->CI->db_s->order_by($column, $dir);
+				$this->CI->db->order_by($column, $dir);
 			}
 		}
 
 		// Generate LIMIT claus
 		if (is_array($limit))
 		{
-			$this->CI->db_s->limit($limit[0], $limit[1]);
+			$this->CI->db->limit($limit[0], $limit[1]);
 		}
 
 		// Finally. let's query the table
-		return $this->CI->db_s->get("hub_{$this->CI->bootstrap->site_id}_{$hub_id}")->result();
+		return $this->CI->db->get("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}")->result();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns count of rows in a hub
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	int		record count
+	 */
+	public function count_all($hub_id)
+	{
+		return $this->CI->db->count_all("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -205,7 +219,7 @@ class Hub_db {
 	 */
 	public function insert($hub_id, $data)
 	{
-		$this->CI->db_s->insert("hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $data);
+		$this->CI->db->insert("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -222,7 +236,7 @@ class Hub_db {
 	public function update($hub_id, $data, $where)
 	{
 		$this->resolve_where($where);
-		$this->CI->db_s->update("hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $data);
+		$this->CI->db->update("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -238,7 +252,7 @@ class Hub_db {
 	public function delete($hub_id, $where)
 	{
 		$this->resolve_where($where);
-		$this->CI->db_s->delete("hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
+		$this->CI->db->delete("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -270,22 +284,22 @@ class Hub_db {
 
 				case DBTYPE_TEXT:
 					$fields[$name] = array(
-						'type'	=> 'MEDIUMTEXT'
+						'type'				=> 'MEDIUMTEXT'
 					);
 					break;
 
 				case DBTYPE_INT:
 					$fields[$name] = array(
-						'type'			=> 'INT',
-						'constraint'	=> 10
+						'type'				=> 'INT',
+						'constraint'		=> 10
 					);
 					break;
 
 				case DBTYPE_DATETIME:
 					$fields[$name] = array(
-						'type'			=> 'INT',
-						'constraint'	=> 11,
-						'unsigned'		=> TRUE
+						'type'				=> 'INT',
+						'constraint'		=> 11,
+						'unsigned'			=> TRUE
 					);
 					break;
 			}
@@ -317,12 +331,12 @@ class Hub_db {
 				{
 					if (strpos($column, '[LIKE]') === FALSE)
 					{
-						$this->CI->db_s->where($column, $value);
+						$this->CI->db->where($column, $value);
 					}
 					else
 					{
 						$column = str_replace(' [LIKE]', '', $column);
-						$this->CI->db_s->like($column, $value);
+						$this->CI->db->like($column, $value);
 					}
 				}
 			}
@@ -333,12 +347,12 @@ class Hub_db {
 				{
 					if (strpos($column, '[LIKE]') === FALSE)
 					{
-						$this->CI->db_s->or_where($column, $value);
+						$this->CI->db->or_where($column, $value);
 					}
 					else
 					{
 						$column = str_replace(' [LIKE]', '', $column);
-						$this->CI->db_s->or_like($column, $value);
+						$this->CI->db->or_like($column, $value);
 					}
 				}
 			}

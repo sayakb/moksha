@@ -38,7 +38,6 @@ class Auth extends CI_Controller {
 		{
 			if ($this->auth_model->validate_user())
 			{
-				$this->session->set_userdata($this->bootstrap->auth_id, TRUE);
 				redirect(auth_redir($redirect), 'refresh');
 			}
 			else
@@ -67,7 +66,7 @@ class Auth extends CI_Controller {
 	 */
 	public function logout($redirect)
 	{
-		$this->session->unset_userdata($this->bootstrap->auth_id);
+		$this->auth_model->clear_session();
 		redirect(auth_redir($redirect), 'refresh');
 	}
 

@@ -26,7 +26,6 @@ define('DIR_WRITE_MODE', 0777);
 | These modes are used when working with fopen()/popen()
 |
 */
-
 define('FOPEN_READ',							'rb');
 define('FOPEN_READ_WRITE',						'r+b');
 define('FOPEN_WRITE_CREATE_DESTRUCTIVE',		'wb'); // truncates existing file data, use with care
@@ -44,11 +43,8 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 | These define the different data drivers supported by the Hub library
 |
  */
-
 define('HUB_DATABASE',		'db');
 define('HUB_RSS',			'rss');
-define('HUB_ATOM',			'atom');
-define('HUB_ACTIVE_DIR',	'ad');
 
 /*
 |--------------------------------------------------------------------------
@@ -58,10 +54,9 @@ define('HUB_ACTIVE_DIR',	'ad');
 | These define the different data types supported by the hub DB driver
 |
  */
-
 define('DBTYPE_KEY',		0);
-define('DBTYPE_TEXT',		1);
-define('DBTYPE_INT',		2);
+define('DBTYPE_INT',		1);
+define('DBTYPE_TEXT',		2);
 define('DBTYPE_DATETIME',	3);
 
 

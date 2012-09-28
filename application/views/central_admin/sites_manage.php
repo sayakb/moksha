@@ -10,7 +10,6 @@
 	<table class="table table-bordered table-striped">
 		<colgroup>
 			<col />
-			<col />
 			<col width="100" />
 		</colgroup>
 

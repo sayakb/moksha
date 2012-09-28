@@ -45,7 +45,7 @@ class Hub_rss {
 				'hub_source'	=> $source
 			);
 
-			$this->CI->db_s->insert("hubs_{$this->CI->bootstrap->site_id}", $data);
+			$this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data);
 		}
 	}
 
@@ -60,7 +60,7 @@ class Hub_rss {
 	 */
 	public function drop($hub_id)
 	{
-		$this->CI->db_s->delete("hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+		$this->CI->db->delete("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -247,6 +247,20 @@ class Hub_rss {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Returns count of rows in a hub
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	int		record count
+	 */
+	public function count_all($hub_id)
+	{
+		return count($this->get($hub_id));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Fetches raw feed data for a specific hub
 	 *
 	 * @access	public
@@ -257,7 +271,7 @@ class Hub_rss {
 	{
 		if ( ! $raw_feed = $this->CI->cache->get("hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}"))
 		{
-			$query = $this->CI->db_s->where('hub_id', $hub_id)->get("hubs_{$this->CI->bootstrap->site_id}");
+			$query = $this->CI->db->where('hub_id', $hub_id)->get("site_hubs_{$this->CI->bootstrap->site_id}");
 			
 			if ($query->num_rows() === 1)
 			{

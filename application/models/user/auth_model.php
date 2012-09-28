@@ -27,13 +27,13 @@ class Auth_model extends CI_Model {
 		//  - Central DB uses the users table
 		//  - If we are connecting to sites DB - use the users_siteId table
 
-		if ($this->bootstrap->in_central)
+		if (in_central())
 		{
-			$table = 'users';
+			$table = 'central_users';
 		}
 		else
 		{
-			$table = "users_{$this->bootstrap->site_id}";
+			$table = "site_users_{$this->bootstrap->site_id}";
 		}
 
 		$filter = array(
@@ -41,7 +41,37 @@ class Auth_model extends CI_Model {
 			'user_password'	=> $hash
 		);
 
-		return $this->db->where($filter)->count_all_results($table) === 1;
+		$query = $this->db->where($filter)->get($table);
+
+		if ($query->num_rows() === 1)
+		{
+			$user = $query->row();
+
+			$this->session->set_userdata($this->bootstrap->auth_key, TRUE);
+			$this->session->set_userdata($this->bootstrap->auth_key.'user_id', $user->user_id);
+			$this->session->set_userdata($this->bootstrap->auth_key.'user_name', $user->user_name);
+
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Clears a user's session data
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function clear_session()
+	{
+		$this->session->unset_userdata($this->bootstrap->auth_key);
+		$this->session->unset_userdata($this->bootstrap->auth_key.'user_id');
+		$this->session->unset_userdata($this->bootstrap->auth_key.'user_name');
 	}
 
 	// --------------------------------------------------------------------

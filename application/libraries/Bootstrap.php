@@ -15,52 +15,23 @@ class Bootstrap {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Current site ID
+	 * Current site ID and URL. This is 0 for central
 	 *
 	 * @access public
 	 * @var int
 	 */	
 	var $site_id;
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Base url for the current site
-	 *
-	 * @access public
-	 * @var string
-	 */
 	var $site_url;
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Flag indicating whether we are in admin interface
-	 *
-	 * @access public
-	 * @var bool
-	 */
-	var $in_admin;
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Flag indicating whether we are in central
-	 *
-	 * @access public
-	 * @var bool
-	 */
-	var $in_central;
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Identifier required for authentication
+	 * User authentication related data
 	 *
 	 * @access public
 	 * @var string
 	 */
-	var $auth_id;
+	var $auth_key;
 
 	// --------------------------------------------------------------------
 
@@ -72,9 +43,7 @@ class Bootstrap {
 		$this->CI =& get_instance();
 
 		$this->init();
-		$this->setup_db();
 		$this->check_site();
-		$this->check_admin();
 	}
 
 	// --------------------------------------------------------------------
@@ -88,19 +57,6 @@ class Bootstrap {
 	{
 		// Set the default timezone to GMT
 		date_default_timezone_set('GMT');
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Sets up moksha database paths
-	 *
-	 * @access	private
-	 */
-	private function setup_db()
-	{
-		$this->CI->db_c = $this->CI->load->database('central', TRUE);
-		$this->CI->db_s = $this->CI->load->database('sites', TRUE);
 	}
 
 	// --------------------------------------------------------------------
@@ -128,45 +84,27 @@ class Bootstrap {
 		$this->site_url = str_replace(':80/', '/', $this->site_url);
 		$this->site_url = rtrim($this->site_url, '/');
 
-		$this->in_central = $this->CI->uri->segment(1) == 'admin' AND $this->CI->uri->segment(2) == 'central';
-		$query = $this->CI->db_c->get_where('sites', array('site_url' => $this->site_url));
+		// Obtain the site ID
+		$query = $this->CI->db->get_where('central_sites', array('site_url' => $this->site_url));
 
 		if ($query->num_rows() == 1)
 		{
 			$this->site_id = $query->row()->site_id;
 		}
-		else if ( ! $this->in_central)
+		else if ( ! in_central())
 		{
 			// Show error if site isn't found
 			show_error($this->CI->lang->line('invalid_site'));
 		}
 
-		$this->auth_id = 'authed_'.($this->in_central ? '0' : $this->site_id);
-		$this->CI->db = $this->in_central ? $this->CI->db_c : $this->CI->db_s;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Validates administration sessions
-	 *
-	 * @access	private
-	 */
-	private function check_admin()
-	{
-		$subdir = $this->CI->router->fetch_directory();
-
-		if ($subdir == 'central_admin/' || $subdir == 'site_admin/')
+		// Make changes to environment variables based on the central flag
+		if (in_central())
 		{
-			$this->in_admin = true;
-
-			// Make sure the user is authed, else serve the login page
-			if ($this->CI->session->userdata($this->auth_id) !== TRUE)
-			{
-				$login_url = $this->in_central ? 'admin/central/login' : 'admin/login';
-
-				redirect(base_url($login_url), 'refresh');
-			}
+			$this->auth_key = 'authed_0';
+		}
+		else
+		{
+			$this->auth_key = "authed_{$this->site_id}";
 		}
 	}
 

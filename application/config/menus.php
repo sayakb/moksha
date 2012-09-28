@@ -10,17 +10,29 @@
 $config['menus']['central_admin'] = array(
 	'welcome'	=> array(
 		'url'	=> 'admin/central',
-		'label'	=> 'homepage',
+		'label'	=> 'homepage'
 	),
 
 	'sites'		=> array(
 		'url'	=> 'admin/central/sites/manage',
-		'label'	=> 'manage_sites',
+		'label'	=> 'manage_sites'
 	),
 
 	'users'		=> array(
 		'url'	=> 'admin/central/users/manage',
-		'label'	=> 'manage_users',
+		'label'	=> 'manage_users'
+	),
+);
+
+$config['menus']['site_admin'] = array(
+	'welcome'	=> array(
+		'url'	=> 'admin',
+		'label'	=> 'homepage'
+	),
+
+	'hubs'		=> array(
+		'url'	=> 'admin/hubs/manage',
+		'label'	=> 'manage_hubs'
 	),
 );
 

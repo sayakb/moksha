@@ -11,54 +11,11 @@
 class Hub {
 
 	var $CI;
-
-	// --------------------------------------------------------------------
-	
-	/**
-	 * Array of hub driver objects
-	 *
-	 * @var	array
-	 */
 	var $_drivers = array();
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Array containing hub details in case multiple requests are
-	 * made for the same hub
-	 *
-	 * @var	array
-	 */
 	var $_hub_details = array();
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Contains all filter criteria for the query
-	 *
-	 * @var	array
-	 */
 	var $_filters = array();
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Array containing the result of the last query
-	 *
-	 * @var	array
-	 */
 	var $_result = array();
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Array containing all writable hubs
-	 *
-	 * @var	array
-	 */
 	var $_writable_hubs = array(HUB_DATABASE);
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Constructor
@@ -89,7 +46,7 @@ class Hub {
 		// Look up the data from cache or DB
 		else if ( ! $hub = $this->CI->cache->get("hubidx_{$this->CI->bootstrap->site_id}_{$hub_name}"))
 		{
-			$hub = $this->CI->db_s->get_where("hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $hub_name))->row();
+			$hub = $this->CI->db->get_where("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $hub_name))->row();
 			$this->CI->cache->write($hub, "hubidx_{$this->CI->bootstrap->site_id}_{$hub_name}");
 		}
 
@@ -99,20 +56,34 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Gets a list of hubs
+	 * Fetches hub metadata for all hubs in the site
+	 * Dot not fetch content or schema
 	 *
 	 * @access	public
 	 * @return	array	containing list of hubs
 	 */
-	public function get_list()
+	public function fetch_list()
 	{
 		if ( ! $list = $this->CI->cache->get("hubidx_{$this->CI->bootstrap->site_id}"))
 		{
-			$list = $this->CI->db_s->get("hubs_{$this->CI->bootstrap->site_id}")->result();
+			$list = $this->CI->db->get("site_hubs_{$this->CI->bootstrap->site_id}")->result();
 			$this->CI->cache->write($list, "hubidx_{$this->CI->bootstrap->site_id}");
 		}
 
 		return $list;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns number of hubs this site has
+	 *
+	 * @access	public
+	 * @return	int		containing count of hubs
+	 */
+	public function count_list()
+	{
+		return $this->CI->db->count_all("site_hubs_{$this->CI->bootstrap->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -293,6 +264,20 @@ class Hub {
 		}
 
 		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns count of rows in a hub
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @return	int		record count
+	 */
+	public function count_all($hub_name)
+	{
+		return $this->obj_by_hub($hub_name)->count_all($this->details($hub_name)->hub_id);
 	}
 
 	// --------------------------------------------------------------------
