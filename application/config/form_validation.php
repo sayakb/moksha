@@ -123,6 +123,11 @@ $config = array(
 						'is_unique[site_hubs.hub_name]'
 		),
 		array(
+			'field'	=>	'hub_type',
+			'label'	=>	'lang:hub_type',
+			'rules'	=>	'required'
+		),
+		array(
 			'field'	=>	'hub_source',
 			'label'	=>	'lang:hub_source',
 			'rules'	=>	'callback_check_source'

@@ -27,7 +27,7 @@
 		</div>
 	</div>
 
-	<div id="hub-source" class="control-group <?= $hub_source_hide ?>">
+	<div id="hub-source" class="control-group hide">
 		<label class="control-label">
 			<?= $this->lang->line('hub_source') ?>
 		</label>
@@ -44,6 +44,13 @@
 <?= form_close() ?>
 
 <script type="text/javascript">
+	// Show the hub source box on load if the textbox has value
+	$(function() {
+		if ($('[name=hub_type]').val() == '<?= HUB_RSS ?>') {
+			$('#hub-source').show();
+		}
+	});
+
 	// Toggle visibility of rss source box
 	$('[name=hub_type]').change(function() {
 		if ($(this).val() == '<?= HUB_RSS ?>') {
