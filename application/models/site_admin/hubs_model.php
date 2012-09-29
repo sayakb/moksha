@@ -46,12 +46,49 @@ class Hubs_model extends CI_Model {
 	public function fetch_datatypes()
 	{
 		return array(
-			NULL			=> NULL, // Empty first item
+			DBTYPE_NONE		=> NULL, // Empty first item
 			DBTYPE_KEY		=> $this->lang->line('dbtype_key'),
 			DBTYPE_INT		=> $this->lang->line('dbtype_int'),
 			DBTYPE_TEXT		=> $this->lang->line('dbtype_text'),
 			DBTYPE_DATETIME	=> $this->lang->line('dbtype_datetime')
 		);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get hub details against a specific hub ID
+	 *
+	 * @access	public
+	 * @param	int		hub identifier
+	 * @return	array	containing hub details
+	 */
+	public function fetch_hub($hub_id)
+	{
+		$query = $this->db->get_where("site_hubs_{$this->bootstrap->site_id}", array('hub_id' => $hub_id));
+		return $query->row();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get hub columns for a specific hub
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @return	array	containing column list
+	 */
+	public function fetch_columns($hub_name)
+	{
+		$columns_data	= $this->hub->schema($hub_name);
+		$columns_ary	= array();
+
+		foreach ($columns_data as $column)
+		{
+			$columns_ary[$column->name] = $column->name;
+		}
+			
+		return $columns_ary;
 	}
 
 	// --------------------------------------------------------------------
@@ -70,6 +107,19 @@ class Hubs_model extends CI_Model {
 
 		$query = $this->db->limit($per_page, $offset)->get("site_hubs_{$this->bootstrap->site_id}");
 		return $query->result();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Return the count of hubs from the DB
+	 *
+	 * @access	public
+	 * @return	int		having the hub count
+	 */
+	public function count_hubs()
+	{
+		return $this->hub->count_list();
 	}
 
 	// --------------------------------------------------------------------
@@ -133,6 +183,23 @@ class Hubs_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Renames an hub for this site
+	 *
+	 * @access	public
+	 * @return	bool	true if successful
+	 */
+	public function rename_hub()
+	{
+		$old_name	= $this->input->post('hub_name_existing');
+		$new_name	= $this->input->post('hub_name');
+
+		$this->hub->rename($old_name, $new_name);
+		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Delete a hub from the DB
 	 *
 	 * @access	public
@@ -144,6 +211,58 @@ class Hubs_model extends CI_Model {
 		$hub_name	= $this->db->where('hub_id', $hub_id)->get($hub_table)->row()->hub_name;
 
 		return $this->hub->drop($hub_name);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Adds a column to the hub
+	 *
+	 * @access	public
+	 * @return	bool	true if successful
+	 */
+	public function add_column()
+	{
+		$hub_name	= $this->input->post('hub_name');
+		$colum_data	= array($this->input->post('column_name') => $this->input->post('column_datatype'));
+
+		$this->hub->add_column($hub_name, $colum_data);
+		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Renames a column in the hub
+	 *
+	 * @access	public
+	 * @return	bool	true if successful
+	 */
+	public function rename_column()
+	{
+		$hub_name	= $this->input->post('hub_name');
+		$old_column	= $this->input->post('column_name_existing');
+		$new_column	= $this->input->post('column_name');
+
+		$this->hub->rename_column($hub_name, $old_column, $new_column);
+		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Deleted a column from a hub
+	 *
+	 * @access	public
+	 * @return	bool	true if successful
+	 */
+	public function delete_column()
+	{
+		$hub_name		= $this->input->post('hub_name');
+		$column_name	= $this->input->post('column_name_existing');
+
+		$this->hub->drop_column($hub_name, $column_name);
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

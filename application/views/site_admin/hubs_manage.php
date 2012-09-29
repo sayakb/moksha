@@ -55,3 +55,8 @@
 		<?= $this->lang->line('no_hubs') ?>
 	</div>
 <?php endif; ?>
+
+<script type="text/javascript">
+	// Clear localStorage to reset tabs, if we were in edit mode
+	localStorage.clear();
+</script>

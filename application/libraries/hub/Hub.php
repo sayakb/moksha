@@ -108,6 +108,24 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Renames a hub for the site
+	 *
+	 * @access	public
+	 * @param	string	old hub name
+	 * @param	string	new hub name
+	 * @return	object	of class Hub
+	 */
+	public function rename($old_name, $new_name)
+	{
+		$this->CI->db->where('hub_name', $old_name);
+		$this->CI->db->update("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $new_name));
+
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Drops a hub from the database, and related tables, if any
 	 *
 	 * @access	public

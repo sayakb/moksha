@@ -79,7 +79,7 @@ class Hub_db {
 		$this->CI->load->dbforge();
 
 		// Drop data table, if it exists
-		$table = "hub_{$this->CI->bootstrap->site_id}_{$hub_id}";
+		$table = "site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}";
 
 		if ($this->CI->db->table_exists($table))
 		{
@@ -105,7 +105,7 @@ class Hub_db {
 		$new_cols = $this->resolve_schema($columns)->fields;
 
 		$this->CI->load->dbforge();
-		$this->CI->dbforge->add_column("hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $new_cols);
+		$this->CI->dbforge->add_column("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $new_cols);
 	}
 
 	// --------------------------------------------------------------------
@@ -121,7 +121,7 @@ class Hub_db {
 	public function drop_column($hub_id, $column)
 	{
 		$this->CI->load->dbforge();
-		$this->CI->dbforge->drop_column("hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $column);
+		$this->CI->dbforge->drop_column("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $column);
 	}
 
 	// --------------------------------------------------------------------
@@ -137,10 +137,29 @@ class Hub_db {
 	 */
 	public function rename_column($hub_id, $old_col, $new_col)
 	{
-		$coldata = array($old_col => array('name' => $new_col));
+		$data_type = NULL;
+		$schema = $this->schema($hub_id);
 
-		$this->CI->load->dbforge();
-		$this->CI->dbforge->modify_column("hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $coldata);
+		foreach ($schema as $column)
+		{
+			if ($column->name == $old_col)
+			{
+				$data_type = $column->type;
+			}
+		}
+
+		if ( ! empty($data_type))
+		{
+			$coldata = array(
+				$old_col => array(
+					'name' => $new_col,
+					'type' => $data_type
+				)
+			);
+
+			$this->CI->load->dbforge();
+			$this->CI->dbforge->modify_column("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $coldata);
+		}
 	}
 
 	// --------------------------------------------------------------------

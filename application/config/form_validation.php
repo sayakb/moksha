@@ -139,21 +139,77 @@ $config = array(
 		array(
 			'field'	=>	'validation_key',
 			'label'	=>	'lang:column_name',
-			'rules'	=>	'callback_check_columns'
+			'rules'	=>	'callback_check_column_add'
 		),
 		array(
-			'field'	=>	'col_names[]',
+			'field'	=>	'column_names[]',
 			'label'	=>	'lang:column_name',
-			'rules'	=>	'alpha'
+			'rules'	=>	'alpha|'.
+						'max_length[64]'
 		),
 		array(
-			'field'	=>	'col_datatypes[]',
+			'field'	=>	'column_datatypes[]',
 			'label'	=>	'lang:data_type',
-			'rules'	=>	'integer|'.
-						'greater_than[-1]|'.
-						'less_than[4]'
-		),
+			'rules'	=>	'required'
+		)
 	),
+
+	// Site admin: edit hub -> rename hub
+	'site_admin/hubs/edit/rename_hub' => array(
+		array(
+			'field'	=>	'hub_name',
+			'label'	=>	'lang:hub_name',
+			'rules'	=>	'required|'.
+						'min_length[3]|'.
+						'max_length[100]|'.
+						'alpha_numeric|'.
+						'strtolower|'.
+						'is_unique[site_hubs.hub_name]'
+		)
+	),
+
+	// Site admin: edit hub -> add column
+	'site_admin/hubs/edit/add_column' => array(
+		array(
+			'field'	=>	'column_name',
+			'label'	=>	'lang:column_name',
+			'rules'	=>	'required|'.
+						'alpha|'.
+						'max_length[64]|'.
+						'callback_check_column_edit',
+		),
+		array(
+			'field'	=>	'column_datatype',
+			'label'	=>	'lang:data_type',
+			'rules'	=>	'callback_check_column_datatype'
+		)
+	),
+	
+	// Site admin: edit hub -> rename column
+	'site_admin/hubs/edit/rename_column' => array(
+		array(
+			'field'	=>	'column_name_existing',
+			'label'	=>	'lang:column_name',
+			'rules'	=>	'callback_check_column_dropdown'
+		),
+		array(
+			'field'	=>	'column_name',
+			'label'	=>	'lang:column_name',
+			'rules'	=>	'required|'.
+						'alpha|'.
+						'max_length[64]|'.
+						'callback_check_column_edit',
+		)
+	),
+
+	// Site admin: edit hub -> delete column
+	'site_admin/hubs/edit/delete_column' => array(
+		array(
+			'field'	=>	'column_name_existing',
+			'label'	=>	'lang:column_name',
+			'rules'	=>	'callback_check_column_dropdown'
+		)
+	)
 );
 
 

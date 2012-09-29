@@ -38,7 +38,7 @@ class Hubs extends CI_Controller {
 		$this->pagination->initialize(
 			array_merge($this->config->item('pagination'), array(
 				'base_url'		=> base_url('admin/hubs/manage'),
-				'total_rows'	=> $this->hub->count_list(),
+				'total_rows'	=> $this->hubs_model->count_hubs(),
 				'per_page'		=> $this->config->item('per_page'),
 				'uri_segment'	=> 4,
 			))
@@ -62,10 +62,11 @@ class Hubs extends CI_Controller {
 	 * Add a new hub to the site
 	 *
 	 * @access	public
+	 * @param	string	current request category
 	 */
-	public function add($action = 'index')
+	public function add($category = 'index')
 	{
-		if ($action == 'index')
+		if ($category == 'index')
 		{
 			if ($this->form_validation->run('site_admin/hubs/add/index'))
 			{
@@ -92,7 +93,7 @@ class Hubs extends CI_Controller {
 			// Load the view
 			$this->template->load('site_admin/hubs_create', $data);
 		}
-		else if ($action == 'columns')
+		else if ($category == 'columns')
 		{
 			$hub_name = $this->session->userdata('hub_name');
 
@@ -126,6 +127,105 @@ class Hubs extends CI_Controller {
 				redirect(base_url('admin/hubs/add'), 'refresh');
 			}
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Edit a hub and its columns
+	 *
+	 * @access	public
+	 * @param	int		hub id to edit
+	 */
+	public function edit($hub_id)
+	{
+		// Get hub data
+		$hub = $this->hubs_model->fetch_hub($hub_id);
+
+		// Rename hub operation
+		if (isset($_POST['rename_hub']))
+		{
+			$this->form_validation->unique_exempts = array('hub_name' => $hub->hub_name);
+
+			if ($this->form_validation->run('site_admin/hubs/edit/rename_hub'))
+			{
+				if ($this->hubs_model->rename_hub())
+				{
+					$this->session->set_flashdata('success_msg', $this->lang->line('hub_renamed'));
+					redirect(base_url('admin/hubs/manage'), 'refresh');
+				}
+				else
+				{
+					$this->template->error_msgs = $this->lang->line('hub_rename_error');
+				}
+			}
+		}
+
+		// Add column to hub
+		if (isset($_POST['add_column']))
+		{
+			if ($this->form_validation->run('site_admin/hubs/edit/add_column'))
+			{
+				if ($this->hubs_model->add_column())
+				{
+					$this->session->set_flashdata('success_msg', $this->lang->line('column_added'));
+					redirect(base_url('admin/hubs/manage'), 'refresh');
+				}
+				else
+				{
+					$this->template->error_msgs = $this->lang->line('column_add_error');
+				}
+			}
+		}
+
+		// Rename hub column
+		if (isset($_POST['rename_column']))
+		{
+			$this->form_validation->unique_exempts = array('column_name' => $this->input->post('column_name_existing'));
+
+			if ($this->form_validation->run('site_admin/hubs/edit/rename_column'))
+			{
+				if ($this->hubs_model->rename_column())
+				{
+					$this->session->set_flashdata('success_msg', $this->lang->line('column_renamed'));
+					redirect(base_url('admin/hubs/manage'), 'refresh');
+				}
+				else
+				{
+					$this->template->error_msgs = $this->lang->line('column_rename_error');
+				}
+			}
+		}
+
+		// Delete hub column
+		if (isset($_POST['delete_column']))
+		{
+			if ($this->form_validation->run('site_admin/hubs/edit/delete_column'))
+			{
+				if ($this->hubs_model->delete_column())
+				{
+					$this->session->set_flashdata('success_msg', $this->lang->line('column_deleted'));
+					redirect(base_url('admin/hubs/manage'), 'refresh');
+				}
+				else
+				{
+					$this->template->error_msgs = $this->lang->line('column_del_error');
+				}
+			}
+		}
+
+		// Assign view data
+		$data = array(
+			'page_title'	=> $this->lang->line('site_adm'),
+			'page_desc'		=> $this->lang->line('manage_hubs_exp'),
+			'hub_id'		=> $hub->hub_id,
+			'hub_name'		=> $hub->hub_name,
+			'hub_columns'	=> $this->hubs_model->fetch_columns($hub->hub_name),
+			'data_types'	=> $this->hubs_model->fetch_datatypes()
+		);
+
+		// Load the view
+		$this->template->load('site_admin/hubs_edit', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -181,27 +281,27 @@ class Hubs extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Validates hub column data
+	 * Validates hub column data when adding columns to a new hub
 	 *
 	 * @access	public
 	 * @return	bool	true if column data is valid
 	 */
-	public function check_columns($key)
+	public function check_column_add($key)
 	{
 		$this->load->helper('array');
 
-		$col_names		= $this->input->post('col_names');
-		$col_datatypes	= $this->input->post('col_datatypes');
+		$column_names		= $this->input->post('column_names');
+		$column_datatypes	= $this->input->post('column_datatypes');
 
 		// Only one unique key column is allowed
-		if (array_has_duplicates($col_datatypes, DBTYPE_KEY))
+		if (array_has_duplicates($column_datatypes, DBTYPE_KEY))
 		{
 			$this->form_validation->set_message('check_columns', $this->lang->line('one_unique_key'));
 			return FALSE;
 		}
 
 		// Column names must be unique
-		if (array_has_duplicates($col_names))
+		if (array_has_duplicates($column_names))
 		{
 			$this->form_validation->set_message('check_columns', $this->lang->line('duplicate_colname'));
 			return FALSE;
@@ -210,14 +310,83 @@ class Hubs extends CI_Controller {
 		// Both column name and data types should be set
 		for ($idx = 0; $idx < 100; $idx++)
 		{
-			if (($col_names[$idx] != '' AND $col_datatypes[$idx] == '') OR ($col_names[$idx] == '' AND $col_datatypes[$idx] != ''))
+			if (($column_names[$idx] != '' AND $column_datatypes[$idx] == '') OR ($column_names[$idx] == '' AND $column_datatypes[$idx] != ''))
 			{
-				$this->form_validation->set_message('check_columns', $this->lang->line('enter_col_both'));
+				$this->form_validation->set_message('check_column_add', $this->lang->line('enter_col_both'));
 				return FALSE;
 			}
 		}
 		
 		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates hub column name when adding columns to an existing hub
+	 *
+	 * @access	public
+	 * @return	bool	true if column data is valid
+	 */
+	public function check_column_edit($column_name)
+	{
+		$hub_name		= $this->input->post('hub_name');
+		$hub_columns	= $this->hubs_model->fetch_columns($hub_name);
+
+		if (in_array($column_name, $hub_columns))
+		{
+			$this->form_validation->set_message('check_column_edit', $this->lang->line('column_exists'));
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates hub column data when adding columns
+	 *
+	 * @access	public
+	 * @return	bool	true if column data is valid
+	 */
+	public function check_column_dropdown($column_name)
+	{
+		$hub_name		= $this->input->post('hub_name');
+		$hub_columns	= $this->hubs_model->fetch_columns($hub_name);
+
+		if ( ! in_array($column_name, $hub_columns))
+		{
+			$this->form_validation->set_message('check_column_dropdown', $this->lang->line('invalid_column'));
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates column data type selecton
+	 *
+	 * @access	public
+	 * @return	bool	true if column data type is valid
+	 */
+	public function check_column_datatype($datatype)
+	{
+		if ( ! in_array($datatype, array(DBTYPE_KEY, DBTYPE_INT, DBTYPE_TEXT, DBTYPE_DATETIME)))
+		{
+			$this->form_validation->set_message('check_column_datatype', $this->lang->line('select_datatype'));
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
 	}
 
 	// --------------------------------------------------------------------

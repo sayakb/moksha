@@ -26,7 +26,7 @@ class Sites_model extends CI_Model {
 	 *
 	 * @access	public
 	 * @param	int		site identifier
-	 * @return	array	containing user details
+	 * @return	array	containing site details
 	 */
 	public function fetch_site($site_id)
 	{
