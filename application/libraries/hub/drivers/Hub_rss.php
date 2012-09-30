@@ -74,23 +74,13 @@ class Hub_rss {
 	 */
 	public function schema($hub_id)
 	{
-		$schema = array();
-		$fields = array('title', 'body', 'pub_date', 'link', 'author');
-
-		foreach ($fields as $field)
-		{
-			$elem = new stdClass();
-
-			$elem->name			= $field;
-			$elem->type			= 'text';
-			$elem->default		= NULL;
-			$elem->max_length	= NULL;
-			$elem->primary_key	= 0;
-
-			$schema[] = $elem;
-		}
-
-		return $schema;
+		return array(
+			'title'		=> DBTYPE_TEXT,
+			'body'		=> DBTYPE_TEXT,
+			'pub_date'	=> DBTYPE_TEXT,
+			'link'		=> DBTYPE_TEXT,
+			'author'	=> DBTYPE_TEXT
+		);
 	}
 
 	// --------------------------------------------------------------------

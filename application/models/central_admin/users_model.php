@@ -46,8 +46,8 @@ class Users_model extends CI_Model {
 	 */
 	public function fetch_users($page)
 	{
-		$per_page = $this->config->item('per_page');
-		$offset = $per_page * ($page - 1);
+		$config = $this->config->item('pagination');
+		$offset = $config['per_page'] * ($page - 1);
 		$filter = $this->input->post('user_filter');
 		
 		if ( ! empty($filter))
@@ -55,7 +55,7 @@ class Users_model extends CI_Model {
 			$this->db->like('user_name', $filter);
 		}
 
-		$query = $this->db->limit($per_page, $offset)->order_by('user_name')->get('central_users');
+		$query = $this->db->limit($config['per_page'], $offset)->order_by('user_name')->get('central_users');
 		return $query->result();
 	}
 

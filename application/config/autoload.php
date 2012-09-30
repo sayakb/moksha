@@ -96,7 +96,6 @@ $autoload['helper'] = array(
 */
 
 $autoload['config'] = array(
-	'moksha',
 	'pagination',
 	'cache'
 );

@@ -26,7 +26,9 @@
 			<?php foreach ($hubs as $hub): ?>
 				<tr>
 					<td>
-						<?= $hub->hub_name ?>
+						<a href="<?= base_url("admin/hubs/view/{$hub->hub_id}") ?>">
+							<?= $hub->hub_name ?>
+						</a>
 					</td>
 
 					<td>

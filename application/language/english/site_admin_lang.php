@@ -3,6 +3,7 @@
 $lang['site_adm']				= 'Moksha Administration';
 $lang['manage_hubs']			= 'Manage site hubs';
 $lang['manage_hubs_exp']		= 'Add and edit hubs associated with this site';
+$lang['view_hubs_exp']			= 'View data stored within a hub';
 $lang['manage_users']			= 'Manage users';
 $lang['add_new_hub']			= 'Add new hub';
 $lang['add_column']				= 'Add column';
@@ -28,6 +29,7 @@ $lang['hub_del_error']			= 'An error occurred while deleting the hub';
 $lang['dbtype_key']				= 'Unique identifier';
 $lang['dbtype_int']				= 'Integer';
 $lang['dbtype_text']			= 'Text';
+$lang['dbtype_password']		= 'Password';
 $lang['dbtype_datetime']		= 'Date/time';
 $lang['no_hubs']				= 'This site has no hubs defined. Click on the <em>Add new hub</em> button to create a new hub.';
 $lang['back_hub_mgmt']			= 'Back to hub management';
@@ -51,6 +53,7 @@ $lang['column_renamed']			= 'Column has been renamed successfully';
 $lang['column_rename_error']	= 'An error occurred while renaming the column';
 $lang['column_deleted']			= 'Column has been deleted successfully';
 $lang['column_del_error']		= 'An error occurred while deleting the column';
+$lang['viewing_hub']			= 'Viewing hub: %s';
 
 
 /* End of file site_admin_lang.php */

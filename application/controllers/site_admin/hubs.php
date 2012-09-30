@@ -27,6 +27,51 @@ class Hubs extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
+	 * View data stored within a hub
+	 *
+	 * @access	public
+	 * @param	int		page number for the site list
+	 */
+	public function view($hub_id, $page = 1)
+	{
+		// Get hub data
+		$hub = $this->hubs_model->fetch_hub($hub_id);
+
+		// Determing hub title
+		if (strlen($hub->hub_name) > 20)
+		{
+			$hub_title = substr($hub->hub_name, 0, 20).'...';
+		}
+		else
+		{
+			$hub_title = $hub->hub_name;
+		}
+
+		// Initialize pagination
+		$this->pagination->initialize(
+			array_merge($this->config->item('pagination'), array(
+				'base_url'		=> base_url('admin/hubs/view'),
+				'total_rows'	=> $this->hubs_model->count_rows($hub->hub_name)
+			))
+		);
+
+		// Assign view data
+		$data = array(
+			'page_title'	=> $this->lang->line('site_adm'),
+			'page_desc'		=> $this->lang->line('view_hubs_exp'),
+			'hub_title'		=> sprintf($this->lang->line('viewing_hub'), $hub_title),
+			'hub_columns'	=> $this->hubs_model->fetch_columns($hub->hub_name),
+			'hub_data'		=> $this->hubs_model->fetch_hub_data($hub->hub_name, $page),
+			'pagination'	=> $this->pagination->create_links()
+		);
+
+		// Load the view
+		$this->template->load('site_admin/hubs_view', $data);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Hub management screen
 	 *
 	 * @access	public
@@ -39,7 +84,6 @@ class Hubs extends CI_Controller {
 			array_merge($this->config->item('pagination'), array(
 				'base_url'		=> base_url('admin/hubs/manage'),
 				'total_rows'	=> $this->hubs_model->count_hubs(),
-				'per_page'		=> $this->config->item('per_page'),
 				'uri_segment'	=> 4,
 			))
 		);
@@ -378,7 +422,7 @@ class Hubs extends CI_Controller {
 	 */
 	public function check_column_datatype($datatype)
 	{
-		if ( ! in_array($datatype, array(DBTYPE_KEY, DBTYPE_INT, DBTYPE_TEXT, DBTYPE_DATETIME)))
+		if ( ! in_array($datatype, array(DBTYPE_KEY, DBTYPE_INT, DBTYPE_TEXT, DBTYPE_PASSWORD, DBTYPE_DATETIME)))
 		{
 			$this->form_validation->set_message('check_column_datatype', $this->lang->line('select_datatype'));
 			return FALSE;

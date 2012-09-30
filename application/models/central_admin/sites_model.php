@@ -45,10 +45,10 @@ class Sites_model extends CI_Model {
 	 */
 	public function fetch_sites($page)
 	{
-		$per_page = $this->config->item('per_page');
-		$offset = $per_page * ($page - 1);
+		$config = $this->config->item('pagination');
+		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($per_page, $offset)->get('central_sites');
+		$query = $this->db->limit($config['per_page'], $offset)->get('central_sites');
 		return $query->result();
 	}
 

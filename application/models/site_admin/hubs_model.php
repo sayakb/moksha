@@ -50,6 +50,7 @@ class Hubs_model extends CI_Model {
 			DBTYPE_KEY		=> $this->lang->line('dbtype_key'),
 			DBTYPE_INT		=> $this->lang->line('dbtype_int'),
 			DBTYPE_TEXT		=> $this->lang->line('dbtype_text'),
+			DBTYPE_PASSWORD	=> $this->lang->line('dbtype_password'),
 			DBTYPE_DATETIME	=> $this->lang->line('dbtype_datetime')
 		);
 	}
@@ -83,11 +84,11 @@ class Hubs_model extends CI_Model {
 		$columns_data	= $this->hub->schema($hub_name);
 		$columns_ary	= array();
 
-		foreach ($columns_data as $column)
+		foreach ($columns_data as $name => $data_type)
 		{
-			$columns_ary[$column->name] = $column->name;
+			$columns_ary[$name] = $name;
 		}
-			
+
 		return $columns_ary;
 	}
 
@@ -102,10 +103,27 @@ class Hubs_model extends CI_Model {
 	 */
 	public function fetch_hubs($page)
 	{
-		$per_page = $this->config->item('per_page');
-		$offset = $per_page * ($page - 1);
+		$config = $this->config->item('pagination');
+		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($per_page, $offset)->get("site_hubs_{$this->bootstrap->site_id}");
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_hubs_{$this->bootstrap->site_id}");
+		return $query->result();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches data from a hub
+	 *
+	 * @access	public
+	 * @return	int		having the hub contents
+	 */
+	public function fetch_hub_data($hub_name, $page)
+	{
+		$config = $this->config->item('pagination');
+		$offset = $config['per_page'] * ($page - 1);
+
+		$query = $this->hub->limit($config['per_page'], $offset)->get($hub_name);
 		return $query->result();
 	}
 
@@ -120,6 +138,19 @@ class Hubs_model extends CI_Model {
 	public function count_hubs()
 	{
 		return $this->hub->count_list();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Return the total number of rows in a hub
+	 *
+	 * @access	public
+	 * @return	int		having the hub row count
+	 */
+	public function count_rows($hub_name)
+	{
+		return $this->hub->count_all($hub_name);
 	}
 
 	// --------------------------------------------------------------------

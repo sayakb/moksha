@@ -23,6 +23,12 @@
 				<?= $this->lang->line('delete_column') ?>
 			</a>
 		</li>
+
+		<li class="nav-text pull-right">
+			<a href="<?= base_url('admin/hubs/manage') ?>" class="small pull-right">
+				&laquo; <?= $this->lang->line('back_hub_mgmt') ?>
+			</a>
+		</li>
 	</ul>
 
 	<div class="tab-content">

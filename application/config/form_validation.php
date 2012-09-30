@@ -150,7 +150,7 @@ $config = array(
 		array(
 			'field'	=>	'column_datatypes[]',
 			'label'	=>	'lang:data_type',
-			'rules'	=>	'required'
+			'rules'	=>	'callback_check_column_datatype'
 		)
 	),
 

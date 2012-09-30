@@ -58,7 +58,8 @@ define('DBTYPE_NONE',		-1);
 define('DBTYPE_KEY',		0);
 define('DBTYPE_INT',		1);
 define('DBTYPE_TEXT',		2);
-define('DBTYPE_DATETIME',	3);
+define('DBTYPE_PASSWORD',	3);
+define('DBTYPE_DATETIME',	4);
 
 
 /* End of file constants.php */

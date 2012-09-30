@@ -46,7 +46,7 @@ class Hub_db {
 
 			if ($this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data))
 			{
-				$ci_schema	= $this->resolve_schema($schema);
+				$ci_schema	= $this->resolve_ci_schema($schema);
 				$fields		= $ci_schema->fields;
 				$key		= $ci_schema->key;
 
@@ -102,7 +102,7 @@ class Hub_db {
 	 */
 	public function add_column($hub_id, $columns)
 	{
-		$new_cols = $this->resolve_schema($columns)->fields;
+		$new_cols = $this->resolve_ci_schema($columns)->fields;
 
 		$this->CI->load->dbforge();
 		$this->CI->dbforge->add_column("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}", $new_cols);
@@ -173,7 +173,8 @@ class Hub_db {
 	 */
 	public function schema($hub_id)
 	{
-		return $this->CI->db->field_data("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
+		$fields = $this->CI->db->field_data("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
+		return $this->resolve_hub_schema($fields);
 	}
 
 	// --------------------------------------------------------------------
@@ -283,7 +284,7 @@ class Hub_db {
 	 * @param	array	hub style schema
 	 * @return	array	having CI style schema and key info
 	 */
-	private function resolve_schema($schema)
+	private function resolve_ci_schema($schema)
 	{
 		$fields = array();
 		$key = FALSE;
@@ -295,28 +296,35 @@ class Hub_db {
 				case DBTYPE_KEY:
 					$key = $name;
 					$fields[$name] = array(
-						'type'				=> 'BIGINT',
+						'type'				=> 'bigint',
 						'constraint'		=> 15,
 						'auto_increment'	=> TRUE
 					);
 					break;
 
-				case DBTYPE_TEXT:
+				case DBTYPE_INT:
 					$fields[$name] = array(
-						'type'				=> 'MEDIUMTEXT'
+						'type'				=> 'int',
+						'constraint'		=> 10
 					);
 					break;
 
-				case DBTYPE_INT:
+				case DBTYPE_TEXT:
 					$fields[$name] = array(
-						'type'				=> 'INT',
-						'constraint'		=> 10
+						'type'				=> 'mediumtext'
+					);
+					break;
+
+				case DBTYPE_PASSWORD:
+					$fields[$name] = array(
+						'type'				=> 'varchar',
+						'constraint'		=> 128
 					);
 					break;
 
 				case DBTYPE_DATETIME:
 					$fields[$name] = array(
-						'type'				=> 'INT',
+						'type'				=> 'int',
 						'constraint'		=> 11,
 						'unsigned'			=> TRUE
 					);
@@ -329,6 +337,50 @@ class Hub_db {
 		$ci_schema->key		= $key;
 
 		return $ci_schema;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Generates hub style schema from a CI schema
+	 *
+	 * @access	private
+	 * @param	array	ci style schema and key info
+	 * @return	array	hub style schema
+	 */
+	private function resolve_hub_schema($ci_fields)
+	{
+		$hub_schema = array();
+
+		foreach ($ci_fields as $field)
+		{
+			if ($field->type == 'bigint')
+			{
+				$hub_schema[$field->name] = DBTYPE_KEY;
+			}
+
+			if ($field->type == 'int' AND $field->max_length = 10)
+			{
+				$hub_schema[$field->name] = DBTYPE_INT;
+			}
+
+			if ($field->type == 'mediumtext')
+			{
+				$hub_schema[$field->name] = DBTYPE_TEXT;
+			}
+
+			if ($field->type == 'varchar')
+			{
+				$hub_schema[$field->name] = DBTYPE_PASSWORD;
+			}
+
+			if ($field->type == 'int' AND $field->max_length = 11)
+			{
+				$hub_schema[$field->name] = DBTYPE_DATETIME;
+			}
+		}
+
+		return $hub_schema;
 	}
 
 	// --------------------------------------------------------------------

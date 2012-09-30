@@ -2943,6 +2943,14 @@ input[type="submit"].btn.btn-mini {
 .nav > .pull-right {
   float: right;
 }
+.nav > li.nav-text > a {
+  padding-right: 0;
+}
+.nav > li.nav-text > a:hover {
+  text-decoration: underline;
+  background-color: transparent;
+  border-color: transparent;
+}
 .nav-header {
   display: block;
   padding: 3px 15px;

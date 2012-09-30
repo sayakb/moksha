@@ -38,9 +38,7 @@ class Sites extends CI_Controller {
 		$this->pagination->initialize(
 			array_merge($this->config->item('pagination'), array(
 				'base_url'		=> base_url('admin/central/sites/manage'),
-				'total_rows'	=> $this->sites_model->count_sites(),
-				'per_page'		=> $this->config->item('per_page'),
-				'uri_segment'	=> 5,
+				'total_rows'	=> $this->sites_model->count_sites()
 			))
 		);
 
