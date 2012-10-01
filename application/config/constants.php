@@ -54,12 +54,12 @@ define('HUB_RSS',			'rss');
 | These define the different data types supported by the hub DB driver
 |
  */
-define('DBTYPE_NONE',		-1);
-define('DBTYPE_KEY',		0);
-define('DBTYPE_INT',		1);
-define('DBTYPE_TEXT',		2);
-define('DBTYPE_PASSWORD',	3);
-define('DBTYPE_DATETIME',	4);
+define('DBTYPE_NONE',		'none');
+define('DBTYPE_KEY',		'key');
+define('DBTYPE_INT',		'int');
+define('DBTYPE_TEXT',		'text');
+define('DBTYPE_PASSWORD',	'password');
+define('DBTYPE_DATETIME',	'datetime');
 
 
 /* End of file constants.php */

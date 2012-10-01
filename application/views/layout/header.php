@@ -28,6 +28,6 @@
 					<div class="alert alert-<?= $page_notice['type'] ?>">
 						<?= $page_notice['message'] ?>
 					</div>
-				<?php endif; ?>
+				<?php endif ?>
 			</div>
 		</div>

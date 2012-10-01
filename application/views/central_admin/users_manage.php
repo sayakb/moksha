@@ -42,10 +42,10 @@
 							<a href="<?= base_url('admin/central/users/delete/'.$user->user_id) ?>" class="btn btn-mini">
 								<?= $this->lang->line('delete') ?>
 							</a>
-						<?php endif; ?>
+						<?php endif ?>
 					</td>
 				</tr>
-			<?php endforeach; ?>
+			<?php endforeach ?>
 		</tbody>
 	</table>
 
@@ -56,4 +56,4 @@
 	<div class="alert alert-info">
 		<?= $this->lang->line('no_users') ?>
 	</div>
-<?php endif; ?>
+<?php endif ?>

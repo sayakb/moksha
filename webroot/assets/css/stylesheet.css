@@ -4929,6 +4929,9 @@ button.close {
 .alert p {
   margin: 0;
 }
+.viewport {
+  overflow-x: auto;
+}
 @media (min-width: 768px) and (max-width: 979px) {
   .hidden-desktop {
     display: inherit !important;

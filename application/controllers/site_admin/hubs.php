@@ -18,9 +18,9 @@ class Hubs extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for site admin
-		$this->load->model('site_admin/hubs_model');
+		// Load stuff we need for hub management
 		$this->lang->load('site_admin');
+		$this->load->model('site_admin/hubs_model');
 		$this->session->enforce_login('admin/login');
 	}
 
@@ -354,7 +354,7 @@ class Hubs extends CI_Controller {
 		// Both column name and data types should be set
 		for ($idx = 0; $idx < 100; $idx++)
 		{
-			if (($column_names[$idx] != '' AND $column_datatypes[$idx] == '') OR ($column_names[$idx] == '' AND $column_datatypes[$idx] != ''))
+			if (($column_names[$idx] != '' AND $column_datatypes[$idx] == 'none') OR ($column_names[$idx] == '' AND $column_datatypes[$idx] != 'none'))
 			{
 				$this->form_validation->set_message('check_column_add', $this->lang->line('enter_col_both'));
 				return FALSE;
@@ -422,7 +422,7 @@ class Hubs extends CI_Controller {
 	 */
 	public function check_column_datatype($datatype)
 	{
-		if ( ! in_array($datatype, array(DBTYPE_KEY, DBTYPE_INT, DBTYPE_TEXT, DBTYPE_PASSWORD, DBTYPE_DATETIME)))
+		if ( ! in_array(intval($datatype), array(DBTYPE_KEY, DBTYPE_INT, DBTYPE_TEXT, DBTYPE_PASSWORD, DBTYPE_DATETIME)))
 		{
 			$this->form_validation->set_message('check_column_datatype', $this->lang->line('select_datatype'));
 			return FALSE;

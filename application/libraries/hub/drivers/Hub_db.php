@@ -138,7 +138,7 @@ class Hub_db {
 	public function rename_column($hub_id, $old_col, $new_col)
 	{
 		$data_type = NULL;
-		$schema = $this->schema($hub_id);
+		$schema = $this->CI->db->field_data("site_hub_{$this->CI->bootstrap->site_id}_{$hub_id}");
 
 		foreach ($schema as $column)
 		{

@@ -30,7 +30,7 @@
 					<td><?= form_dropdown('column_datatypes[]', $data_types, set_value('column_datatypes[]')) ?></td>
 					<td><?= form_input('column_names[]', set_value('column_names[]')) ?></td>
 				</tr>
-			<?php endfor; ?>
+			<?php endfor ?>
 		</tbody>
 	</table>
 

@@ -245,7 +245,7 @@ class Hub_rss {
 	 */
 	public function count_all($hub_id)
 	{
-		return count($this->get($hub_id));
+		return count($this->get($hub_id, NULL, NULL, NULL));
 	}
 
 	// --------------------------------------------------------------------
@@ -265,7 +265,7 @@ class Hub_rss {
 			
 			if ($query->num_rows() === 1)
 			{
-				$raw_feed = file_get_contents($query->row()->hub_source);
+				$raw_feed = @file_get_contents($query->row()->hub_source);
 				$this->CI->cache->write($raw_feed, "hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}");
 			}
 		}

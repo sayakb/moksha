@@ -45,7 +45,7 @@
 						</a>
 					</td>
 				</tr>
-			<?php endforeach; ?>
+			<?php endforeach ?>
 		</tbody>
 	</table>
 
@@ -56,7 +56,7 @@
 	<div class="alert alert-info">
 		<?= $this->lang->line('no_hubs') ?>
 	</div>
-<?php endif; ?>
+<?php endif ?>
 
 <script type="text/javascript">
 	// Clear localStorage to reset tabs, if we were in edit mode

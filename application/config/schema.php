@@ -127,5 +127,45 @@ $config['schema']['site_users'] = array(
 	)
 );
 
+$config['schema']['site_controls'] = array(
+	'fields' => array(
+		'user_id' => array(
+			'type'					=> 'BIGINT',
+			'constraint'			=> 20, 
+			'null'					=> FALSE,
+			'auto_increment'		=> TRUE
+		),
+
+		'user_name' => array(
+			'type'					=> 'VARCHAR',
+			'constraint'			=> 100, 
+			'null'					=> FALSE
+		),
+
+		'user_password' => array(
+			'type'					=> 'VARCHAR',
+			'constraint'			=> 128, 
+			'null'					=> FALSE
+		),
+
+		'user_email' => array(
+			'type'					=> 'VARCHAR',
+			'constraint'			=> 225, 
+			'null'					=> FALSE
+		),
+
+		'user_founder' => array(
+			'type'					=> 'TINYINT',
+			'constraint'			=> 1, 
+			'null'					=> FALSE
+		)
+	),
+
+	'keys' => array(
+		'user_id'					=> TRUE,
+		'user_name,user_password'	=> FALSE
+	)
+);
+
 /* End of file schemas.php */
 /* Location: ./application/config/schemas.php */

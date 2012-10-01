@@ -39,7 +39,7 @@
 						</a>
 					</td>
 				</tr>
-			<?php endforeach; ?>
+			<?php endforeach ?>
 		</tbody>
 	</table>
 
@@ -50,4 +50,4 @@
 	<div class="alert alert-info">
 		<?= $this->lang->line('no_sites') ?>
 	</div>
-<?php endif; ?>
+<?php endif ?>

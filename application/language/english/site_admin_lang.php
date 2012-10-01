@@ -3,6 +3,8 @@
 $lang['site_adm']				= 'Moksha Administration';
 $lang['manage_hubs']			= 'Manage site hubs';
 $lang['manage_hubs_exp']		= 'Add and edit hubs associated with this site';
+$lang['manage_controls']		= 'Manage controls';
+$lang['manage_controls_exp']	= 'Manage controls that can be added to Moksha pages';
 $lang['view_hubs_exp']			= 'View data stored within a hub';
 $lang['manage_users']			= 'Manage users';
 $lang['add_new_hub']			= 'Add new hub';
@@ -26,6 +28,7 @@ $lang['hub_update_error']		= 'An error occurred while updating the hub';
 $lang['hub_del_confirm']		= 'All associated widgets will stop working. Are you sure you want to delete this hub?';
 $lang['hub_deleted']			= 'Hub has been deleted successfully';
 $lang['hub_del_error']			= 'An error occurred while deleting the hub';
+$lang['hub_empty']				= 'This hub does not contain any data';
 $lang['dbtype_key']				= 'Unique identifier';
 $lang['dbtype_int']				= 'Integer';
 $lang['dbtype_text']			= 'Text';

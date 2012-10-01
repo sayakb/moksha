@@ -180,8 +180,8 @@ class Hubs_model extends CI_Model {
 			if ($hub_name !== FALSE)
 			{
 				$col_data		= array();
-				$col_names		= $this->input->post('col_names');
-				$col_datatypes	= $this->input->post('col_datatypes');
+				$col_names		= $this->input->post('column_names');
+				$col_datatypes	= $this->input->post('column_datatypes');
 
 				for ($idx = 0; $idx < 100; $idx++)
 				{
