@@ -154,7 +154,26 @@ $config = array(
 		)
 	),
 
-	// Site admin: edit hub -> rename hub
+	// Site admin: edit RSS hub
+	'site_admin/hubs/edit/modify_hub' => array(
+		array(
+			'field'	=>	'hub_name',
+			'label'	=>	'lang:hub_name',
+			'rules'	=>	'required|'.
+						'min_length[3]|'.
+						'max_length[100]|'.
+						'alpha_numeric|'.
+						'strtolower|'.
+						'is_unique[site_hubs.hub_name]'
+		),
+		array(
+			'field'	=>	'hub_source',
+			'label'	=>	'lang:hub_source',
+			'rules'	=>	'callback_check_source'
+		)
+	),
+
+	// Site admin: edit DB hub -> rename hub
 	'site_admin/hubs/edit/rename_hub' => array(
 		array(
 			'field'	=>	'hub_name',
@@ -168,7 +187,7 @@ $config = array(
 		)
 	),
 
-	// Site admin: edit hub -> add column
+	// Site admin: edit DB hub -> add column
 	'site_admin/hubs/edit/add_column' => array(
 		array(
 			'field'	=>	'column_name',
@@ -185,7 +204,7 @@ $config = array(
 		)
 	),
 	
-	// Site admin: edit hub -> rename column
+	// Site admin: edit DB hub -> rename column
 	'site_admin/hubs/edit/rename_column' => array(
 		array(
 			'field'	=>	'column_name_existing',
@@ -202,7 +221,7 @@ $config = array(
 		)
 	),
 
-	// Site admin: edit hub -> delete column
+	// Site admin: edit DB hub -> delete column
 	'site_admin/hubs/edit/delete_column' => array(
 		array(
 			'field'	=>	'column_name_existing',

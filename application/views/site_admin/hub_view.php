@@ -7,7 +7,7 @@
 </legend>
 
 <div class="viewport">
-	<table class="table table-striped">
+	<table class="table table-bordered table-striped">
 		<thead>
 			<tr>
 				<?php foreach($hub_columns as $column): ?>

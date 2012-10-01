@@ -2274,6 +2274,16 @@ input[type="submit"].btn.btn-mini {
   background-repeat: no-repeat;
   margin-top: 1px;
 }
+[class^="icon-tool-"],
+[class*=" icon-tool-"] {
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  background-image: url("../img/toolbar-icons.png");
+  background-position: 0 0;
+  margin-right: .2em;
+  margin-top: 0;
+}
 /* White icons with optional class, or on hover/active states of certain elements */
 .icon-white,
 .nav-tabs > .active > a > [class^="icon-"],
@@ -2711,6 +2721,54 @@ input[type="submit"].btn.btn-mini {
 }
 .icon-fullscreen {
   background-position: -456px -144px;
+}
+.icon-tool-paragraph {
+  background-position: 0 0;
+}
+.icon-tool-heading {
+  background-position: -26px 0;
+}
+.icon-tool-hyperlink {
+  background-position: -52px 0;
+}
+.icon-tool-textbox {
+  background-position: -78px 0;
+}
+.icon-tool-password {
+  background-position: -104px 0;
+}
+.icon-tool-textarea {
+  background-position: -130px 0;
+}
+.icon-tool-wysiwyg {
+  background-position: -156px 0;
+}
+.icon-tool-codebox {
+  background-position: -182px 0;
+}
+.icon-tool-checkbox {
+  background-position: 0 -26px;
+}
+.icon-tool-radio {
+  background-position: -26px -26px;
+}
+.icon-tool-button {
+  background-position: -52px -26px;
+}
+.icon-tool-file {
+  background-position: -78px -26px;
+}
+.icon-tool-hidden {
+  background-position: -104px -26px;
+}
+.icon-tool-image {
+  background-position: -130px -26px;
+}
+.icon-tool-select {
+  background-position: -156px -26px;
+}
+.icon-tool-multiselect {
+  background-position: -182px -26px;
 }
 .btn-group {
   position: relative;
@@ -4931,6 +4989,64 @@ button.close {
 }
 .viewport {
   overflow-x: auto;
+  border: 1px solid #dddddd;
+  border-collapse: separate;
+  *border-collapse: collapse;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.viewport table {
+  border: 0;
+  margin: 0;
+}
+.viewport table tr th:first-child,
+.viewport table tr td:first-child {
+  border-left: 0;
+}
+.toolbox,
+.control-box {
+  padding: 10px;
+  margin-left: 0;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);  
+}
+.control-area > li,
+.toolbox > li {
+  display: inline-table;
+  padding: 5px;
+  margin: 5px;
+  background: #fbfbfb;
+  width: 146px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  cursor: move;
+}
+.control-area > li:hover,
+.toolbox > li:hover {
+  background: #fff;
+}
+.toolbox > li.heading,
+.toolbox > li:hover.heading {
+  font-size: 18px;
+  color: #555;
+  display: block;
+  background: transparent;
+}
+.control-box h1 {
+  font-size: 24px;
+  line-height: 40px;
+}
+.control-box .control-area {
+  min-height: 100px;
 }
 @media (min-width: 768px) and (max-width: 979px) {
   .hidden-desktop {

@@ -33,7 +33,15 @@ class Controls extends CI_Controller {
 	*/
 	public function add()
 	{
-		$this->template->load('site_admin/welcome');
+		// Assign view data
+		$data = array(
+			'page_title'	=> $this->lang->line('site_adm'),
+			'page_desc'		=> $this->lang->line('manage_controls_exp'),
+			'toolbox_items'	=> $this->control->fetch_controls()
+		);
+
+		// Load the view
+		$this->template->load('site_admin/control_add', $data);
 	}
 
 	// --------------------------------------------------------------------

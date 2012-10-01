@@ -66,7 +66,7 @@ class Hubs extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('site_admin/hubs_view', $data);
+		$this->template->load('site_admin/hub_view', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -97,7 +97,7 @@ class Hubs extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('site_admin/hubs_manage', $data);
+		$this->template->load('site_admin/hub_manage', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -135,7 +135,7 @@ class Hubs extends CI_Controller {
 			);
 
 			// Load the view
-			$this->template->load('site_admin/hubs_create', $data);
+			$this->template->load('site_admin/hub_create', $data);
 		}
 		else if ($category == 'columns')
 		{
@@ -164,7 +164,7 @@ class Hubs extends CI_Controller {
 				);
 
 				// Load the view
-				$this->template->load('site_admin/hubs_cols_add', $data);
+				$this->template->load('site_admin/hub_cols_add', $data);
 			}
 			else
 			{
@@ -186,74 +186,97 @@ class Hubs extends CI_Controller {
 		// Get hub data
 		$hub = $this->hubs_model->fetch_hub($hub_id);
 
-		// Rename hub operation
-		if (isset($_POST['rename_hub']))
+		// DB hub operations
+		if ($hub->hub_driver == HUB_DATABASE)
+		{
+			// Rename hub operation
+			if (isset($_POST['rename_hub']))
+			{
+				$this->form_validation->unique_exempts = array('hub_name' => $hub->hub_name);
+
+				if ($this->form_validation->run('site_admin/hubs/edit/rename_hub'))
+				{
+					if ($this->hubs_model->modify_hub())
+					{
+						$this->session->set_flashdata('success_msg', $this->lang->line('hub_renamed'));
+						redirect(base_url('admin/hubs/manage'), 'refresh');
+					}
+					else
+					{
+						$this->template->error_msgs = $this->lang->line('hub_rename_error');
+					}
+				}
+			}
+
+			// Add column to hub
+			if (isset($_POST['add_column']))
+			{
+				if ($this->form_validation->run('site_admin/hubs/edit/add_column'))
+				{
+					if ($this->hubs_model->add_column())
+					{
+						$this->session->set_flashdata('success_msg', $this->lang->line('column_added'));
+						redirect(base_url('admin/hubs/manage'), 'refresh');
+					}
+					else
+					{
+						$this->template->error_msgs = $this->lang->line('column_add_error');
+					}
+				}
+			}
+
+			// Rename hub column
+			if (isset($_POST['rename_column']))
+			{
+				$this->form_validation->unique_exempts = array('column_name' => $this->input->post('column_name_existing'));
+
+				if ($this->form_validation->run('site_admin/hubs/edit/rename_column'))
+				{
+					if ($this->hubs_model->rename_column())
+					{
+						$this->session->set_flashdata('success_msg', $this->lang->line('column_renamed'));
+						redirect(base_url('admin/hubs/manage'), 'refresh');
+					}
+					else
+					{
+						$this->template->error_msgs = $this->lang->line('column_rename_error');
+					}
+				}
+			}
+
+			// Delete hub column
+			if (isset($_POST['delete_column']))
+			{
+				if ($this->form_validation->run('site_admin/hubs/edit/delete_column'))
+				{
+					if ($this->hubs_model->delete_column())
+					{
+						$this->session->set_flashdata('success_msg', $this->lang->line('column_deleted'));
+						redirect(base_url('admin/hubs/manage'), 'refresh');
+					}
+					else
+					{
+						$this->template->error_msgs = $this->lang->line('column_del_error');
+					}
+				}
+			}
+		}
+
+		// RSS hub operations
+		if ($hub->hub_driver == HUB_RSS)
 		{
 			$this->form_validation->unique_exempts = array('hub_name' => $hub->hub_name);
 
-			if ($this->form_validation->run('site_admin/hubs/edit/rename_hub'))
+			if ($this->form_validation->run('site_admin/hubs/edit/modify_hub'))
 			{
-				if ($this->hubs_model->rename_hub())
+				if ($this->hubs_model->modify_hub())
 				{
-					$this->session->set_flashdata('success_msg', $this->lang->line('hub_renamed'));
+					$this->session->set_flashdata('success_msg', $this->lang->line('hub_modified'));
 					redirect(base_url('admin/hubs/manage'), 'refresh');
 				}
 				else
 				{
-					$this->template->error_msgs = $this->lang->line('hub_rename_error');
-				}
-			}
-		}
-
-		// Add column to hub
-		if (isset($_POST['add_column']))
-		{
-			if ($this->form_validation->run('site_admin/hubs/edit/add_column'))
-			{
-				if ($this->hubs_model->add_column())
-				{
-					$this->session->set_flashdata('success_msg', $this->lang->line('column_added'));
-					redirect(base_url('admin/hubs/manage'), 'refresh');
-				}
-				else
-				{
-					$this->template->error_msgs = $this->lang->line('column_add_error');
-				}
-			}
-		}
-
-		// Rename hub column
-		if (isset($_POST['rename_column']))
-		{
-			$this->form_validation->unique_exempts = array('column_name' => $this->input->post('column_name_existing'));
-
-			if ($this->form_validation->run('site_admin/hubs/edit/rename_column'))
-			{
-				if ($this->hubs_model->rename_column())
-				{
-					$this->session->set_flashdata('success_msg', $this->lang->line('column_renamed'));
-					redirect(base_url('admin/hubs/manage'), 'refresh');
-				}
-				else
-				{
-					$this->template->error_msgs = $this->lang->line('column_rename_error');
-				}
-			}
-		}
-
-		// Delete hub column
-		if (isset($_POST['delete_column']))
-		{
-			if ($this->form_validation->run('site_admin/hubs/edit/delete_column'))
-			{
-				if ($this->hubs_model->delete_column())
-				{
-					$this->session->set_flashdata('success_msg', $this->lang->line('column_deleted'));
-					redirect(base_url('admin/hubs/manage'), 'refresh');
-				}
-				else
-				{
-					$this->template->error_msgs = $this->lang->line('column_del_error');
+					$this->template->error_msgs = $this->lang->line('hub_modify_error');
 				}
 			}
 		}
@@ -262,14 +285,13 @@ class Hubs extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_hubs_exp'),
-			'hub_id'		=> $hub->hub_id,
-			'hub_name'		=> $hub->hub_name,
+			'data_types'	=> $this->hubs_model->fetch_datatypes(),
 			'hub_columns'	=> $this->hubs_model->fetch_columns($hub->hub_name),
-			'data_types'	=> $this->hubs_model->fetch_datatypes()
+			'hub'			=> $hub
 		);
 
 		// Load the view
-		$this->template->load('site_admin/hubs_edit', $data);
+		$this->template->load('site_admin/hub_edit', $data);
 	}
 
 	// --------------------------------------------------------------------

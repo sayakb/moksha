@@ -108,17 +108,17 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Renames a hub for the site
+	 * Modifies a hub metadata (name and source)
 	 *
 	 * @access	public
-	 * @param	string	old hub name
-	 * @param	string	new hub name
+	 * @param	string	hub name
+	 * @param	string	new hub data
 	 * @return	object	of class Hub
 	 */
-	public function rename($old_name, $new_name)
+	public function rename($hub_name, $new_data)
 	{
-		$this->CI->db->where('hub_name', $old_name);
-		$this->CI->db->update("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $new_name));
+		$this->CI->db->where('hub_name', $hub_name);
+		$this->CI->db->update("site_hubs_{$this->CI->bootstrap->site_id}", $new_data);
 
 		return $this;
 	}

@@ -219,12 +219,19 @@ class Hubs_model extends CI_Model {
 	 * @access	public
 	 * @return	bool	true if successful
 	 */
-	public function rename_hub()
+	public function update_hub()
 	{
-		$old_name	= $this->input->post('hub_name_existing');
-		$new_name	= $this->input->post('hub_name');
+		$hub_name	= $this->input->post('hub_name_existing');
+		$hub_driver	= $this->input->post('hub_driver');
+		$new_data	= array('hub_name' => $this->input->post('hub_name'));
 
-		$this->hub->rename($old_name, $new_name);
+		// For RSS hub, we update the source as well
+		if ($hub_driver == HUB_RSS)
+		{
+			$new_data['hub_source'] = $this->input->post('hub_source');
+		}
+
+		$this->hub->modify($hub_name, $new_data);
 		return TRUE;
 	}
 
