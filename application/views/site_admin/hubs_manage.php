@@ -34,7 +34,7 @@
 					<td>
 						<?= $this->lang->line('hub_type_'.$hub->hub_driver) ?>
 					</td>
-					
+
 					<td>
 						<a href="<?= base_url('admin/hubs/edit/'.$hub->hub_id) ?>" class="btn btn-mini">
 							<?= $this->lang->line('edit') ?>

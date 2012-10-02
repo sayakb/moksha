@@ -66,7 +66,7 @@ class Hubs extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('site_admin/hub_view', $data);
+		$this->template->load('site_admin/hubs_view', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -97,7 +97,7 @@ class Hubs extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('site_admin/hub_manage', $data);
+		$this->template->load('site_admin/hubs_manage', $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -135,7 +135,7 @@ class Hubs extends CI_Controller {
 			);
 
 			// Load the view
-			$this->template->load('site_admin/hub_create', $data);
+			$this->template->load('site_admin/hubs_create', $data);
 		}
 		else if ($category == 'columns')
 		{
@@ -164,7 +164,7 @@ class Hubs extends CI_Controller {
 				);
 
 				// Load the view
-				$this->template->load('site_admin/hub_cols_add', $data);
+				$this->template->load('site_admin/hubs_cols_add', $data);
 			}
 			else
 			{
@@ -291,7 +291,7 @@ class Hubs extends CI_Controller {
 		);
 
 		// Load the view
-		$this->template->load('site_admin/hub_edit', $data);
+		$this->template->load('site_admin/hubs_edit', $data);
 	}
 
 	// --------------------------------------------------------------------

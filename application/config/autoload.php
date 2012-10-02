@@ -79,7 +79,8 @@ $autoload['libraries'] = array(
 $autoload['helper'] = array(
 	'url',
 	'form',
-	'auth'
+	'auth',
+	'array'
 );
 
 

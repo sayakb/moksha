@@ -81,6 +81,23 @@ $lang['field_image']			= 'Image';
 $lang['field_select']			= 'Select menu';
 $lang['field_multiselect']		= 'Multi-select';
 $lang['add_control']			= 'Add new control';
+$lang['edit_control']			= 'Edit control';
+$lang['control']				= 'Control';
+$lang['control_list']			= 'List of controls';
+$lang['control_exp']			= 'Drag or double-click on a control from the toolbox to add it to the control';
+$lang['control_name']			= 'Control name';
+$lang['control_required']		= 'At least one control must be added';
+$lang['control_invalid']		= 'One or more controls added are invalid';
+$lang['control_added']			= 'Control has been added successfully';
+$lang['control_add_error']		= 'An error occurred while adding the control';
+$lang['control_updated']		= 'Control has been updated successfully';
+$lang['control_update_error']	= 'An error occurred while updating the control';
+$lang['control_deleted']		= 'Control has been deleted successfully';
+$lang['control_del_error']		= 'An error occurred while deleting the control';
+$lang['control_del_confirm']	= 'Are you sure you want to delete this control?';
+$lang['add_new_control']		= 'Add new control';
+$lang['no_controls']			= 'No controls have been added yet. Click on the <em>Add new control</em> button to create a new one.';
+$lang['back_control_mgmt']		= 'Back to control management';
 
 
 /* End of file site_admin_lang.php */

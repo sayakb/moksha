@@ -25,12 +25,12 @@ class Control {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetch a list of controls
+	 * Fetch different types of available controls
 	 *
 	 * @access	public
 	 * @return	array	control list
 	 */
-	public function fetch_controls()
+	public function fetch_types()
 	{
 		return array(
 			'paragraph' => (object)array(
@@ -110,6 +110,104 @@ class Control {
 				'label'	=> 'field_multiselect',
 			)
 		);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches a list of controls for the site
+	 *
+	 * @access	public
+	 * @return	array	list of controls
+	 */
+	public function fetch_all()
+	{
+		return $this->CI->db->get("site_controls_{$this->CI->bootstrap->site_id}")->result();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches a specific control for a site
+	 *
+	 * @access	public
+	 * @param	int		control identifier
+	 * @return	object	control details
+	 */
+	public function fetch($control_id)
+	{
+		$this->CI->db->where('control_id', $control_id);
+		return $this->CI->db->get("site_controls_{$this->CI->bootstrap->site_id}")->row();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches a count of controls added to the site
+	 *
+	 * @access	public
+	 * @return	int		count of controls
+	 */
+	public function count()
+	{
+		return $this->CI->db->count_all("site_controls_{$this->CI->bootstrap->site_id}");
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add a new control to the DB
+	 *
+	 * @access	public
+	 * @param	string	control name
+	 * @param	array	controls to add
+	 * @return	bool	true if succeeded
+	 */
+	public function add($control_name, $controls)
+	{
+		$data = array(
+			'control_name'		=> $control_name,
+			'control_elements'	=> serialize($controls)
+		);
+
+		return $this->CI->db->insert("site_controls_{$this->CI->bootstrap->site_id}", $data);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Updated an existing control
+	 *
+	 * @access	public
+	 * @param	int		control identifier
+	 * @param	string	control name
+	 * @param	array	controls to add
+	 * @return	bool	true if succeeded
+	 */
+	public function update($control_id, $control_name, $controls)
+	{
+		$data = array(
+			'control_name'		=> $control_name,
+			'control_elements'	=> serialize($controls)
+		);
+
+		$this->CI->db->where('control_id', $control_id);
+		return $this->CI->db->update("site_controls_{$this->CI->bootstrap->site_id}", $data);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Deletes a specific control
+	 *
+	 * @access	public
+	 * @param	int		control identifier
+	 * @return	bool	true if succeeded
+	 */
+	public function delete($control_id)
+	{
+		$this->CI->db->where('control_id', $control_id);
+		return $this->CI->db->delete("site_controls_{$this->CI->bootstrap->site_id}");
 	}
 
 	// --------------------------------------------------------------------

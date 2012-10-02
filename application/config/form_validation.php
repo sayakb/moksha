@@ -228,6 +228,22 @@ $config = array(
 			'label'	=>	'lang:column_name',
 			'rules'	=>	'callback_check_column_dropdown'
 		)
+	),
+
+	// Site admin: add control
+	'site_admin/controls/add' => array(
+		array(
+			'field'	=>	'control_name',
+			'label'	=>	'lang:control_name',
+			'rules'	=>	'required|'.
+						'alpha_dash|'.
+						'is_unique[site_controls.control_name]'
+		),
+		array(
+			'field'	=>	'controls',
+			'label'	=>	'lang:controls',
+			'rules'	=>	'callback_check_controls'
+		)
 	)
 );
 

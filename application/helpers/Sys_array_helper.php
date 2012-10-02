@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Moksha Array Helper
+ * Moksha Array Helper extension
  *
  * @package		Moksha
  * @category	Helpers
