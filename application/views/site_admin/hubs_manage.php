@@ -60,5 +60,5 @@
 
 <script type="text/javascript">
 	// Clear localStorage to reset tabs, if we were in edit mode
-	localStorage.clear();
+	localStorage.removeItem('moksha_last_tab');
 </script>

@@ -530,7 +530,7 @@ if ( ! function_exists('form_label'))
 			}
 		}
 
-		$label .= ">$label_text</label>";
+		$label .= ">$label_text</div>";
 
 		return $label;
 	}

@@ -30,9 +30,9 @@ $config['menus']['site_admin'] = array(
 		'label'	=> 'homepage'
 	),
 
-	'controls'	=> array(
-		'url'	=> 'admin/controls/manage',
-		'label'	=> 'manage_controls'
+	'widgets'	=> array(
+		'url'	=> 'admin/widgets/manage',
+		'label'	=> 'manage_widgets'
 	),
 
 	'hubs'		=> array(

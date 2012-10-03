@@ -9,6 +9,7 @@ $lang['actions']			= 'Actions';
 $lang['edit']				= 'Edit';
 $lang['delete']				= 'Delete';
 $lang['confirm']			= 'Confirm';
+$lang['cancel']				= 'Cancel';
 $lang['yes']				= 'Yes';
 $lang['no']					= 'No';
 $lang['confirm_action']		= 'Are you sure you want to carry out this operation?';

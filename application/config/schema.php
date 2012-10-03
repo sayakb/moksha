@@ -127,29 +127,29 @@ $config['schema']['site_users'] = array(
 	)
 );
 
-$config['schema']['site_controls'] = array(
+$config['schema']['site_widgets'] = array(
 	'fields' => array(
-		'control_id' => array(
+		'widget_id' => array(
 			'type'				=> 'BIGINT',
 			'constraint'		=> 20,
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
 
-		'control_name' => array(
+		'widget_name' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
 
-		'control_elements' => array(
+		'widget_data' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		)
 	),
 
 	'keys' => array(
-		'control_id'			=> TRUE
+		'widget_id'			=> TRUE
 	)
 );
 

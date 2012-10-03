@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="<?= base_url('assets/js/jquery.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/jquery-ui.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/script.js') ?>"></script>
+	<script type="text/javascript" src="<?= base_url('assets/js/utils.js') ?>"></script>
 </head>
 <body>
 	<div class="container">

@@ -230,18 +230,43 @@ $config = array(
 		)
 	),
 
-	// Site admin: add control
-	'site_admin/controls/add' => array(
+	// Site admin: add widget
+	'site_admin/widgets/add' => array(
 		array(
-			'field'	=>	'control_name',
-			'label'	=>	'lang:control_name',
+			'field'	=>	'widget_name',
+			'label'	=>	'lang:widget_name',
 			'rules'	=>	'required|'.
 						'alpha_dash|'.
-						'is_unique[site_controls.control_name]'
+						'is_unique[site_widgets.widget_name]'
 		),
 		array(
-			'field'	=>	'controls',
-			'label'	=>	'lang:controls',
+			'field'	=>	'control_keys[]',
+			'label'	=>	'lang:control_keys',
+			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'control_classes[]',
+			'label'	=>	'lang:control_classes',
+			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'control_disp_paths[]',
+			'label'	=>	'lang:control_disp_paths',
+			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'control_value_paths[]',
+			'label'	=>	'lang:control_value_paths',
+			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'control_formats[]',
+			'label'	=>	'lang:control_formats',
+			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'submit',
+			'label'	=>	'lang:controls_required',
 			'rules'	=>	'callback_check_controls'
 		)
 	)

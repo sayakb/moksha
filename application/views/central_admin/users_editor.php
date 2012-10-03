@@ -8,9 +8,9 @@
 	</legend>
 
 	<div class="control-group">
-		<div class="control-label">
+		<label class="control-label">
 			<?= $this->lang->line('username') ?>
-		</div>
+		</label>
 
 		<div class="controls">
 			<?= form_input('username', $username) ?>
@@ -18,9 +18,9 @@
 	</div>
 
 	<div class="control-group">
-		<div class="control-label">
+		<label class="control-label">
 			<?= $this->lang->line('email_address') ?>
-		</div>
+		</label>
 
 		<div class="controls">
 			<?= form_input('email', $email) ?>
@@ -28,9 +28,9 @@
 	</div>
 
 	<div class="control-group">
-		<div class="control-label">
+		<label class="control-label">
 			<?= $this->lang->line('password') ?>
-		</div>
+		</label>
 
 		<div class="controls">
 			<?= form_password('password') ?>
@@ -38,9 +38,9 @@
 	</div>
 
 	<div class="control-group">
-		<div class="control-label">
+		<label class="control-label">
 			<?= $this->lang->line('confirm_password') ?>
-		</div>
+		</label>
 
 		<div class="controls">
 			<?= form_password('confirm_password') ?>

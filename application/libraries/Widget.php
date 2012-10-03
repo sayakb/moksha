@@ -1,14 +1,14 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Control Library for Moksha
+ * Widget Library for Moksha
  *
- * This class handles actions related to site controls
+ * This class handles actions related to site widgets
  *
  * @package		Moksha
  * @category	Libraries
  * @author		Moksha Team
  */
-class Control {
+class Widget {
 
 	var $CI;
 
@@ -30,7 +30,7 @@ class Control {
 	 * @access	public
 	 * @return	array	control list
 	 */
-	public function fetch_types()
+	public function fetch_controls()
 	{
 		return array(
 			'paragraph' => (object)array(
@@ -115,104 +115,104 @@ class Control {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetches a list of controls for the site
+	 * Fetches a list of widgets for the site
 	 *
 	 * @access	public
-	 * @return	array	list of controls
+	 * @return	array	list of widgets
 	 */
 	public function fetch_all()
 	{
-		return $this->CI->db->get("site_controls_{$this->CI->bootstrap->site_id}")->result();
+		return $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->result();
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetches a specific control for a site
+	 * Fetches a specific widget for a site
 	 *
 	 * @access	public
-	 * @param	int		control identifier
-	 * @return	object	control details
+	 * @param	int		widget identifier
+	 * @return	object	widget details
 	 */
-	public function fetch($control_id)
+	public function fetch($widget_id)
 	{
-		$this->CI->db->where('control_id', $control_id);
-		return $this->CI->db->get("site_controls_{$this->CI->bootstrap->site_id}")->row();
+		$this->CI->db->where('widget_id', $widget_id);
+		return $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->row();
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetches a count of controls added to the site
+	 * Fetches a count of widgets added to the site
 	 *
 	 * @access	public
-	 * @return	int		count of controls
+	 * @return	int		count of widgets
 	 */
 	public function count()
 	{
-		return $this->CI->db->count_all("site_controls_{$this->CI->bootstrap->site_id}");
+		return $this->CI->db->count_all("site_widgets_{$this->CI->bootstrap->site_id}");
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Add a new control to the DB
+	 * Add a new widget to the DB
 	 *
 	 * @access	public
-	 * @param	string	control name
-	 * @param	array	controls to add
+	 * @param	string	widget name
+	 * @param	array	widget metadata
 	 * @return	bool	true if succeeded
 	 */
-	public function add($control_name, $controls)
+	public function add($widget_name, $widget_data)
 	{
 		$data = array(
-			'control_name'		=> $control_name,
-			'control_elements'	=> serialize($controls)
+			'widget_name'	=> $widget_name,
+			'widget_data'	=> serialize($widget_data)
 		);
 
-		return $this->CI->db->insert("site_controls_{$this->CI->bootstrap->site_id}", $data);
+		return $this->CI->db->insert("site_widgets_{$this->CI->bootstrap->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Updated an existing control
+	 * Updated an existing widget
 	 *
 	 * @access	public
-	 * @param	int		control identifier
-	 * @param	string	control name
-	 * @param	array	controls to add
+	 * @param	int		widget identifier
+	 * @param	string	widget name
+	 * @param	array	widget metadata
 	 * @return	bool	true if succeeded
 	 */
-	public function update($control_id, $control_name, $controls)
+	public function update($widget_id, $widget_name, $widget_data)
 	{
 		$data = array(
-			'control_name'		=> $control_name,
-			'control_elements'	=> serialize($controls)
+			'widget_name'	=> $widget_name,
+			'widget_data'	=> serialize($widget_data)
 		);
 
-		$this->CI->db->where('control_id', $control_id);
-		return $this->CI->db->update("site_controls_{$this->CI->bootstrap->site_id}", $data);
+		$this->CI->db->where('widget_id', $widget_id);
+		return $this->CI->db->update("site_widgets_{$this->CI->bootstrap->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Deletes a specific control
+	 * Deletes a specific widget
 	 *
 	 * @access	public
-	 * @param	int		control identifier
+	 * @param	int		widget identifier
 	 * @return	bool	true if succeeded
 	 */
-	public function delete($control_id)
+	public function delete($widget_id)
 	{
-		$this->CI->db->where('control_id', $control_id);
-		return $this->CI->db->delete("site_controls_{$this->CI->bootstrap->site_id}");
+		$this->CI->db->where('widget_id', $widget_id);
+		return $this->CI->db->delete("site_widgets_{$this->CI->bootstrap->site_id}");
 	}
 
 	// --------------------------------------------------------------------
 }
-// END Control class
+// END Widget class
 
-/* End of file Control.php */
-/* Location: ./application/libraries/Control.php */
+/* End of file Widget.php */
+/* Location: ./application/libraries/Widget.php */

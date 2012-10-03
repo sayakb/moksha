@@ -36,9 +36,9 @@
 			<div id="rename-hub" class="tab-pane active fade in">
 				<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 					<div class="control-group">
-						<div class="control-label">
+						<label class="control-label">
 							<?= $this->lang->line('hub_name') ?>
-						</div>
+						</label>
 
 						<div class="controls">
 							<?= form_input('hub_name', set_value('hub_name', $hub->hub_name)) ?>
@@ -57,9 +57,9 @@
 			<div id="add-column" class="tab-pane fade">
 				<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 					<div class="control-group">
-						<div class="control-label">
+						<label class="control-label">
 							<?= $this->lang->line('column_name') ?>
-						</div>
+						</label>
 
 						<div class="controls">
 							<?= form_input('column_name', set_value('column_name')) ?>
@@ -67,9 +67,9 @@
 					</div>
 
 					<div class="control-group">
-						<div class="control-label">
+						<label class="control-label">
 							<?= $this->lang->line('data_type') ?>
-						</div>
+						</label>
 
 						<div class="controls">
 							<?= form_dropdown('column_datatype', $data_types, set_value('column_datatype')) ?>
@@ -86,9 +86,9 @@
 			<div id="rename-column" class="tab-pane fade">
 				<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 					<div class="control-group">
-						<div class="control-label">
+						<label class="control-label">
 							<?= $this->lang->line('column_name') ?>
-						</div>
+						</label>
 
 						<div class="controls">
 							<?= form_dropdown('column_name_existing', $hub_columns, set_value('column_name_existing')) ?>
@@ -96,9 +96,9 @@
 					</div>
 
 					<div class="control-group">
-						<div class="control-label">
+						<label class="control-label">
 							<?= $this->lang->line('column_name_new') ?>
-						</div>
+						</label>
 
 						<div class="controls">
 							<?= form_input('column_name', set_value('column_name')) ?>
@@ -115,9 +115,9 @@
 			<div id="delete-column" class="tab-pane fade">
 				<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 					<div class="control-group">
-						<div class="control-label">
+						<label class="control-label">
 							<?= $this->lang->line('column_name') ?>
-						</div>
+						</label>
 
 						<div class="controls">
 							<?= form_dropdown('column_name_existing', $hub_columns, set_value('column_name_existing')) ?>
@@ -137,7 +137,7 @@
 	<script type="text/javascript">
 		$(function() {
 			// Go to the save tab, if it is set
-			var lastTab = localStorage.getItem('lastTab');
+			var lastTab = localStorage.getItem('moksha_last_tab');
 
 			if (lastTab) {
 				$('a[href=' + lastTab + ']').tab('show');
@@ -146,7 +146,7 @@
 
 		// Save the current table to local storage
 		$('a[data-toggle="tab"]').on('shown', function (e) {
-			localStorage.setItem('lastTab', $(e.target).attr('href'));
+			localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
 		});
 	</script>
 <?php elseif ($hub->hub_driver == HUB_RSS): ?>
@@ -160,9 +160,9 @@
 		</legend>
 
 		<div class="control-group">
-			<div class="control-label">
+			<label class="control-label">
 				<?= $this->lang->line('hub_name') ?>
-			</div>
+			</label>
 
 			<div class="controls">
 				<?= form_input('hub_name', set_value('hub_name', $hub->hub_name)) ?>
@@ -170,9 +170,9 @@
 		</div>
 
 		<div class="control-group">
-			<div class="control-label">
+			<label class="control-label">
 				<?= $this->lang->line('hub_source') ?>
-			</div>
+			</label>
 
 			<div class="controls">
 				<?= form_input('hub_source', set_value('hub_source', $hub->hub_source)) ?>
