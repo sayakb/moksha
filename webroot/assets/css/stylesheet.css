@@ -6167,8 +6167,8 @@ to
 	left: 50%;
 	z-index: 1050;
 	overflow: auto;
-	width: 560px;
-	margin: -250px 0 0 -280px;
+	width: 940px;
+	margin: -250px 0 0 -470px;
 	background-color: #ffffff;
 	border: 1px solid #999;
 	border: 1px solid rgba(0, 0, 0, 0.3);
@@ -6978,56 +6978,11 @@ button.close
 #modal-properties input,
 #modal-properties textarea
 {
-	width: 360px;
+	width: 760px;
+	max-width: 760px;
 }
 
-@media (min-width: 768px) and (max-width: 979px)
-{
-	.hidden-desktop
-	{
-		display: inherit !important;
-	}
-
-	.visible-desktop
-	{
-		display: none !important;
-	}
-
-	.visible-tablet
-	{
-		display: inherit !important;
-	}
-
-	.hidden-tablet
-	{
-		display: none !important;
-	}
-}
-
-@media (max-width: 767px)
-{
-	.hidden-desktop
-	{
-		display: inherit !important;
-	}
-
-	.visible-desktop
-	{
-		display: none !important;
-	}
-
-	.visible-phone
-	{
-		display: inherit !important;
-	}
-
-	.hidden-phone
-	{
-		display: none !important;
-	}
-}
-
-@media (min-width: 768px) and (max-width: 979px)
+@media (max-width: 979px)
 {
 	.row
 	{
@@ -7506,6 +7461,19 @@ button.close
 	input.span1, textarea.span1, .uneditable-input.span1
 	{
 		width: 28px;
+	}
+
+	.modal
+	{
+		width: 720px;
+		margin-left: -360px;
+	}
+
+	#modal-properties input,
+	#modal-properties textarea
+	{
+		width: 540px;
+		max-width: 540px;
 	}
 }
 
@@ -8003,5 +7971,18 @@ button.close
 	.row-fluid .thumbnails
 	{
 		margin-left: 0;
+	}
+
+	.modal
+	{
+		width: 1170px;
+		margin-left: -585px;
+	}
+
+	#modal-properties input,
+	#modal-properties textarea
+	{
+		width: 990px;
+		max-width: 990px;
 	}
 }
