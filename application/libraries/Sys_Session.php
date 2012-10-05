@@ -15,16 +15,21 @@ class Sys_Session extends CI_Session {
 	 */
 	public function __construct($params = array())
 	{
-		$this->CI =& get_instance();
-		$table_name = $this->CI->config->item('sess_table_name');
+		$this->CI		=& get_instance();
+		$cookie_name	= $this->CI->config->item('sess_cookie_name');
+		$table_name		= $this->CI->config->item('sess_table_name');
 
 		if (in_central())
 		{
-			$params['sess_table_name'] = "central_{$table_name}";
+			$params['sess_cookie_name']	= "moksha_{$cookie_name}";
+			$params['sess_table_name']	= "central_{$table_name}";
 		}
 		else
 		{
-			$params['sess_table_name'] = "site_{$table_name}_{$this->CI->bootstrap->site_id}";
+			$key = crc32("{$cookie_name}{$this->CI->bootstrap->site_id}");
+
+			$params['sess_cookie_name']	= "moksha_{$key}";
+			$params['sess_table_name']	= "site_{$table_name}_{$this->CI->bootstrap->site_id}";
 		}
 
 		parent::__construct($params);

@@ -172,6 +172,39 @@ class Widgets extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Validates value paths of the controls
+	 *
+	 * @access	public
+	 * @param	array	value paths
+	 * @return	bool	true if valid
+	 */
+	public function check_paths($path)
+	{
+		$path		= trim($path);
+		$hub_name	= $this->input->post('attached_hub');
+
+		if (empty($path))
+		{
+			return TRUE;
+		}
+
+		if ($hub_name != '-1')
+		{
+			$columns = $this->hub->column_list($hub_name);
+
+			if (in_array($path, $columns))
+			{
+				return TRUE;
+			}
+		}
+
+		$this->form_validation->set_message('check_paths', $this->lang->line('invalid_value_path'));
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Validates attached hub name
 	 *
 	 * @access	public

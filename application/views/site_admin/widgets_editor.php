@@ -166,7 +166,7 @@
 				</label>
 
 				<div class="controls">
-					<?= form_textarea(array('name' => 'control_value_path', 'rows' => '5')) ?>
+					<?= form_input('control_value_path') ?>
 					<div class="help-block"><?= $this->lang->line('control_value_exp') ?></div>
 				</div>
 			</div>
@@ -243,51 +243,53 @@
 
 	setInterval(function() {
 		// Control configuration
-		$('.control-configure').click(function() {
-			var $parent		= $(this).parent();
-			var ctrl_hash	= hash();
+		$('.control-configure')
+			.off()
+			.on('click', function() {
+				var $parent		= $(this).parent();
+				var ctrl_hash	= hash();
 
-			// Save the hash for future reference
-			$parent.attr('id', ctrl_hash);
-			localStorage.setItem('moksha_current_control', ctrl_hash);
+				// Save the hash for future reference
+				$parent.attr('id', ctrl_hash);
+				localStorage.setItem('moksha_current_control', ctrl_hash);
 
-			// Populate data from hidden fields
-			var classes		= $parent.children('[name="control_classes[]"]').first().val();
-			var disp_path	= $parent.children('[name="control_disp_paths[]"]').first().val();
-			var value_path	= $parent.children('[name="control_value_paths[]"]').first().val();
-			var format		= $parent.children('[name="control_formats[]"]').first().val();
+				// Populate data from hidden fields
+				var classes		= $parent.children('[name="control_classes[]"]').first().val();
+				var disp_path	= $parent.children('[name="control_disp_paths[]"]').first().val();
+				var value_path	= $parent.children('[name="control_value_paths[]"]').first().val();
+				var format		= $parent.children('[name="control_formats[]"]').first().val();
 
-			$('[name=control_class]').val(classes);
-			$('[name=control_disp_path]').val(disp_path);
-			$('[name=control_value_path]').val(value_path);
-			$('[name=control_format]').val(format);
+				$('[name=control_class]').val(classes);
+				$('[name=control_disp_path]').val(disp_path);
+				$('[name=control_value_path]').val(value_path);
+				$('[name=control_format]').val(format);
 
-			// Show the modal config window
-			$('#modal-properties').modal('show');
+				// Show the modal config window
+				$('#modal-properties').modal('show');
 
-			return false;
-		});
-		
-		// Write data to hidden fields when closing
-		$('#modal-submit').click(function() {
-			// Get the modal form data
-			var classes		= $('[name=control_class]').val();
-			var disp_path	= $('[name=control_disp_path]').val();
-			var value_path	= $('[name=control_value_path]').val();
-			var format		= $('[name=control_format]').val();
-
-			var key = localStorage.getItem('moksha_current_control');
-			localStorage.removeItem('moksha_current_control');
-
-			$('#' + key).children('[name="control_classes[]"]').val(classes);
-			$('#' + key).children('[name="control_disp_paths[]"]').val(disp_path);
-			$('#' + key).children('[name="control_value_paths[]"]').val(value_path);
-			$('#' + key).children('[name="control_formats[]"]').val(format);
-			
-			// Clear modal text boxes
-			$(this).children('input[type=text]').val('');
-		});
+				return false;
+			});
 	}, 500);
+
+	// Write data to hidden fields when closing
+	$('#modal-submit').click(function() {
+		// Get the modal form data
+		var classes		= $('[name=control_class]').val();
+		var disp_path	= $('[name=control_disp_path]').val();
+		var value_path	= $('[name=control_value_path]').val();
+		var format		= $('[name=control_format]').val();
+
+		var key = localStorage.getItem('moksha_current_control');
+		localStorage.removeItem('moksha_current_control');
+
+		$('#' + key).children('[name="control_classes[]"]').val(classes);
+		$('#' + key).children('[name="control_disp_paths[]"]').val(disp_path);
+		$('#' + key).children('[name="control_value_paths[]"]').val(value_path);
+		$('#' + key).children('[name="control_formats[]"]').val(format);
+
+		// Clear modal text boxes
+		$(this).children('input[type=text]').val('');
+	});
 
 	// Save the current table to local storage
 	$('a[data-toggle="tab"]').on('shown', function (e) {

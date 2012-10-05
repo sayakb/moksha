@@ -6975,7 +6975,6 @@ button.close
 	margin-left: 120px;
 }
 
-#modal-properties input,
 #modal-properties textarea
 {
 	width: 760px;
@@ -7475,7 +7474,6 @@ button.close
 		margin-left: -360px;
 	}
 
-	#modal-properties input,
 	#modal-properties textarea
 	{
 		width: 540px;
@@ -7985,7 +7983,6 @@ button.close
 		margin-left: -585px;
 	}
 
-	#modal-properties input,
 	#modal-properties textarea
 	{
 		width: 990px;

@@ -14,8 +14,7 @@ $config = array(
 			'field'	=>	'username',
 			'label'	=>	'lang:username',
 			'rules'	=>	'required|'.
-						'min_length[3]|'.
-						'max_length[100]'
+						'xss_clean'
 		),
 		array(
 			'field'	=>	'password',
@@ -248,6 +247,11 @@ $config = array(
 			'field'	=>	'control_classes[]',
 			'label'	=>	'lang:control_classes',
 			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'control_value_paths[]',
+			'label'	=>	'lang:control_value_paths',
+			'rules'	=>	'callback_check_paths'
 		),
 		array(
 			'field'	=>	'control_formats[]',
