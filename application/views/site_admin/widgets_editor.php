@@ -18,49 +18,111 @@
 	</div>
 	<hr />
 
-	<div class="alert alert-info">
-		<?= $this->lang->line('widget_exp') ?>
-	</div>
+	<div class="tabbable">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a href="#control-config" data-toggle="tab"><?= $this->lang->line('control_config') ?></a>
+			</li>
 
-	<div class="toolbox">
-		<h1><?= $this->lang->line('toolbox') ?></h1>
+			<li>
+				<a href="#hub-config" data-toggle="tab"><?= $this->lang->line('hub_config') ?></a>
+			</li>
+		</ul>
 
-		<div class="toolbox-area">
-			<?php foreach($toolbox_items as $key => $item): ?>
-				<span class="control">
-					<i class="icon-tool-<?= $item->icon ?>"></i>
-					<?= $this->lang->line($item->label) ?>
+		<div class="tab-content">
+			<div id="control-config" class="tab-pane active fade in">
+				<div class="alert alert-info">
+					<?= $this->lang->line('widget_exp') ?>
+				</div>
 
-					<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-configure">
-						<i class="icon-wrench"></i>
-					</a>
+				<div class="toolbox">
+					<h1><?= $this->lang->line('toolbox') ?></h1>
 
-					<?= form_hidden('toolbox_keys[]', $key) ?>
-				</span>
-			<?php endforeach ?>
-		</div>
-	</div>
+					<div class="toolbox-area">
+						<?php foreach($toolbox_items as $key => $item): ?>
+							<span class="control">
+								<i class="icon-tool-<?= $item->icon ?>"></i>
+								<?= $this->lang->line($item->label) ?>
 
-	<div class="widget-box">
-		<h1><?= $this->lang->line('widget') ?></h1>
-		<div class="widget-area"></div>
-		<div class="widget-autoloaded">
-			<?php foreach($widget_items as $item): ?>
-				<span class="control dropped">
-					<i class="icon-tool-<?= $item->icon ?>"></i>
-					<?= $this->lang->line($item->label) ?>
+								<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-configure">
+									<i class="icon-wrench"></i>
+								</a>
 
-					<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-configure">
-						<i class="icon-wrench"></i>
-					</a>
+								<?= form_hidden('toolbox_keys[]', $key) ?>
+							</span>
+						<?php endforeach ?>
+					</div>
+				</div>
 
-					<?= form_hidden('control_keys[]', $item->key) ?>
-					<?= form_hidden('control_classes[]', $item->classes) ?>
-					<?= form_hidden('control_disp_paths[]', $item->disp_paths) ?>
-					<?= form_hidden('control_value_paths[]', $item->value_paths) ?>
-					<?= form_hidden('control_formats[]', $item->formats) ?>
-				</span>
-			<?php endforeach ?>
+				<div class="widget-box">
+					<h1><?= $this->lang->line('widget') ?></h1>
+					<div class="widget-area"></div>
+					<div class="widget-autoloaded">
+						<?php foreach($widget_items as $item): ?>
+							<span class="control dropped">
+								<i class="icon-tool-<?= $item->icon ?>"></i>
+								<?= $this->lang->line($item->label) ?>
+
+								<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-configure">
+									<i class="icon-wrench"></i>
+								</a>
+
+								<?= form_hidden('control_keys[]', $item->key) ?>
+								<?= form_hidden('control_classes[]', $item->classes) ?>
+								<?= form_hidden('control_disp_paths[]', $item->disp_paths) ?>
+								<?= form_hidden('control_value_paths[]', $item->value_paths) ?>
+								<?= form_hidden('control_formats[]', $item->formats) ?>
+							</span>
+						<?php endforeach ?>
+					</div>
+				</div>
+			</div>
+
+			<div id="hub-config" class="tab-pane fade">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('attached_hub') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_dropdown('attached_hub', $hubs_list, $attached_hub) ?>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('data_filters') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_textarea(array('name' => 'data_filters', 'rows' => '4'), $data_filters) ?>
+							<div class="help-block"><?= $this->lang->line('data_filters_exp') ?></div>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('order_by') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_textarea(array('name' => 'order_by', 'rows' => '4'), $order_by) ?>
+							<div class="help-block"><?= $this->lang->line('order_by_exp') ?></div>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('max_records') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_input('max_records', $max_records) ?>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -167,11 +229,18 @@
 			},
 		});
 
+		// Go to the saved tab, if it is set
+		var lastTab = localStorage.getItem('moksha_last_tab');
+
+		if (lastTab) {
+			$('a[href=' + lastTab + ']').tab('show');
+		}
+
 		// Prepare auto-load
 		$('.widget-area').html($('.widget-autoloaded').html());
 		$('.widget-autoloaded').remove();
 	});
-		
+
 	setInterval(function() {
 		// Control configuration
 		$('.control-configure').click(function() {
@@ -219,6 +288,11 @@
 			$(this).children('input[type=text]').val('');
 		});
 	}, 500);
+
+	// Save the current table to local storage
+	$('a[data-toggle="tab"]').on('shown', function (e) {
+		localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
+	});
 
 	// Add/remove controls from the widget
 	function addControl(controlHTML) {

@@ -227,6 +227,28 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Get column list for a specific hub
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @return	array	containing column list
+	 */
+	public function column_list($hub_name)
+	{
+		$columns_data	= $this->schema($hub_name);
+		$columns_ary	= array();
+
+		foreach ($columns_data as $name => $data_type)
+		{
+			$columns_ary[$name] = $name;
+		}
+
+		return $columns_ary;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Selects data from a hub
 	 *
 	 * @access	public

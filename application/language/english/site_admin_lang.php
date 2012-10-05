@@ -1,10 +1,10 @@
 <?php
 
 $lang['site_adm']				= 'Moksha Administration';
-$lang['manage_hubs']			= 'Manage site hubs';
+$lang['manage_hubs']			= 'Manage hubs';
 $lang['manage_hubs_exp']		= 'Add and edit hubs associated with this site';
-$lang['manage_widgets']		= 'Manage widgets';
-$lang['manage_widgets_exp']	= 'Manage widgets that can be added to Moksha pages';
+$lang['manage_widgets']			= 'Manage widgets';
+$lang['manage_widgets_exp']		= 'Manage widgets that can be added to Moksha pages';
 $lang['view_hubs_exp']			= 'View data stored within a hub';
 $lang['manage_users']			= 'Manage users';
 $lang['add_new_hub']			= 'Add new hub';
@@ -108,6 +108,17 @@ $lang['widget_del_confirm']		= 'Are you sure you want to delete this widget?';
 $lang['add_new_widget']			= 'Add new widget';
 $lang['no_widgets']				= 'No widgets have been added yet. Click on the <em>Add new widget</em> button to create a new one.';
 $lang['back_widget_mgmt']		= 'Back to widget management';
+$lang['control_config']			= 'Controls configuration';
+$lang['hub_config']				= 'Hub configuration';
+$lang['attached_hub']			= 'Attached hub';
+$lang['data_filters']			= 'Data filter';
+$lang['data_filters_exp']		= 'Enter each condition in a new line';
+$lang['order_by']				= 'Order by';
+$lang['order_by_exp']			= 'Enter each column in a new line';
+$lang['max_records']			= 'Max. records';
+$lang['invalid_hub']			= 'Please select a hub to attach';
+$lang['invalid_filter']			= 'Invalid data filter entered';
+$lang['invalid_orderby']		= 'Invalid order-by value entered';
 
 
 /* End of file site_admin_lang.php */

@@ -136,7 +136,7 @@
 
 	<script type="text/javascript">
 		$(function() {
-			// Go to the save tab, if it is set
+			// Go to the saved tab, if it is set
 			var lastTab = localStorage.getItem('moksha_last_tab');
 
 			if (lastTab) {

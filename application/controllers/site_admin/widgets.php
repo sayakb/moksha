@@ -81,9 +81,14 @@ class Widgets extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('add_widget'),
+			'toolbox_items'	=> $this->widget->fetch_controls(),
 			'widget_items'	=> $this->widgets_model->populate_controls(),
+			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name'),
-			'toolbox_items'	=> $this->widget->fetch_controls()
+			'attached_hub'	=> set_value('attached_hub'),
+			'data_filters'	=> set_value('data_filters'),
+			'order_by'		=> set_value('order_by'),
+			'max_records'	=> set_value('max_records')
 		);
 
 		// Load the view
@@ -100,7 +105,8 @@ class Widgets extends CI_Controller {
 	public function edit($widget_id)
 	{
 		// Fetch widget data
-		$widget = $this->widget->fetch($widget_id);
+		$widget		= $this->widget->fetch($widget_id);
+		$hub_data	= $widget->widget_data['hub'];
 		
 		// Exempt widget name from unique validation
 		$this->form_validation->unique_exempts = array('widget_name' => $widget->widget_name);
@@ -124,9 +130,14 @@ class Widgets extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('edit_widget'),
+			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data['controls']),
+			'toolbox_items'	=> $this->widget->fetch_controls(),
+			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name', $widget->widget_name),
-			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data),
-			'toolbox_items'	=> $this->widget->fetch_controls()
+			'attached_hub'	=> set_value('attached_hub', $hub_data['attached_hub']),
+			'data_filters'	=> set_value('data_filters', $hub_data['data_filters']),
+			'order_by'		=> set_value('order_by', $hub_data['order_by']),
+			'max_records'	=> set_value('max_records', $hub_data['max_records'])
 		);
 
 		// Load the view
@@ -156,6 +167,99 @@ class Widgets extends CI_Controller {
 		}
 
 		redirect(base_url('admin/widgets/manage'), 'refresh');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates attached hub name
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @return	bool	true if valid
+	 */
+	public function check_hub($hub_name)
+	{
+		if ($hub_name != '-1')
+		{
+			$hub_list = $this->hub->fetch_list();
+
+			if (is_array($hub_list))
+			{
+				foreach ($hub_list as $hub)
+				{
+					if ($hub->hub_name == $hub_name)
+					{
+						return TRUE;
+					}
+				}
+			}
+		}
+
+		$this->form_validation->set_message('check_hub', $this->lang->line('invalid_hub'));
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates the data filter
+	 *
+	 * @access	public
+	 * @param	string	filter value
+	 * @return	bool	true if valid
+	 */
+	public function check_filters($filters)
+	{
+		$filters	= trim($filters);
+		$hub_name	= $this->input->post('attached_hub');
+
+		if (empty($filters))
+		{
+			return TRUE;
+		}
+
+		if ($hub_name != '-1')
+		{
+			if ($this->widget->parse_filters($hub_name, $filters) !== FALSE)
+			{
+				return TRUE;
+			}
+		}
+		
+		$this->form_validation->set_message('check_filters', $this->lang->line('invalid_filter'));
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates the order-by value
+	 *
+	 * @access	public
+	 * @param	string	filter value
+	 * @return	bool	true if valid
+	 */
+	public function check_orderby($order_by)
+	{
+		$order_by	= trim($order_by);
+		$hub_name	= $this->input->post('attached_hub');
+
+		if (empty($order_by))
+		{
+			return TRUE;
+		}
+
+		if ($hub_name != '-1')
+		{
+			if ($this->widget->parse_orderby($hub_name, $order_by) !== FALSE)
+			{
+				return TRUE;
+			}
+		}
+
+		$this->form_validation->set_message('check_orderby', $this->lang->line('invalid_orderby'));
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------

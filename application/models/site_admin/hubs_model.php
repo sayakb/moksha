@@ -81,15 +81,7 @@ class Hubs_model extends CI_Model {
 	 */
 	public function fetch_columns($hub_name)
 	{
-		$columns_data	= $this->hub->schema($hub_name);
-		$columns_ary	= array();
-
-		foreach ($columns_data as $name => $data_type)
-		{
-			$columns_ary[$name] = $name;
-		}
-
-		return $columns_ary;
+		return $this->hub->column_list($hub_name);
 	}
 
 	// --------------------------------------------------------------------

@@ -250,19 +250,30 @@ $config = array(
 			'rules'	=>	'strip_tags'
 		),
 		array(
-			'field'	=>	'control_disp_paths[]',
-			'label'	=>	'lang:control_disp_paths',
-			'rules'	=>	'strip_tags'
-		),
-		array(
-			'field'	=>	'control_value_paths[]',
-			'label'	=>	'lang:control_value_paths',
-			'rules'	=>	'strip_tags'
-		),
-		array(
 			'field'	=>	'control_formats[]',
 			'label'	=>	'lang:control_formats',
 			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'attached_hub',
+			'label'	=>	'lang:attached_hub',
+			'rules'	=>	'required|'.
+						'callback_check_hub'
+		),
+		array(
+			'field'	=>	'data_filters',
+			'label'	=>	'lang:data_filters',
+			'rules'	=>	'callback_check_filters'
+		),
+		array(
+			'field'	=>	'order_by',
+			'label'	=>	'lang:order_by',
+			'rules'	=>	'callback_check_orderby'
+		),
+		array(
+			'field'	=>	'max_records',
+			'label'	=>	'lang:max_records',
+			'rules'	=>	'is_natural_no_zero'
 		),
 		array(
 			'field'	=>	'submit',

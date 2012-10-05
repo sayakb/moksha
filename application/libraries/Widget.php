@@ -115,6 +115,27 @@ class Widget {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Gets a list of equality operators in a filter
+	 *
+	 * @access	public
+	 * @return	array	list of operators
+	 */
+	public function fetch_operators()
+	{
+		return array(
+			'[EQ]'		=> '',
+			'[NEQ]'		=> '!=',
+			'[GRTR]'	=> '>',
+			'[LESS]'	=> '<',
+			'[GRTREQ]'	=> '>=',
+			'[LESSEQ]'	=> '<=',
+			'[LIKE]'	=> '[LIKE]'
+		);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Fetches a list of widgets for the site
 	 *
 	 * @access	public
@@ -137,7 +158,11 @@ class Widget {
 	public function fetch($widget_id)
 	{
 		$this->CI->db->where('widget_id', $widget_id);
-		return $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->row();
+
+		$widget = $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->row();
+		$widget->widget_data = unserialize($widget->widget_data);
+
+		return $widget;
 	}
 
 	// --------------------------------------------------------------------
@@ -208,6 +233,154 @@ class Widget {
 	{
 		$this->CI->db->where('widget_id', $widget_id);
 		return $this->CI->db->delete("site_widgets_{$this->CI->bootstrap->site_id}");
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Parses data filter for a widget
+	 *
+	 * @access	public
+	 * @param	string	hub name that is being linked
+	 * @param	string	data filter to be parsed
+	 * @return	mixed	array if filter is parsed, false on error
+	 */
+	public function parse_filters($hub_name, $filters)
+	{
+		$hub_columns	= $this->CI->hub->column_list($hub_name);
+		$operators		= $this->fetch_operators();
+		$filters		= explode("\n", $filters);
+		$first_filter	= TRUE;
+
+		$parsed = array(
+			'AND'	=> array(),
+			'OR'	=> array()
+		);
+
+		if (is_array($filters))
+		{
+			foreach ($filters as $filter)
+			{
+				$filter = trim($filter);
+				$condition = substr($filter, 0, 1);
+
+				// First filter needs to start with AND
+				if ($first_filter AND $condition == '&')
+				{
+					$first_filter = FALSE;
+				}
+				else
+				{
+					return FALSE;
+				}
+
+				// Determine the condition for this filter
+				$condition = $condition == '&' ? 'AND' : 'OR';
+
+				// Determine the operator
+				foreach ($operators as $opkey => $opval)
+				{
+					$pos = strpos($filter, $opkey);
+
+					if ($pos !== FALSE)
+					{
+						$offset = strlen($opkey);
+						$operator = $opval;
+
+						break;
+					}
+					else
+					{
+						return FALSE;
+					}
+				}
+
+				// Determine the key and value for the parsed array
+				$column = trim(substr($filter, 1, $pos - 1));
+
+				if (in_array($column, $hub_columns))
+				{
+					$key = trim("{$column} {$operator}");
+					$value = substr($filter, $offset);
+
+					$parsed[$condition][$key] = $this->parse_expr($value);
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		}
+
+		// Return the parsed data
+		if (count($parsed['AND']) > 0)
+		{
+			return $parsed;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Parses the order-by value for a widget
+	 *
+	 * @access	public
+	 * @param	string	hub name that is being linked
+	 * @param	string	order-by value
+	 * @return	mixed	array if filter is parsed, false on error
+	 */
+	public function parse_orderby($hub_name, $order_by)
+	{
+		$hub_columns	= $this->CI->hub->column_list($hub_name);
+		$order_by		= explode("\n", $order_by);
+		$parsed			= array();
+
+		if (is_array($order_by))
+		{
+			foreach ($order_by as $column)
+			{
+				$column = trim($column);
+
+				// Check if column name is valid
+				if (in_array($column, $hub_columns))
+				{
+					$parsed[] = $column;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		}
+
+		// Return parsed data
+		if (count($parsed) > 0)
+		{
+			return $parsed;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Parses placeholders within a string
+	 *
+	 * @access	public
+	 * @param	string	text to be parsed
+	 * @return	string	parsed string
+	 */
+	public function parse_expr($text)
+	{
+		// Implement this later
+		return $text;
 	}
 
 	// --------------------------------------------------------------------
