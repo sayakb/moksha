@@ -303,7 +303,7 @@ class Widget {
 					$key = trim("{$column} {$operator}");
 					$value = substr($filter, $offset);
 
-					$parsed[$condition][$key] = $this->parse_expr($value);
+					$parsed[$condition][$key] = $value;
 				}
 				else
 				{
