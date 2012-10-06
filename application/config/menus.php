@@ -30,14 +30,29 @@ $config['menus']['site_admin'] = array(
 		'label'	=> 'homepage'
 	),
 
+	'hubs'		=> array(
+		'url'	=> 'admin/hubs/manage',
+		'label'	=> 'manage_hubs'
+	),
+
 	'widgets'	=> array(
 		'url'	=> 'admin/widgets/manage',
 		'label'	=> 'manage_widgets'
 	),
 
-	'hubs'		=> array(
-		'url'	=> 'admin/hubs/manage',
-		'label'	=> 'manage_hubs'
+	'pages'	=> array(
+		'url'	=> 'admin/pages/manage',
+		'label'	=> 'manage_pages'
+	),
+
+	'users'	=> array(
+		'url'	=> 'admin/users/manage',
+		'label'	=> 'manage_users'
+	),
+
+	'roles'	=> array(
+		'url'	=> 'admin/roles/manage',
+		'label'	=> 'manage_roles'
 	),
 );
 

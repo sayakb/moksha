@@ -43,12 +43,19 @@ class Sys_Session extends CI_Session {
 	 * @access	public
 	 * @param	string	url to redirect to if not logged in
 	 */
-	public function enforce_login($login_url)
+	public function enforce_admin($login_url)
 	{
-		if ($this->CI->session->userdata($this->CI->bootstrap->auth_key) !== TRUE)
+		$roles = $this->CI->session->userdata($this->CI->bootstrap->auth_key.'roles');
+
+		if ($roles !== FALSE)
 		{
-			redirect(base_url($login_url), 'refresh');
+			if (in_array(ROLE_ADMIN, $roles))
+			{
+				return;
+			}
 		}
+
+		redirect(base_url($login_url), 'refresh');
 	}
 
 	// --------------------------------------------------------------------

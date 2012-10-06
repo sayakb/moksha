@@ -1810,6 +1810,7 @@ textarea::-webkit-input-placeholder
 {
 	min-height: 18px;
 	padding-left: 18px;
+	cursor: pointer;
 }
 
 	.radio input[type="radio"],

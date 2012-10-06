@@ -114,6 +114,11 @@ $config['schema']['site_users'] = array(
 			'null'					=> FALSE
 		),
 
+		'user_roles' => array(
+			'type'					=> 'TEXT',
+			'null'					=> FALSE
+		),
+
 		'user_founder' => array(
 			'type'					=> 'TINYINT',
 			'constraint'			=> 1, 
@@ -124,6 +129,27 @@ $config['schema']['site_users'] = array(
 	'keys' => array(
 		'user_id'					=> TRUE,
 		'user_name,user_password'	=> FALSE
+	)
+);
+
+$config['schema']['site_roles'] = array(
+	'fields' => array(
+		'role_id' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
+		),
+
+		'role_name' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 100,
+			'null'				=> FALSE
+		)
+	),
+
+	'keys' => array(
+		'role_id'				=> TRUE
 	)
 );
 
@@ -142,6 +168,12 @@ $config['schema']['site_widgets'] = array(
 			'null'				=> FALSE
 		),
 
+		'widget_width' => array(
+			'type'				=> 'TINYINT',
+			'constraint'		=> 1,
+			'null'				=> FALSE
+		),
+
 		'widget_data' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
@@ -149,7 +181,7 @@ $config['schema']['site_widgets'] = array(
 	),
 
 	'keys' => array(
-		'widget_id'			=> TRUE
+		'widget_id'				=> TRUE
 	)
 );
 

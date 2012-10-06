@@ -22,6 +22,24 @@ class Widgets_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Fetches a list of widgets for the site
+	 *
+	 * @access	public
+	 * @param	int		page number for the list
+	 * @return	array	list of widgets
+	 */
+	public function fetch_widgets($page)
+	{
+		$config = $this->config->item('pagination');
+		$offset = $config['per_page'] * ($page - 1);
+
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_widgets_{$this->bootstrap->site_id}");
+		return $query->result();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Add a new widget to the DB
 	 *
 	 * @access	public
@@ -29,8 +47,9 @@ class Widgets_model extends CI_Model {
 	 */
 	public function add_widget()
 	{
-		$widget_name = $this->input->post('widget_name');
-		$widget_data = array(
+		$widget_name	= $this->input->post('widget_name');
+		$widget_width	= $this->input->post('widget_width');
+		$widget_data	= array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
@@ -40,7 +59,7 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
-		return $this->widget->add($widget_name, $widget_data);
+		return $this->widget->add($widget_name, $widget_width, $widget_data);
 	}
 
 	// --------------------------------------------------------------------
@@ -55,6 +74,7 @@ class Widgets_model extends CI_Model {
 	public function update_widget($widget_id)
 	{
 		$widget_name = $this->input->post('widget_name');
+		$widget_width	= $this->input->post('widget_width');
 		$widget_data = array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> array(
@@ -65,7 +85,7 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
-		return $this->widget->update($widget_id, $widget_name, $widget_data);
+		return $this->widget->update($widget_id, $widget_name, $widget_width, $widget_data);
 	}
 
 	// --------------------------------------------------------------------
@@ -123,6 +143,23 @@ class Widgets_model extends CI_Model {
 		{
 			return array();
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches a list of widget widths
+	 *
+	 * @access	public
+	 * @return	array	list of widths
+	 */
+	public function populate_widths()
+	{
+		return array(
+			'1' => '1',
+			'2' => '2',
+			'3' => '3'
+		);
 	}
 
 	// --------------------------------------------------------------------

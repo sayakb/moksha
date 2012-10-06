@@ -18,7 +18,7 @@ class Welcome extends CI_Controller {
 
 		// Load stuff we need for central
 		$this->lang->load('central_admin');
-		$this->session->enforce_login('admin/central/login');
+		$this->session->enforce_admin('admin/central/login');
 	}
 
 	// --------------------------------------------------------------------

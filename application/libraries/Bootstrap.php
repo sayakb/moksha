@@ -26,7 +26,7 @@ class Bootstrap {
 	// --------------------------------------------------------------------
 
 	/**
-	 * User authentication related data
+	 * User authentication key
 	 *
 	 * @access public
 	 * @var string

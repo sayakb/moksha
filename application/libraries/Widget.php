@@ -136,19 +136,6 @@ class Widget {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetches a list of widgets for the site
-	 *
-	 * @access	public
-	 * @return	array	list of widgets
-	 */
-	public function fetch_all()
-	{
-		return $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->result();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Fetches a specific widget for a site
 	 *
 	 * @access	public
@@ -185,13 +172,15 @@ class Widget {
 	 *
 	 * @access	public
 	 * @param	string	widget name
+	 * @param	int		widget width
 	 * @param	array	widget metadata
 	 * @return	bool	true if succeeded
 	 */
-	public function add($widget_name, $widget_data)
+	public function add($widget_name, $widget_width, $widget_data)
 	{
 		$data = array(
 			'widget_name'	=> $widget_name,
+			'widget_width'	=> $widget_width,
 			'widget_data'	=> serialize($widget_data)
 		);
 
@@ -206,13 +195,15 @@ class Widget {
 	 * @access	public
 	 * @param	int		widget identifier
 	 * @param	string	widget name
+	 * @param	int		widget width
 	 * @param	array	widget metadata
 	 * @return	bool	true if succeeded
 	 */
-	public function update($widget_id, $widget_name, $widget_data)
+	public function update($widget_id, $widget_name, $widget_width, $widget_data)
 	{
 		$data = array(
 			'widget_name'	=> $widget_name,
+			'widget_width'	=> $widget_width,
 			'widget_data'	=> serialize($widget_data)
 		);
 

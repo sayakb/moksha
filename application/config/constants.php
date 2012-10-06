@@ -61,6 +61,16 @@ define('DBTYPE_TEXT',		'text');
 define('DBTYPE_PASSWORD',	'password');
 define('DBTYPE_DATETIME',	'datetime');
 
+/*
+|--------------------------------------------------------------------------
+| User roles
+|--------------------------------------------------------------------------
+|
+| These define the different system level user roles
+|
+ */
+define('ROLE_ADMIN', '0');
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

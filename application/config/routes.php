@@ -49,7 +49,7 @@ $route['admin/(:any)'] = 'site_admin/$1';
 $route['admin'] = 'site_admin/welcome';
 
 // Site pages - this is also the default route
-$route['(:any)'] = 'sites/parser/$1';
+$route['(:any)'] = 'sites/parser/process/$1';
 $route['default_controller'] = 'sites/parser';
 
 /* End of file routes.php */

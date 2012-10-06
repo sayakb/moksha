@@ -23,29 +23,15 @@ $config = array(
 		)
 	),
 
-	// Central: add site
-	'central_admin/sites/add' => array(
+	// Central: add/edit site
+	'central_admin/sites' => array(
 		array(
 			'field'	=>	'site_url',
 			'label'	=>	'lang:site_url',
 			'rules'	=>	'required|'.
 						'max_length[255]|'.
-						'is_unique[central_sites.site_url]|'.
 						'trim|'.
-						'htmlspecialchars'
-		)
-	),
-
-	// Central: edit site
-	'central_admin/sites/edit' => array(
-		array(
-			'field'	=>	'site_url',
-			'label'	=>	'lang:site_url',
-			'rules'	=>	'required|'.
-						'max_length[255]|'.
-						'is_unique[central_sites.site_url]|'.
-						'trim|'.
-						'htmlspecialchars'
+						'is_unique[central_sites.site_url]'
 		)
 	),
 
@@ -57,6 +43,7 @@ $config = array(
 			'rules'	=>	'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
+						'trim|'.
 						'is_unique[central_users.user_name]|'.
 						'alpha_dash'
 		),
@@ -75,6 +62,7 @@ $config = array(
 			'field'	=>	'email',
 			'label'	=>	'lang:email_address',
 			'rules'	=>	'required|'.
+						'trim|'.
 						'valid_email|'.
 						'is_unique[central_users.user_email]'
 		)
@@ -118,7 +106,7 @@ $config = array(
 						'min_length[3]|'.
 						'max_length[100]|'.
 						'alpha_numeric|'.
-						'strtolower|'.
+						'trim|'.
 						'is_unique[site_hubs.hub_name]'
 		),
 		array(
@@ -162,7 +150,7 @@ $config = array(
 						'min_length[3]|'.
 						'max_length[100]|'.
 						'alpha_numeric|'.
-						'strtolower|'.
+						'trim|'.
 						'is_unique[site_hubs.hub_name]'
 		),
 		array(
@@ -181,7 +169,7 @@ $config = array(
 						'min_length[3]|'.
 						'max_length[100]|'.
 						'alpha_numeric|'.
-						'strtolower|'.
+						'trim|'.
 						'is_unique[site_hubs.hub_name]'
 		)
 	),
@@ -194,6 +182,7 @@ $config = array(
 			'rules'	=>	'required|'.
 						'alpha|'.
 						'max_length[64]|'.
+						'trim|'.
 						'callback_check_column_edit',
 		),
 		array(
@@ -216,6 +205,7 @@ $config = array(
 			'rules'	=>	'required|'.
 						'alpha|'.
 						'max_length[64]|'.
+						'trim|'.
 						'callback_check_column_edit',
 		)
 	),
@@ -236,7 +226,16 @@ $config = array(
 			'label'	=>	'lang:widget_name',
 			'rules'	=>	'required|'.
 						'alpha_dash|'.
+						'trim|'.
 						'is_unique[site_widgets.widget_name]'
+		),
+		array(
+			'field'	=>	'widget_width',
+			'label'	=>	'lang:widget_width',
+			'rules'	=>	'required|'.
+						'integer|'.
+						'greater_than[0]|'.
+						'less_than[4]'
 		),
 		array(
 			'field'	=>	'control_keys[]',
@@ -262,6 +261,7 @@ $config = array(
 			'field'	=>	'attached_hub',
 			'label'	=>	'lang:attached_hub',
 			'rules'	=>	'required|'.
+						'trim|'.
 						'callback_check_hub'
 		),
 		array(
@@ -283,6 +283,91 @@ $config = array(
 			'field'	=>	'submit',
 			'label'	=>	'lang:controls_required',
 			'rules'	=>	'callback_check_controls'
+		)
+	),
+
+	// Site admin: add user
+	'site_admin/users/add' => array(
+		array(
+			'field'	=>	'username',
+			'label'	=>	'lang:username',
+			'rules'	=>	'required|'.
+						'min_length[3]|'.
+						'max_length[100]|'.
+						'trim|'.
+						'is_unique[site_users.user_name]|'.
+						'alpha_dash'
+		),
+		array(
+			'field'	=>	'password',
+			'label'	=>	'lang:password',
+			'rules'	=>	'required|'.
+						'matches[confirm_password]'
+		),
+		array(
+			'field'	=>	'confirm_password',
+			'label'	=>	'lang:confirm_password',
+			'rules'	=>	'required'
+		),
+		array(
+			'field'	=>	'email',
+			'label'	=>	'lang:email_address',
+			'rules'	=>	'required|'.
+						'trim|'.
+						'valid_email|'.
+						'is_unique[site_users.user_email]'
+		),
+		array(
+			'field'	=>	'user_roles',
+			'label'	=>	'lang:roles',
+			'rules'	=>	'callback_check_roles'
+		)
+	),
+
+	// Site admin: edit user
+	'site_admin/users/edit' => array(
+		array(
+			'field'	=>	'username',
+			'label'	=>	'lang:username',
+			'rules'	=>	'required|'.
+						'min_length[3]|'.
+						'max_length[100]|'.
+						'alpha_dash|'.
+						'is_unique[site_users.user_name]'
+		),
+		array(
+			'field'	=>	'password',
+			'label'	=>	'lang:password',
+			'rules'	=>	'matches[confirm_password]'
+		),
+		array(
+			'field'	=>	'confirm_password',
+			'label'	=>	'lang:confirm_password'
+		),
+		array(
+			'field'	=>	'email',
+			'label'	=>	'lang:email_address',
+			'rules'	=>	'required|'.
+						'valid_email|'.
+						'is_unique[site_users.user_email]'
+		),
+		array(
+			'field'	=>	'user_roles',
+			'label'	=>	'lang:roles',
+			'rules'	=>	'callback_check_roles'
+		)
+	),
+
+	// Site admin: add/edit roles
+	'site_admin/roles' => array(
+		array(
+			'field'	=>	'role_name',
+			'label'	=>	'lang:role_name',
+			'rules'	=>	'required|'.
+						'max_length[100]|'.
+						'alpha|'.
+						'trim|'.
+						'is_unique[site_roles.role_name]'
 		)
 	)
 );

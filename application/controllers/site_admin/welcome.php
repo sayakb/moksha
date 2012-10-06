@@ -18,7 +18,7 @@ class Welcome extends CI_Controller {
 
 		// Load stuff we need for site admin
 		$this->lang->load('site_admin');
-		$this->session->enforce_login('admin/login');
+		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------

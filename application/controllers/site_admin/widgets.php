@@ -21,7 +21,7 @@ class Widgets extends CI_Controller {
 		// Load stuff we need for widgets management
 		$this->lang->load('site_admin');
 		$this->load->model('site_admin/widgets_model');
-		$this->session->enforce_login('admin/login');
+		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -31,12 +31,12 @@ class Widgets extends CI_Controller {
 	 *
 	 * @access	public
 	 */
-	public function manage()
+	public function manage($page = 1)
 	{
 		// Initialize pagination
 		$this->pagination->initialize(
 			array_merge($this->config->item('pagination'), array(
-				'base_url'		=> base_url('admin/hubs/manage'),
+				'base_url'		=> base_url('admin/widgets/manage'),
 				'total_rows'	=> $this->widget->count(),
 				'uri_segment'	=> 4,
 			))
@@ -46,7 +46,7 @@ class Widgets extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
-			'widgets'		=> $this->widget->fetch_all(),
+			'widgets'		=> $this->widgets_model->fetch_widgets($page),
 			'pagination'	=> $this->pagination->create_links()
 		);
 
@@ -83,8 +83,10 @@ class Widgets extends CI_Controller {
 			'editor_title'	=> $this->lang->line('add_widget'),
 			'toolbox_items'	=> $this->widget->fetch_controls(),
 			'widget_items'	=> $this->widgets_model->populate_controls(),
+			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name'),
+			'widget_width'	=> set_value('widget_width'),
 			'attached_hub'	=> set_value('attached_hub'),
 			'data_filters'	=> set_value('data_filters'),
 			'order_by'		=> set_value('order_by'),
@@ -131,9 +133,11 @@ class Widgets extends CI_Controller {
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('edit_widget'),
 			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data['controls']),
-			'toolbox_items'	=> $this->widget->fetch_controls(),
+			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
+			'toolbox_items'	=> $this->widget->fetch_controls(),
 			'widget_name'	=> set_value('widget_name', $widget->widget_name),
+			'widget_width'	=> set_value('widget_width', $widget->widget_width),
 			'attached_hub'	=> set_value('attached_hub', $hub_data['attached_hub']),
 			'data_filters'	=> set_value('data_filters', $hub_data['data_filters']),
 			'order_by'		=> set_value('order_by', $hub_data['order_by']),
@@ -326,6 +330,8 @@ class Widgets extends CI_Controller {
 		$this->form_validation->set_message('check_controls', $this->lang->line('control_required'));
 		return FALSE;
 	}
+
+	// --------------------------------------------------------------------
 }
 
 ?> 

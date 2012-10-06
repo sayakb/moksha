@@ -21,7 +21,7 @@ class Hubs extends CI_Controller {
 		// Load stuff we need for hub management
 		$this->lang->load('site_admin');
 		$this->load->model('site_admin/hubs_model');
-		$this->session->enforce_login('admin/login');
+		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------

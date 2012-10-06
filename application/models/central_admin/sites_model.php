@@ -110,6 +110,9 @@ class Sites_model extends CI_Model {
 			$user_id	= $this->session->userdata($this->bootstrap->auth_key.'user_id');
 			$user_data	= $this->db->where('user_id', $user_id)->get('central_users')->row_array();
 
+			// Set the user role to admin
+			$user_data['user_roles'] = serialize(array(ROLE_ADMIN));
+
 			$this->db->insert("site_users_{$site_id}", $user_data);
 		}
 
@@ -150,7 +153,7 @@ class Sites_model extends CI_Model {
 			// Drop all hubs
 			foreach ($this->hub->fetch_list() as $hub)
 			{
-				$table = "hub_{$site_id}_{$hub->hub_driver}";
+				$table = "site_hub_{$site_id}_{$hub->hub_id}";
 
 				if ($hub->hub_driver == HUB_DATABASE AND $this->db->table_exists($table))
 				{

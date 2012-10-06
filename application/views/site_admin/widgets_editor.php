@@ -7,13 +7,26 @@
 		<?= $editor_title ?>
 	</legend>
 
-	<div class="form-horizontal control-group">
-		<label class="control-label">
-			<?= $this->lang->line('widget_name') ?>
-		</label>
+	<div class="form-horizontal">
+		<div class="control-group">
+			<label class="control-label">
+				<?= $this->lang->line('widget_name') ?>
+			</label>
 
-		<div class="controls">
-			<?= form_input('widget_name', $widget_name) ?>
+			<div class="controls">
+				<?= form_input('widget_name', $widget_name) ?>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label">
+				<?= $this->lang->line('widget_width') ?>
+			</label>
+
+			<div class="controls">
+				<?= form_dropdown('widget_width', $widget_widths, $widget_width) ?>
+				<div class="help-block"><?= $this->lang->line('widget_width_exp') ?></div>
+			</div>
 		</div>
 	</div>
 	<hr />

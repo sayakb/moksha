@@ -16,9 +16,9 @@ class Parser extends CI_Controller {
 	*
 	* @access	public
 	*/
-	public function index()
+	public function process()
 	{
-		
+		exit('page');
 	}
 
 	// --------------------------------------------------------------------

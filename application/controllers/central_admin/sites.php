@@ -21,7 +21,7 @@ class Sites extends CI_Controller {
 		// Load stuff we need for central
 		$this->load->model('central_admin/sites_model');
 		$this->lang->load('central_admin');
-		$this->session->enforce_login('admin/central/login');
+		$this->session->enforce_admin('admin/central/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -63,7 +63,7 @@ class Sites extends CI_Controller {
 	 */
 	public function add()
 	{
-		if ($this->form_validation->run('central_admin/sites/add'))
+		if ($this->form_validation->run('central_admin/sites'))
 		{
 			if ($this->sites_model->add_site())
 			{
@@ -104,7 +104,7 @@ class Sites extends CI_Controller {
 		$this->form_validation->unique_exempts = array('site_url' => $site->site_url);
 
 		// Process the request
-		if ($this->form_validation->run('central_admin/sites/edit'))
+		if ($this->form_validation->run('central_admin/sites'))
 		{
 			if ($this->sites_model->update_site($site_id))
 			{
