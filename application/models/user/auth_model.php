@@ -51,17 +51,10 @@ class Auth_model extends CI_Model {
 			// Set the admin role for central, as there is no role data in the DB
 			if ($in_central)
 			{
-				$user_roles = array(ROLE_ADMIN);
-			}
-			else
-			{
-				$user_roles = unserialize($user->user_roles);
+				$user->user_roles = serialize(array(ROLE_ADMIN));
 			}
 
-			$this->session->set_userdata($this->bootstrap->auth_key.'user_id', $user->user_id);
-			$this->session->set_userdata($this->bootstrap->auth_key.'user_name', $user->user_name);
-			$this->session->set_userdata($this->bootstrap->auth_key.'roles', $user_roles);
-
+			$this->session->set_userdata($this->bootstrap->session_key.'user', $user);
 			return TRUE;
 		}
 		else
@@ -80,9 +73,7 @@ class Auth_model extends CI_Model {
 	 */
 	public function clear_session()
 	{
-		$this->session->unset_userdata($this->bootstrap->auth_key.'user_id');
-		$this->session->unset_userdata($this->bootstrap->auth_key.'user_name');
-		$this->session->unset_userdata($this->bootstrap->auth_key.'roles');
+		$this->session->unset_userdata($this->bootstrap->session_key.'user');
 	}
 
 	// --------------------------------------------------------------------

@@ -26,12 +26,12 @@ class Bootstrap {
 	// --------------------------------------------------------------------
 
 	/**
-	 * User authentication key
+	 * Site specific session key
 	 *
 	 * @access public
 	 * @var string
 	 */
-	var $auth_key;
+	var $session_key;
 
 	// --------------------------------------------------------------------
 
@@ -100,11 +100,11 @@ class Bootstrap {
 		// Make changes to environment variables based on the central flag
 		if (in_central())
 		{
-			$this->auth_key = 'authed_0';
+			$this->session_key = 'session_0';
 		}
 		else
 		{
-			$this->auth_key = "authed_{$this->site_id}";
+			$this->session_key = "session_{$this->site_id}";
 		}
 	}
 

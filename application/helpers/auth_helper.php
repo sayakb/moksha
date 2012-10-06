@@ -55,5 +55,36 @@ function in_central()
 
 // --------------------------------------------------------------------
 
+/**
+ * Fetches user data from session
+ *
+ * @access	public
+ * @param	string	session key
+ * @return	mixed	user data
+ */
+function user_data($key)
+{
+	$CI		=& get_instance();
+	$data	= $CI->session->userdata($CI->bootstrap->session_key.'user');
+
+	if ($data !== FALSE)
+	{
+		// Unserialize the user roles array
+		if ( ! is_array($data->user_roles))
+		{
+			$data->user_roles = unserialize($data->user_roles);
+		}
+
+		if (isset($data->$key))
+		{
+			return $data->$key;
+		}
+	}
+
+	return false;
+}
+
+// --------------------------------------------------------------------
+
 /* End of file auth_helper.php */
 /* Location: ./application/helpers/auth_helper.php */

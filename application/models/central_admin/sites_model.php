@@ -107,12 +107,14 @@ class Sites_model extends CI_Model {
 			}
 
 			// Create admin user with the same credentials of currently logged in user
-			$user_id	= $this->session->userdata($this->bootstrap->auth_key.'user_id');
-			$user_data	= $this->db->where('user_id', $user_id)->get('central_users')->row_array();
-
-			// Set the user role to admin
-			$user_data['user_roles'] = serialize(array(ROLE_ADMIN));
-
+			$user_data = array(
+				'user_name'		=> user_data('user_name'),
+				'user_password'	=> user_data('user_password'),
+				'user_email'	=> user_data('user_email'),
+				'user_roles'	=> serialize(array(ROLE_ADMIN)),
+				'user_founder'	=> 1
+			);
+			
 			$this->db->insert("site_users_{$site_id}", $user_data);
 		}
 

@@ -45,7 +45,7 @@ class Sys_Session extends CI_Session {
 	 */
 	public function enforce_admin($login_url)
 	{
-		$roles = $this->CI->session->userdata($this->CI->bootstrap->auth_key.'roles');
+		$roles = user_data('user_roles');
 
 		if ($roles !== FALSE)
 		{
