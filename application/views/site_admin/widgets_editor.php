@@ -49,15 +49,23 @@
 				</div>
 
 				<div class="toolbox">
+					<a id="toolbox-toggle" href="#" class="btn btn-mini pull-right">
+						<i class="icon-chevron-down"></i>
+					</a>
+
 					<h1><?= $this->lang->line('toolbox') ?></h1>
 
 					<div class="toolbox-area">
 						<?php foreach($toolbox_items as $key => $item): ?>
 							<span class="control">
-								<i class="icon-tool-<?= $item->icon ?>"></i>
+								<i class="icon-control-<?= $item->icon ?>"></i>
 								<?= $this->lang->line($item->label) ?>
 
-								<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-configure">
+								<a href="#" title="<?= $this->lang->line('control_remove') ?>" class="control-actions control-remove">
+									<i class="icon-remove"></i>
+								</a>
+
+								<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-actions control-configure">
 									<i class="icon-wrench"></i>
 								</a>
 
@@ -73,18 +81,24 @@
 					<div class="widget-autoloaded">
 						<?php foreach($widget_items as $item): ?>
 							<span class="control dropped">
-								<i class="icon-tool-<?= $item->icon ?>"></i>
+								<i class="icon-control-<?= $item->icon ?>"></i>
 								<?= $this->lang->line($item->label) ?>
 
-								<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-configure">
+								<a href="#" title="<?= $this->lang->line('control_remove') ?>" class="control-actions control-remove">
+									<i class="icon-remove"></i>
+								</a>
+
+								<a href="#" title="<?= $this->lang->line('control_configure') ?>" class="control-actions control-configure">
 									<i class="icon-wrench"></i>
 								</a>
 
 								<?= form_hidden('control_keys[]', $item->key) ?>
 								<?= form_hidden('control_classes[]', $item->classes) ?>
-								<?= form_hidden('control_disp_paths[]', $item->disp_paths) ?>
-								<?= form_hidden('control_value_paths[]', $item->value_paths) ?>
-								<?= form_hidden('control_formats[]', $item->formats) ?>
+								<?= form_hidden('control_disp_srcs[]', $item->disp_src) ?>
+								<?= form_hidden('control_get_paths[]', $item->get_path) ?>
+								<?= form_hidden('control_set_paths[]', $item->set_path) ?>
+								<?= form_hidden('control_formats[]', $item->format) ?>
+								<?= form_hidden('control_validations[]', $item->validations) ?>
 							</span>
 						<?php endforeach ?>
 					</div>
@@ -164,23 +178,34 @@
 			
 			<div class="control-group">
 				<label class="control-label">
-					<?= $this->lang->line('control_disp') ?>
+					<?= $this->lang->line('control_disp_src') ?>
 				</label>
 
 				<div class="controls">
-					<?= form_textarea(array('name' => 'control_disp_path', 'rows' => '5')) ?>
-					<div class="help-block"><?= $this->lang->line('control_disp_exp') ?></div>
+					<?= form_textarea(array('name' => 'control_disp_src', 'rows' => '5')) ?>
+					<div class="help-block"><?= $this->lang->line('control_disp_src_exp') ?></div>
 				</div>
 			</div>
 
 			<div class="control-group">
 				<label class="control-label">
-					<?= $this->lang->line('control_value') ?>
+					<?= $this->lang->line('control_get_path') ?>
 				</label>
 
 				<div class="controls">
-					<?= form_input('control_value_path') ?>
-					<div class="help-block"><?= $this->lang->line('control_value_exp') ?></div>
+					<?= form_input('control_get_path') ?>
+					<div class="help-block"><?= $this->lang->line('control_get_path_exp') ?></div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label">
+					<?= $this->lang->line('control_set_path') ?>
+				</label>
+
+				<div class="controls">
+					<?= form_input('control_set_path') ?>
+					<div class="help-block"><?= $this->lang->line('control_set_path_exp') ?></div>
 				</div>
 			</div>
 
@@ -192,6 +217,21 @@
 				<div class="controls">
 					<?= form_input('control_format') ?>
 					<div class="help-block"><?= $this->lang->line('control_format_exp') ?></div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label">
+					<?= $this->lang->line('control_validations') ?>
+				</label>
+
+				<div class="controls">
+					<?php foreach ($validations as $validation): ?>
+						<label class="checkbox control-validations">
+							<?= form_checkbox('control_validations', $validation, FALSE, 'id="control-chk-'.$validation.'"') ?>
+							<?= $this->lang->line("chk_{$validation}") ?>
+						</label>
+					<?php endforeach ?>
 				</div>
 			</div>
 		</div>
@@ -256,7 +296,7 @@
 
 	setInterval(function() {
 		// Control configuration
-		$('.control-configure')
+		$('.widget-box .control-configure')
 			.off()
 			.on('click', function() {
 				var $parent		= $(this).parent();
@@ -268,18 +308,39 @@
 
 				// Populate data from hidden fields
 				var classes		= $parent.children('[name="control_classes[]"]').first().val();
-				var disp_path	= $parent.children('[name="control_disp_paths[]"]').first().val();
-				var value_path	= $parent.children('[name="control_value_paths[]"]').first().val();
+				var disp_src	= $parent.children('[name="control_disp_srcs[]"]').first().val();
+				var get_path	= $parent.children('[name="control_get_paths[]"]').first().val();
+				var set_path	= $parent.children('[name="control_set_paths[]"]').first().val();
 				var format		= $parent.children('[name="control_formats[]"]').first().val();
+				var validations	= $parent.children('[name="control_validations[]"]').first().val();
 
 				$('[name=control_class]').val(classes);
-				$('[name=control_disp_path]').val(disp_path);
-				$('[name=control_value_path]').val(value_path);
+				$('[name=control_disp_src]').val(disp_src);
+				$('[name=control_get_path]').val(get_path);
+				$('[name=control_set_path]').val(set_path);
 				$('[name=control_format]').val(format);
+
+				// Reset validation checkboxes
+				$('.control-validations input[type=checkbox]').removeAttr('checked');
+
+				// Populate validations
+				var val_ary = validations.split('|');
+
+				$.each(val_ary, function(idx, val) {
+					$('#control-chk-' + val).attr('checked', 'checked');
+				});
 
 				// Show the modal config window
 				$('#modal-properties').modal('show');
 
+				return false;
+			});
+
+		// Remove control
+		$('.widget-box .control-remove')
+			.off()
+			.on('click', function() {
+				$(this).parent().remove();
 				return false;
 			});
 	}, 500);
@@ -288,17 +349,28 @@
 	$('#modal-submit').click(function() {
 		// Get the modal form data
 		var classes		= $('[name=control_class]').val();
-		var disp_path	= $('[name=control_disp_path]').val();
-		var value_path	= $('[name=control_value_path]').val();
+		var disp_src	= $('[name=control_disp_src]').val();
+		var get_path	= $('[name=control_get_path]').val();
+		var set_path	= $('[name=control_set_path]').val();
 		var format		= $('[name=control_format]').val();
+		var validations	= new Array();
+
+		// Get validaton data
+		<?php foreach ($validations as $validation): ?>
+			if ($('#control-chk-<?= $validation ?>').is(':checked')) {
+				validations.push('<?= $validation ?>');
+			}
+		<?php endforeach ?>
 
 		var key = localStorage.getItem('moksha_current_control');
 		localStorage.removeItem('moksha_current_control');
 
 		$('#' + key).children('[name="control_classes[]"]').val(classes);
-		$('#' + key).children('[name="control_disp_paths[]"]').val(disp_path);
-		$('#' + key).children('[name="control_value_paths[]"]').val(value_path);
+		$('#' + key).children('[name="control_disp_srcs[]"]').val(disp_src);
+		$('#' + key).children('[name="control_get_paths[]"]').val(get_path);
+		$('#' + key).children('[name="control_set_paths[]"]').val(set_path);
 		$('#' + key).children('[name="control_formats[]"]').val(format);
+		$('#' + key).children('[name="control_validations[]"]').val(validations.join('|'));
 
 		// Clear modal text boxes
 		$(this).children('input[type=text]').val('');
@@ -309,6 +381,27 @@
 		localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
 	});
 
+	// Toggle toolbox height
+	$('#toolbox-toggle').click(function() {
+		if ($(this).hasClass('in')) {
+			$('.toolbox-area').animate({
+				maxHeight: 90
+			}, 'slow', function() {
+				$('#toolbox-toggle').removeClass('in');
+				$('#toolbox-toggle i').attr('class', 'icon-chevron-down');
+			});
+		} else {
+			$('.toolbox-area').animate({
+				maxHeight: 500
+			}, 'slow', function() {
+				$('#toolbox-toggle').addClass('in');
+				$('#toolbox-toggle i').attr('class', 'icon-chevron-up');
+			});
+		}
+
+		return false;
+	});
+
 	// Add/remove controls from the widget
 	function addControl(controlHTML) {
 		// Key field is already present, just change the name
@@ -316,9 +409,11 @@
 		
 		// Add other needed fields
 		controlHTML += '<?= trim(form_hidden('control_classes[]')) ?>';
-		controlHTML += '<?= trim(form_hidden('control_disp_paths[]')) ?>';
-		controlHTML += '<?= trim(form_hidden('control_value_paths[]')) ?>';
+		controlHTML += '<?= trim(form_hidden('control_disp_srcs[]')) ?>';
+		controlHTML += '<?= trim(form_hidden('control_get_paths[]')) ?>';
+		controlHTML += '<?= trim(form_hidden('control_set_paths[]')) ?>';
 		controlHTML += '<?= trim(form_hidden('control_formats[]')) ?>';
+		controlHTML += '<?= trim(form_hidden('control_validations[]')) ?>';
 		
 		// We're done, add the control to the widget
 		$('<span class="control dropped"></span>').html(controlHTML).appendTo('.widget-area');

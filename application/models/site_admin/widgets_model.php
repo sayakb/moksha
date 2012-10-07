@@ -106,9 +106,11 @@ class Widgets_model extends CI_Model {
 			// Get POSTed controls
 			$control_keys			= $this->input->post('control_keys');
 			$control_classes		= $this->input->post('control_classes');
-			$control_disp_paths		= $this->input->post('control_disp_paths');
-			$control_value_paths	= $this->input->post('control_value_paths');
+			$control_disp_srcs		= $this->input->post('control_disp_srcs');
+			$control_get_paths		= $this->input->post('control_get_paths');
+			$control_set_paths		= $this->input->post('control_set_paths');
 			$control_formats		= $this->input->post('control_formats');
+			$control_validations	= $this->input->post('control_validations');
 
 			if (is_array($control_keys))
 			{
@@ -123,9 +125,11 @@ class Widgets_model extends CI_Model {
 
 					$controls[$idx]->key			= $key;
 					$controls[$idx]->classes		= $control_classes[$idx];
-					$controls[$idx]->disp_paths		= $control_disp_paths[$idx];
-					$controls[$idx]->value_paths	= $control_value_paths[$idx];
-					$controls[$idx]->formats		= $control_formats[$idx];
+					$controls[$idx]->disp_src		= $control_disp_srcs[$idx];
+					$controls[$idx]->get_path		= $control_get_paths[$idx];
+					$controls[$idx]->set_path		= $control_set_paths[$idx];
+					$controls[$idx]->format			= $control_formats[$idx];
+					$controls[$idx]->validations	= $control_validations[$idx];
 				}
 
 				return $controls;

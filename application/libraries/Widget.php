@@ -32,84 +32,22 @@ class Widget {
 	 */
 	public function fetch_controls()
 	{
-		return array(
-			'paragraph' => (object)array(
-				'icon'	=> 'paragraph',
-				'label'	=> 'field_paragraph',
-			),
-			'heading_big' => (object)array(
-				'icon'	=> 'heading',
-				'label'	=> 'field_heading_big',
-			),
-			'heading_normal' => (object)array(
-				'icon'	=> 'heading',
-				'label'	=> 'field_heading_normal',
-			),
-			'heading_small' => (object)array(
-				'icon'	=> 'heading',
-				'label'	=> 'field_heading_small',
-			),
-			'hyperlink' => (object)array(
-				'icon'	=> 'hyperlink',
-				'label'	=> 'field_hyperlink',
-			),
-			'textbox' => (object)array(
-				'icon'	=> 'textbox',
-				'label'	=> 'field_textbox',
-			),
-			'password' => (object)array(
-				'icon'	=> 'password',
-				'label'	=> 'field_password',
-			),
-			'textarea' => (object)array(
-				'icon'	=> 'textarea',
-				'label'	=> 'field_textarea',
-			),
-			'wysiwyg' => (object)array(
-				'icon'	=> 'wysiwyg',
-				'label'	=> 'field_wysiwyg',
-			),
-			'codebox' => (object)array(
-				'icon'	=> 'codebox',
-				'label'	=> 'field_codebox',
-			),
-			'checkbox' => (object)array(
-				'icon'	=> 'checkbox',
-				'label'	=> 'field_checkbox',
-			),
-			'radio' => (object)array(
-				'icon'	=> 'radio',
-				'label'	=> 'field_radio',
-			),
-			'submit_button' => (object)array(
-				'icon'	=> 'button',
-				'label'	=> 'field_submit_button',
-			),
-			'reset_button' => (object)array(
-				'icon'	=> 'button',
-				'label'	=> 'field_reset_button',
-			),
-			'file' => (object)array(
-				'icon'	=> 'file',
-				'label'	=> 'field_file',
-			),
-			'hidden' => (object)array(
-				'icon'	=> 'hidden',
-				'label'	=> 'field_hidden',
-			),
-			'image' => (object)array(
-				'icon'	=> 'image',
-				'label'	=> 'field_image',
-			),
-			'select' => (object)array(
-				'icon'	=> 'select',
-				'label'	=> 'field_select',
-			),
-			'multiselect' => (object)array(
-				'icon'	=> 'multiselect',
-				'label'	=> 'field_multiselect',
-			)
-		);
+		$config = $this->CI->config->item('widgets');
+		return $config['controls'];
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch different types of validations for controls
+	 *
+	 * @access	public
+	 * @return	array	validation list
+	 */
+	public function fetch_validations()
+	{
+		$config = $this->CI->config->item('widgets');
+		return $config['validations'];
 	}
 
 	// --------------------------------------------------------------------
@@ -366,11 +304,39 @@ class Widget {
 	 *
 	 * @access	public
 	 * @param	string	text to be parsed
+	 * @param	object	hub row
 	 * @return	string	parsed string
 	 */
-	public function parse_expr($text)
+	public function parse_expr($text, $row = FALSE)
 	{
-		// Implement this later
+		$config			= $this->CI->config->item('widgets');
+		$expressions	= $config['expressions'];
+
+		if ($row === FALSE OR gettype($row) == 'object')
+		{
+			$row = new stdClass();
+		}
+
+		// Parse expressions
+		foreach ($expressions as $exp)
+		{
+			if (preg_match_all($exp->regex, $text, $matches) !== FALSE)
+			{
+				$originals	= $matches[0];
+				$values		= $matches[1];
+
+				for ($idx = 0; $idx < count($originals); $idx++)
+				{
+					$value	= $values[$idx];
+
+					$old	= $originals[$idx];
+					$new	= eval("return {$exp->output};");
+
+					$text = str_replace($old, $new, $text);
+				}
+			}
+		}
+
 		return $text;
 	}
 

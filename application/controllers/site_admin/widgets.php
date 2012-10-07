@@ -82,6 +82,7 @@ class Widgets extends CI_Controller {
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('add_widget'),
 			'toolbox_items'	=> $this->widget->fetch_controls(),
+			'validations'	=> $this->widget->fetch_validations(),
 			'widget_items'	=> $this->widgets_model->populate_controls(),
 			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
@@ -136,6 +137,7 @@ class Widgets extends CI_Controller {
 			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'toolbox_items'	=> $this->widget->fetch_controls(),
+			'validations'	=> $this->widget->fetch_validations(),
 			'widget_name'	=> set_value('widget_name', $widget->widget_name),
 			'widget_width'	=> set_value('widget_width', $widget->widget_width),
 			'attached_hub'	=> set_value('attached_hub', $hub_data['attached_hub']),
@@ -176,13 +178,13 @@ class Widgets extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Validates value paths of the controls
+	 * Validates set value paths of the controls
 	 *
 	 * @access	public
 	 * @param	array	value paths
 	 * @return	bool	true if valid
 	 */
-	public function check_paths($path)
+	public function check_set_paths($path)
 	{
 		$path		= trim($path);
 		$hub_name	= $this->input->post('attached_hub');
@@ -202,7 +204,7 @@ class Widgets extends CI_Controller {
 			}
 		}
 
-		$this->form_validation->set_message('check_paths', $this->lang->line('invalid_value_path'));
+		$this->form_validation->set_message('check_set_paths', $this->lang->line('invalid_set_path'));
 		return FALSE;
 	}
 

@@ -248,9 +248,9 @@ $config = array(
 			'rules'	=>	'strip_tags'
 		),
 		array(
-			'field'	=>	'control_value_paths[]',
-			'label'	=>	'lang:control_value_paths',
-			'rules'	=>	'callback_check_paths'
+			'field'	=>	'control_set_paths[]',
+			'label'	=>	'lang:control_set_path',
+			'rules'	=>	'callback_check_set_paths'
 		),
 		array(
 			'field'	=>	'control_formats[]',

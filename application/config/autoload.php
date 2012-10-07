@@ -99,7 +99,8 @@ $autoload['helper'] = array(
 
 $autoload['config'] = array(
 	'pagination',
-	'cache'
+	'cache',
+	'widgets'
 );
 
 
