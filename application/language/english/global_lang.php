@@ -21,6 +21,8 @@ $lang['logout']				= 'Logout';
 $lang['confirm_password']	= 'Confirm Password';
 $lang['email_address']		= 'Email address';
 $lang['administrator']		= 'Administrator';
+$lang['author']				= 'Author';
+$lang['logged_in']			= 'Logged in';
 
 
 /* End of file global_lang.php */

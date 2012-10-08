@@ -238,6 +238,11 @@ $config = array(
 						'less_than[4]'
 		),
 		array(
+			'field'	=>	'widget_roles',
+			'label'	=>	'lang:widget_accessible_by',
+			'rules'	=>	'callback_check_roles'
+		),
+		array(
 			'field'	=>	'control_keys[]',
 			'label'	=>	'lang:control_keys',
 			'rules'	=>	'strip_tags'
@@ -256,6 +261,11 @@ $config = array(
 			'field'	=>	'control_formats[]',
 			'label'	=>	'lang:control_formats',
 			'rules'	=>	'strip_tags'
+		),
+		array(
+			'field'	=>	'control_roles[]',
+			'label'	=>	'lang:roles',
+			'rules'	=>	'callback_check_roles'
 		),
 		array(
 			'field'	=>	'attached_hub',

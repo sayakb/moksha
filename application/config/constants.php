@@ -69,7 +69,9 @@ define('DBTYPE_DATETIME',	'datetime');
 | These define the different system level user roles
 |
  */
-define('ROLE_ADMIN', '0');
+define('ROLE_ADMIN',		'0');
+define('ROLE_AUTHOR',		'-1');
+define('ROLE_LOGGED_IN',	'-2');
 
 
 /* End of file constants.php */

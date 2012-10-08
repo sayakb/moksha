@@ -102,7 +102,7 @@ $lang['control_disp_src_exp']	= 'Mainly used for lists, read-only HTML controls 
 $lang['control_get_path']		= 'Get value path';
 $lang['control_get_path_exp']	= 'Source for form control value';
 $lang['control_set_path']		= 'Set value path';
-$lang['control_set_path_exp']	= 'Hub column to which form control value will be saved';
+$lang['control_set_path_exp']	= 'Hub column to which form control value will be saved. Expressions will not work here.';
 $lang['control_format']			= 'Format';
 $lang['control_format_exp']		= 'Formatting to be applied on the data before displaying. <a href="http://php.net/manual/en/function.sprintf.php">Click here</a> for more details.';
 $lang['control_validations']	= 'Validations';
@@ -110,7 +110,8 @@ $lang['widget']					= 'Widget';
 $lang['widget_list']			= 'List of widgets';
 $lang['widget_exp']				= 'Drag or double-click on a widget from the toolbox to add it to the widget';
 $lang['widget_name']			= 'Widget name';
-$lang['widget_width']			= 'Width width';
+$lang['widget_width']			= 'Widget width';
+$lang['widget_accessible_by']	= 'Widget accessible by';
 $lang['widget_width_exp']		= 'Number of columns that the widget will spread across';
 $lang['widget_added']			= 'Widget has been added successfully';
 $lang['widget_add_error']		= 'An error occurred while adding the widget';
@@ -168,6 +169,7 @@ $lang['chk_alpha']				= 'Alphabets only';
 $lang['chk_numeric']			= 'Numbers only';
 $lang['chk_alpha_numeric']		= 'Alphabets and numbers only';
 $lang['chk_valid_email']		= 'Valid email';
+$lang['access_control']			= 'Access control';
 
 
 /* End of file site_admin_lang.php */

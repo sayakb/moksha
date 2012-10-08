@@ -47,17 +47,12 @@
 		</div>
 	</div>
 
-	<div class="control-group">
+	<div class="control-group user-roles">
 		<label class="control-label">
 			<?= $this->lang->line('roles') ?>
 		</label>
 
 		<div id="user-roles" class="controls">
-			<label class="checkbox">
-					<?= form_checkbox('roles[]', ROLE_ADMIN, FALSE, $disable_adm) ?>
-					<?= $this->lang->line('administrator') ?>
-			</label>
-
 			<?php foreach ($roles as $role): ?>
 				<label class="checkbox">
 					<?= form_checkbox('roles[]', $role->role_id) ?>
@@ -82,7 +77,7 @@
 			var roles_ary = roles.split('|');
 
 			$.each(roles_ary, function(idx, val) {
-				$('input[value=' + val + ']').attr('checked', 'checked');
+				$('.user-roles input[value=' + val + ']').attr('checked', 'checked');
 			});
 		}
 	});
@@ -99,4 +94,9 @@
 
 		$('[name=user_roles]').val(roles.join('|'));
 	});
+
+	// Disable the admin checkbox
+	<?php if ($adm_disabled): ?>
+		$('.user-roles input[value=<?= ROLE_ADMIN ?>]').attr('disabled', 'disabled');
+	<?php endif ?>
 </script>

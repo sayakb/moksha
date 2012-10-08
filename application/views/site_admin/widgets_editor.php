@@ -40,6 +40,10 @@
 			<li>
 				<a href="#hub-config" data-toggle="tab"><?= $this->lang->line('hub_config') ?></a>
 			</li>
+
+			<li>
+				<a href="#access-control" data-toggle="tab"><?= $this->lang->line('access_control') ?></a>
+			</li>
 		</ul>
 
 		<div class="tab-content">
@@ -99,6 +103,7 @@
 								<?= form_hidden('control_set_paths[]', $item->set_path) ?>
 								<?= form_hidden('control_formats[]', $item->format) ?>
 								<?= form_hidden('control_validations[]', $item->validations) ?>
+								<?= form_hidden('control_roles[]', $item->roles) ?>
 							</span>
 						<?php endforeach ?>
 					</div>
@@ -146,6 +151,27 @@
 
 						<div class="controls">
 							<?= form_input('max_records', $max_records) ?>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="access-control" class="tab-pane fade">
+				<div class="form-horizontal">
+					<div class="control-group widget-roles">
+						<label class="control-label">
+							<?= $this->lang->line('widget_accessible_by') ?>
+						</label>
+
+						<div class="controls">
+							<?php foreach ($roles as $role): ?>
+								<label class="checkbox">
+									<?= form_checkbox('widget_role', $role->role_id) ?>
+									<?= $role->role_name ?>
+								</label>
+							<?php endforeach ?>
+							
+							<?= form_hidden('widget_roles', $widget_roles) ?>
 						</div>
 					</div>
 				</div>
@@ -220,7 +246,7 @@
 				</div>
 			</div>
 
-			<div class="control-group">
+			<div class="control-group control-validations">
 				<label class="control-label">
 					<?= $this->lang->line('control_validations') ?>
 				</label>
@@ -228,8 +254,23 @@
 				<div class="controls">
 					<?php foreach ($validations as $validation): ?>
 						<label class="checkbox control-validations">
-							<?= form_checkbox('control_validations', $validation, FALSE, 'id="control-chk-'.$validation.'"') ?>
+							<?= form_checkbox('control_validations', $validation) ?>
 							<?= $this->lang->line("chk_{$validation}") ?>
+						</label>
+					<?php endforeach ?>
+				</div>
+			</div>
+
+			<div class="control-group control-roles">
+				<label class="control-label">
+					<?= $this->lang->line('roles') ?>
+				</label>
+
+				<div class="controls">
+					<?php foreach ($roles as $role): ?>
+						<label class="checkbox">
+							<?= form_checkbox('control_role', $role->role_id) ?>
+							<?= $role->role_name ?>
 						</label>
 					<?php endforeach ?>
 				</div>
@@ -282,6 +323,15 @@
 			},
 		});
 
+		// Load widget roles
+		var widget_roles = $('[name=widget_roles]').val();
+
+		if (widget_roles != '') {
+			$.each(widget_roles.split('|'), function(idx, val) {
+				$('.widget-roles input[value=' + val + ']').attr('checked', 'checked');
+			});
+		}
+
 		// Go to the saved tab, if it is set
 		var lastTab = localStorage.getItem('moksha_last_tab');
 
@@ -313,6 +363,7 @@
 				var set_path	= $parent.children('[name="control_set_paths[]"]').first().val();
 				var format		= $parent.children('[name="control_formats[]"]').first().val();
 				var validations	= $parent.children('[name="control_validations[]"]').first().val();
+				var roles		= $parent.children('[name="control_roles[]"]').first().val();
 
 				$('[name=control_class]').val(classes);
 				$('[name=control_disp_src]').val(disp_src);
@@ -324,16 +375,20 @@
 				$('.control-validations input[type=checkbox]').removeAttr('checked');
 
 				// Populate validations
-				var val_ary = validations.split('|');
-
-				$.each(val_ary, function(idx, val) {
-					$('#control-chk-' + val).attr('checked', 'checked');
+				$.each(validations.split('|'), function(idx, val) {
+					$('.control-validations input[value=' + val + ']').attr('checked', 'checked');
 				});
 
-				// Initialize the WYSIWYG editor for display source
-				$('.wysihtml5-toolbar').remove();
-				$('[name=control_disp_src]').wysihtml5();
+				// Reset control role checkboxes
+				$('.control-roles input[type=checkbox]').removeAttr('checked');
 
+				// Populate control roles
+				$.each(roles.split('|'), function(idx, val) {
+					$('.control-roles input[value=' + val + ']').attr('checked', 'checked');
+				});
+
+				// Set the WYSIWYG editor text - yea, we need to do it separately
+				$('.wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(disp_src);
 
 				// Show the modal config window
 				$('#modal-properties').modal('show');
@@ -359,11 +414,19 @@
 		var set_path	= $('[name=control_set_path]').val();
 		var format		= $('[name=control_format]').val();
 		var validations	= new Array();
+		var roles		= new Array();
 
 		// Get validaton data
 		<?php foreach ($validations as $validation): ?>
-			if ($('#control-chk-<?= $validation ?>').is(':checked')) {
+			if ($('.control-validations input[value=<?= $validation ?>]').is(':checked')) {
 				validations.push('<?= $validation ?>');
+			}
+		<?php endforeach ?>
+
+		// Get control roles data
+		<?php foreach ($roles as $role): ?>
+			if ($('.control-roles input[value=<?= $role->role_id ?>]').is(':checked')) {
+				roles.push('<?= $role->role_id ?>');
 			}
 		<?php endforeach ?>
 
@@ -376,9 +439,23 @@
 		$('#' + key).children('[name="control_set_paths[]"]').val(set_path);
 		$('#' + key).children('[name="control_formats[]"]').val(format);
 		$('#' + key).children('[name="control_validations[]"]').val(validations.join('|'));
+		$('#' + key).children('[name="control_roles[]"]').val(roles.join('|'));
 
 		// Clear modal text boxes
 		$(this).children('input[type=text]').val('');
+	});
+
+	// Update the widget roles checkbox data to the hidden field
+	$('.widget-roles input[type=checkbox]').click(function() {
+		var widget_roles = new Array();
+
+		$('.widget-roles input[type=checkbox]').each(function() {
+			if ($(this).is(':checked')) {
+				widget_roles.push($(this).val());
+			}
+		});
+
+		$('[name=widget_roles]').val(widget_roles.join('|'));
 	});
 
 	// Save the current table to local storage
@@ -407,6 +484,12 @@
 		return false;
 	});
 
+	// Initialize the WYSIWYG editor for display source
+	$('[name=control_disp_src]').wysihtml5({
+		stylesheets: ["<?= base_url() ?>assets/css/wysiwyg-color.css"]
+	});
+
+
 	// Add/remove controls from the widget
 	function addControl(controlHTML) {
 		// Key field is already present, just change the name
@@ -419,6 +502,7 @@
 		controlHTML += '<?= trim(form_hidden('control_set_paths[]')) ?>';
 		controlHTML += '<?= trim(form_hidden('control_formats[]')) ?>';
 		controlHTML += '<?= trim(form_hidden('control_validations[]')) ?>';
+		controlHTML += '<?= trim(form_hidden('control_roles[]')) ?>';
 		
 		// We're done, add the control to the widget
 		$('<span class="control dropped"></span>').html(controlHTML).appendTo('.widget-area');

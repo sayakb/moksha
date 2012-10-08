@@ -40,6 +40,48 @@ class Widgets_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Gets a list of role names
+	 *
+	 * @access	public
+	 * @param	bool	indicates whether only IDs are to be returned
+	 * @return	array	list of role names
+	 */
+	public function fetch_roles($ids_only = FALSE)
+	{
+		$roles = $this->db->get("site_roles_{$this->bootstrap->site_id}")->result();
+
+		// Add author and logged-in roles
+		$roles = array_merge(array(
+			(object)array(
+				'role_id'	=> ROLE_AUTHOR,
+				'role_name'	=> $this->lang->line('author')
+			),
+			(object)array(
+				'role_id'	=> ROLE_LOGGED_IN,
+				'role_name'	=> $this->lang->line('logged_in')
+			)
+		), $roles);
+
+		if ($ids_only)
+		{
+			$role_ids = array();
+
+			foreach ($roles as $role)
+			{
+				$role_ids[] = $role->role_id;
+			}
+
+			return $role_ids;
+		}
+		else
+		{
+			return $roles;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Add a new widget to the DB
 	 *
 	 * @access	public
@@ -49,9 +91,11 @@ class Widgets_model extends CI_Model {
 	{
 		$widget_name	= $this->input->post('widget_name');
 		$widget_width	= $this->input->post('widget_width');
-		$widget_data	= array(
+		$widget_roles	= $this->input->post('widget_roles');
+
+		$widget_data	= (object)array(
 			'controls'	=> $this->populate_controls(),
-			'hub'		=> array(
+			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
 				'data_filters'	=> $this->input->post('data_filters'),
 				'order_by'		=> $this->input->post('order_by'),
@@ -73,11 +117,13 @@ class Widgets_model extends CI_Model {
 	 */
 	public function update_widget($widget_id)
 	{
-		$widget_name = $this->input->post('widget_name');
+		$widget_name	= $this->input->post('widget_name');
 		$widget_width	= $this->input->post('widget_width');
-		$widget_data = array(
+		$widget_roles	= $this->input->post('widget_roles');
+
+		$widget_data	= (object)array(
 			'controls'	=> $this->populate_controls(),
-			'hub'		=> array(
+			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
 				'data_filters'	=> $this->input->post('data_filters'),
 				'order_by'		=> $this->input->post('order_by'),
@@ -111,6 +157,7 @@ class Widgets_model extends CI_Model {
 			$control_set_paths		= $this->input->post('control_set_paths');
 			$control_formats		= $this->input->post('control_formats');
 			$control_validations	= $this->input->post('control_validations');
+			$control_roles			= $this->input->post('control_roles');
 
 			if (is_array($control_keys))
 			{
@@ -130,6 +177,7 @@ class Widgets_model extends CI_Model {
 					$controls[$idx]->set_path		= $control_set_paths[$idx];
 					$controls[$idx]->format			= $control_formats[$idx];
 					$controls[$idx]->validations	= $control_validations[$idx];
+					$controls[$idx]->roles			= $control_roles[$idx];
 				}
 
 				return $controls;

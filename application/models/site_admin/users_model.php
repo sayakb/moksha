@@ -76,6 +76,14 @@ class Users_model extends CI_Model {
 	{
 		$roles = $this->db->get("site_roles_{$this->bootstrap->site_id}")->result();
 
+		// Add admin role
+		$roles = array_merge(array(
+			(object)array(
+				'role_id'	=> ROLE_ADMIN,
+				'role_name'	=> $this->lang->line('administrator')
+			)
+		), $roles);
+
 		if ($ids_only)
 		{
 			$role_ids = array();

@@ -82,10 +82,10 @@ class Users extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
 			'roles'			=> $this->users_model->fetch_roles(),
-			'disable_adm'	=> NULL,
 			'username'		=> set_value('username'),
 			'email'			=> set_value('email'),
-			'user_roles'	=> set_value('user_roles')
+			'user_roles'	=> set_value('user_roles'),
+			'adm_disabled'	=> NULL
 		);
 
 		// Load the view
@@ -130,10 +130,10 @@ class Users extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
 			'roles'			=> $this->users_model->fetch_roles(),
-			'disable_adm'	=> $user->user_founder == 1 ? 'disabled="disabled"' : '',
 			'username'		=> set_value('username', $user->user_name),
 			'email'			=> set_value('email', $user->user_email),
-			'user_roles'	=> set_value('user_roles', $user->user_roles)
+			'user_roles'	=> set_value('user_roles', $user->user_roles),
+			'adm_disabled'	=> $user->user_founder == 1
 		);
 
 		// Load the view

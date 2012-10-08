@@ -6284,6 +6284,18 @@ to
 		margin-left: -1px;
 	}
 
+.modal-small
+{
+	width: 320px !important;
+	margin-left: -160px !important;
+	margin-top: -200px;
+}
+
+	.modal-small input
+	{
+		width: 275px !important;
+	}
+
 .dropup,
 .dropdown
 {

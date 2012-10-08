@@ -38,13 +38,13 @@
 
             "link":
                 "<li>" +
-                  "<div class='bootstrap-wysihtml5-insert-link-modal modal hide fade'>" +
+                  "<div class='bootstrap-wysihtml5-insert-link-modal modal modal-small hide fade'>" +
                     "<div class='modal-header'>" +
                       "<a class='close' data-dismiss='modal'>&times;</a>" +
                       "<h3>" + locale.link.insert + "</h3>" +
                     "</div>" +
                     "<div class='modal-body'>" +
-                      "<input value='http://' class='bootstrap-wysihtml5-insert-link-url input-xlarge'>" +
+                      "<input type='text' value='http://' class='bootstrap-wysihtml5-insert-link-url input-xlarge'>" +
                     "</div>" +
                     "<div class='modal-footer'>" +
                       "<a href='#' class='btn' data-dismiss='modal'>" + locale.link.cancel + "</a>" +
@@ -56,13 +56,13 @@
 
             "image":
                 "<li>" +
-                  "<div class='bootstrap-wysihtml5-insert-image-modal modal hide fade'>" +
+                  "<div class='bootstrap-wysihtml5-insert-image-modal modal modal-small hide fade'>" +
                     "<div class='modal-header'>" +
                       "<a class='close' data-dismiss='modal'>&times;</a>" +
                       "<h3>" + locale.image.insert + "</h3>" +
                     "</div>" +
                     "<div class='modal-body'>" +
-                      "<input value='http://' class='bootstrap-wysihtml5-insert-image-url input-xlarge'>" +
+                      "<input type='text' value='http://' class='bootstrap-wysihtml5-insert-image-url input-xlarge'>" +
                     "</div>" +
                     "<div class='modal-footer'>" +
                       "<a href='#' class='btn' data-dismiss='modal'>" + locale.image.cancel + "</a>" +
@@ -236,7 +236,7 @@
                 var activeButton = $(this).hasClass("wysihtml5-command-active");
 
                 if (!activeButton) {
-                    insertImageModal.modal('show');
+                    insertImageModal.modal({backdrop: false, show: true});
                     insertImageModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
                         e.stopPropagation();
                     });
@@ -287,7 +287,7 @@
                 var activeButton = $(this).hasClass("wysihtml5-command-active");
 
                 if (!activeButton) {
-                    insertLinkModal.append('body').modal('show');
+                    insertLinkModal.modal({backdrop: false, show: true});
                     insertLinkModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
                         e.stopPropagation();
                     });

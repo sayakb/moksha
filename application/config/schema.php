@@ -174,6 +174,11 @@ $config['schema']['site_widgets'] = array(
 			'null'				=> FALSE
 		),
 
+		'widget_roles' => array(
+			'type'				=> 'TEXT',
+			'null'				=> FALSE
+		),
+
 		'widget_data' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE

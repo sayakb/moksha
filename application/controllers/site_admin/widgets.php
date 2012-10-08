@@ -83,11 +83,13 @@ class Widgets extends CI_Controller {
 			'editor_title'	=> $this->lang->line('add_widget'),
 			'toolbox_items'	=> $this->widget->fetch_controls(),
 			'validations'	=> $this->widget->fetch_validations(),
+			'roles'			=> $this->widgets_model->fetch_roles(),
 			'widget_items'	=> $this->widgets_model->populate_controls(),
 			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name'),
 			'widget_width'	=> set_value('widget_width'),
+			'widget_roles'	=> set_value('widget_roles'),
 			'attached_hub'	=> set_value('attached_hub'),
 			'data_filters'	=> set_value('data_filters'),
 			'order_by'		=> set_value('order_by'),
@@ -109,8 +111,8 @@ class Widgets extends CI_Controller {
 	{
 		// Fetch widget data
 		$widget		= $this->widget->fetch($widget_id);
-		$hub_data	= $widget->widget_data['hub'];
-		
+		$hub_data	= $widget->widget_data->hub;
+
 		// Exempt widget name from unique validation
 		$this->form_validation->unique_exempts = array('widget_name' => $widget->widget_name);
 
@@ -133,17 +135,19 @@ class Widgets extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('edit_widget'),
-			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data['controls']),
-			'widget_widths'	=> $this->widgets_model->populate_widths(),
-			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'toolbox_items'	=> $this->widget->fetch_controls(),
 			'validations'	=> $this->widget->fetch_validations(),
+			'roles'			=> $this->widgets_model->fetch_roles(),
+			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data->controls),
+			'widget_widths'	=> $this->widgets_model->populate_widths(),
+			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name', $widget->widget_name),
 			'widget_width'	=> set_value('widget_width', $widget->widget_width),
-			'attached_hub'	=> set_value('attached_hub', $hub_data['attached_hub']),
-			'data_filters'	=> set_value('data_filters', $hub_data['data_filters']),
-			'order_by'		=> set_value('order_by', $hub_data['order_by']),
-			'max_records'	=> set_value('max_records', $hub_data['max_records'])
+			'widget_roles'	=> set_value('widget_roles', $widget->widget_roles),
+			'attached_hub'	=> set_value('attached_hub', $hub_data->attached_hub),
+			'data_filters'	=> set_value('data_filters', $hub_data->data_filters),
+			'order_by'		=> set_value('order_by', $hub_data->order_by),
+			'max_records'	=> set_value('max_records', $hub_data->max_records)
 		);
 
 		// Load the view
@@ -330,6 +334,46 @@ class Widgets extends CI_Controller {
 		}
 
 		$this->form_validation->set_message('check_controls', $this->lang->line('control_required'));
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates submitted user roles
+	 *
+	 * @access	public
+	 * @param	string	roles to validate
+	 * @return	bool	true if valid
+	 */
+	public function check_roles($roles)
+	{
+		$roles = trim($roles);
+
+		if (empty($role))
+		{
+			return TRUE;
+		}
+
+		$roles_ary = explode('|', $roles);
+
+		if (is_array($roles_ary))
+		{
+			$valid_roles = $this->widgets_model->fetch_roles(TRUE);
+
+			foreach ($roles_ary as $role)
+			{
+				if ( ! in_array($role, $valid_roles))
+				{
+					$this->form_validation->set_message('check_roles', $this->lang->line('invalid_role'));
+					return FALSE;
+				}
+			}
+
+			return TRUE;
+		}
+
+		$this->form_validation->set_message('check_roles', $this->lang->line('invalid_role'));
 		return FALSE;
 	}
 
