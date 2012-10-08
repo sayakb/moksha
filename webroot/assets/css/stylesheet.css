@@ -2241,6 +2241,11 @@ select:focus:required:invalid
 	margin-bottom: 10px;
 }
 
+.help-wysiwyg
+{
+	margin-top: 10px;
+}
+
 .help-inline
 {
 	display: inline-block;

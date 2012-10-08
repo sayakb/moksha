@@ -183,7 +183,7 @@
 
 				<div class="controls">
 					<?= form_textarea(array('name' => 'control_disp_src', 'rows' => '5')) ?>
-					<div class="help-block"><?= $this->lang->line('control_disp_src_exp') ?></div>
+					<div class="help-block help-wysiwyg"><?= $this->lang->line('control_disp_src_exp') ?></div>
 				</div>
 			</div>
 
@@ -329,6 +329,11 @@
 				$.each(val_ary, function(idx, val) {
 					$('#control-chk-' + val).attr('checked', 'checked');
 				});
+
+				// Initialize the WYSIWYG editor for display source
+				$('.wysihtml5-toolbar').remove();
+				$('[name=control_disp_src]').wysihtml5();
+
 
 				// Show the modal config window
 				$('#modal-properties').modal('show');
