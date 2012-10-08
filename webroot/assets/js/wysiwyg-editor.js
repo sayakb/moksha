@@ -47,8 +47,8 @@
                       "<input type='text' value='http://' class='bootstrap-wysihtml5-insert-link-url input-xlarge'>" +
                     "</div>" +
                     "<div class='modal-footer'>" +
-                      "<a href='#' class='btn' data-dismiss='modal'>" + locale.link.cancel + "</a>" +
                       "<a href='#' class='btn btn-primary' data-dismiss='modal'>" + locale.link.insert + "</a>" +
+                      "<a href='#' class='btn' data-dismiss='modal'>" + locale.link.cancel + "</a>" +
                     "</div>" +
                   "</div>" +
                   "<a class='btn' data-wysihtml5-command='createLink' title='" + locale.link.insert + "'><i class='icon-share'></i></a>" +
@@ -65,8 +65,8 @@
                       "<input type='text' value='http://' class='bootstrap-wysihtml5-insert-image-url input-xlarge'>" +
                     "</div>" +
                     "<div class='modal-footer'>" +
-                      "<a href='#' class='btn' data-dismiss='modal'>" + locale.image.cancel + "</a>" +
                       "<a href='#' class='btn btn-primary' data-dismiss='modal'>" + locale.image.insert + "</a>" +
+                      "<a href='#' class='btn' data-dismiss='modal'>" + locale.image.cancel + "</a>" +
                     "</div>" +
                   "</div>" +
                   "<a class='btn' data-wysihtml5-command='insertImage' title='" + locale.image.insert + "'><i class='icon-picture'></i></a>" +
