@@ -36,6 +36,10 @@ $config['widgets']['controls'] = array(
 		'icon'	=> 'list',
 		'label'	=> 'field_unordered_list',
 	),
+	'pagination' => (object)array(
+		'icon'	=> 'pagination',
+		'label'	=> 'field_pagination',
+	),
 	'textbox' => (object)array(
 		'icon'	=> 'textbox',
 		'label'	=> 'field_textbox',
@@ -107,6 +111,7 @@ $config['widgets']['controls'] = array(
 */
 $config['widgets']['validations'] = array(
 	'required',
+	'is_unique',
 	'alpha',
 	'numeric',
 	'alpha_numeric',
@@ -121,34 +126,14 @@ $config['widgets']['validations'] = array(
 |
 */
 $config['widgets']['expressions'] = array(
-	'url' => (object)array(
-		'regex'		=> '/\{\{url:(.*?)\}\}/i',
-		'output'	=> '$this->CI->uri->segment($value, "")'
-	),
-	'hub' => (object)array(
-		'regex'		=> '/\{\{hub:(.*?)\}\}/i',
-		'output'	=> 'isset($row->$value) ? $row->$value : ""'
-	),
-	'get' => (object)array(
-		'regex'		=> '/\{\{get:(.*?)\}\}/i',
-		'output'	=> '$this->CI->input->get($value)'
-	),
-	'post' => (object)array(
-		'regex'		=> '/\{\{post:(.*?)\}\}/i',
-		'output'	=> '$this->CI->input->post($value)'
-	),
-	'cookie' => (object)array(
-		'regex'		=> '/\{\{cookie:(.*?)\}\}/i',
-		'output'	=> '$this->CI->input->cookie($value)'
-	),
-	'server' => (object)array(
-		'regex'		=> '/\{\{server:(.*?)\}\}/i',
-		'output'	=> '$this->CI->input->server(strtoupper($value))'
-	),
-	'user' => (object)array(
-		'regex'		=> '/\{\{user:(.*?)\}\}/i',
-		'output'	=> 'user_data($value)'
-	)
+	'url'		=> '$this->CI->uri->segment($value, "")',
+	'hub'		=> 'isset($row->$value) ? $row->$value : ""',
+	'get'		=> '$this->CI->input->get($value)',
+	'post'		=> '$this->CI->input->post($value)',
+	'cookie'	=> '$this->CI->input->cookie($value)',
+	'server'	=> '$this->CI->input->server(strtoupper($value))',
+	'user'		=> 'user_data($value)',
+	'calc'		=> 'eval("return $value;")'
 );
 
 

@@ -6,7 +6,7 @@
  *
  * @package		Moksha
  * @category	Libraries
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Hub_rss {
 

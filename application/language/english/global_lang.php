@@ -3,7 +3,7 @@
 $lang['moksha']				= 'Moksha';
 $lang['moksha_desc']		= 'Moksha is a website building utility';
 $lang['homepage']			= 'Home';
-$lang['default_copyright']	= '&copy; 2012';
+$lang['default_copyright']	= '&copy; 2012 <a href="http://sayakbanerjee.com">Sayak Banerjee</a>';
 $lang['submit']				= 'Submit';
 $lang['actions']			= 'Actions';
 $lang['edit']				= 'Edit';

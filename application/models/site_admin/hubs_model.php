@@ -7,7 +7,7 @@
  *
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Hubs_model extends CI_Model {
 
@@ -41,18 +41,26 @@ class Hubs_model extends CI_Model {
 	 * Gets a list of hub column data types
 	 *
 	 * @access	public
+	 * @param	bool	flag indicating whether key column should be excluded
 	 * @return	array	containing data type list
 	 */
-	public function fetch_datatypes()
+	public function fetch_datatypes($exclude_key = FALSE)
 	{
-		return array(
-			DBTYPE_NONE		=> NULL, // Empty first item
+		$data_types = array(
+			DBTYPE_NONE		=> '', // Empty first item
 			DBTYPE_KEY		=> $this->lang->line('dbtype_key'),
 			DBTYPE_INT		=> $this->lang->line('dbtype_int'),
 			DBTYPE_TEXT		=> $this->lang->line('dbtype_text'),
 			DBTYPE_PASSWORD	=> $this->lang->line('dbtype_password'),
 			DBTYPE_DATETIME	=> $this->lang->line('dbtype_datetime')
 		);
+		
+		if ($exclude_key)
+		{
+			unset($data_types[DBTYPE_KEY]);
+		}
+		
+		return $data_types;
 	}
 
 	// --------------------------------------------------------------------

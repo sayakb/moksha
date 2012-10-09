@@ -7,7 +7,7 @@
  *
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Widgets_model extends CI_Model {
 
@@ -35,6 +35,68 @@ class Widgets_model extends CI_Model {
 
 		$query = $this->db->limit($config['per_page'], $offset)->get("site_widgets_{$this->bootstrap->site_id}");
 		return $query->result();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches a specific widget for a site
+	 *
+	 * @access	public
+	 * @param	int		widget identifier
+	 * @return	object	widget details
+	 */
+	public function fetch_widget($widget_id)
+	{
+		$this->db->where('widget_id', $widget_id);
+
+		$widget = $this->db->get("site_widgets_{$this->bootstrap->site_id}")->row();
+		$widget->widget_data = unserialize($widget->widget_data);
+
+		return $widget;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches the name for a hub against its ID
+	 *
+	 * @access	public
+	 * @param	int		hub identifier
+	 * @return	string	hub name
+	 */
+	public function fetch_hub_name($hub_id)
+	{
+		$hub = $this->db->get_where("site_hubs_{$this->bootstrap->site_id}", array('hub_id' => $hub_id))->row();
+		return $hub->hub_name;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch different types of available controls
+	 *
+	 * @access	public
+	 * @return	array	control list
+	 */
+	public function fetch_controls()
+	{
+		$config = $this->config->item('widgets');
+		return $config['controls'];
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetch different types of validations for controls
+	 *
+	 * @access	public
+	 * @return	array	validation list
+	 */
+	public function fetch_validations()
+	{
+		$config = $this->config->item('widgets');
+		return $config['validations'];
 	}
 
 	// --------------------------------------------------------------------
@@ -82,6 +144,19 @@ class Widgets_model extends CI_Model {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Fetches a count of widgets added to the site
+	 *
+	 * @access	public
+	 * @return	int		count of widgets
+	 */
+	public function count_widgets()
+	{
+		return $this->db->count_all("site_widgets_{$this->bootstrap->site_id}");
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Add a new widget to the DB
 	 *
 	 * @access	public
@@ -89,11 +164,8 @@ class Widgets_model extends CI_Model {
 	 */
 	public function add_widget()
 	{
-		$widget_name	= $this->input->post('widget_name');
-		$widget_width	= $this->input->post('widget_width');
-		$widget_roles	= $this->input->post('widget_roles');
-
-		$widget_data	= (object)array(
+		// Gather widget meta data
+		$widget_data = (object)array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
@@ -103,7 +175,15 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
-		return $this->widget->add($widget_name, $widget_width, $widget_data);
+		// Build the insert data
+		$data = array(
+			'widget_name'	=> $this->input->post('widget_name'),
+			'widget_roles'	=> $this->input->post('widget_roles'),
+			'widget_key'	=> $this->input->post('widget_key'),
+			'widget_data'	=> serialize($widget_data)
+		);
+
+		return $this->db->insert("site_widgets_{$this->bootstrap->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -117,11 +197,8 @@ class Widgets_model extends CI_Model {
 	 */
 	public function update_widget($widget_id)
 	{
-		$widget_name	= $this->input->post('widget_name');
-		$widget_width	= $this->input->post('widget_width');
-		$widget_roles	= $this->input->post('widget_roles');
-
-		$widget_data	= (object)array(
+		// Gather widget meta data
+		$widget_data = (object)array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
@@ -131,7 +208,29 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
-		return $this->widget->update($widget_id, $widget_name, $widget_width, $widget_data);
+		// Build the update data
+		$data = array(
+			'widget_name'	=> $this->input->post('widget_name'),
+			'widget_roles'	=> $this->input->post('widget_roles'),
+			'widget_key'	=> $this->input->post('widget_key'),
+			'widget_data'	=> serialize($widget_data)
+		);
+
+		return $this->db->update("site_widgets_{$this->bootstrap->site_id}", $data, array('widget_id' => $widget_id));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Deletes a specific widget
+	 *
+	 * @access	public
+	 * @param	int		widget identifier
+	 * @return	bool	true if succeeded
+	 */
+	public function delete_widget($widget_id)
+	{
+		return $this->db->delete("site_widgets_{$this->bootstrap->site_id}", array('widget_id' => $widget_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -143,7 +242,7 @@ class Widgets_model extends CI_Model {
 	 * @param	string	serialized widget data to populate as default
 	 * @return	array	containing control data
 	 */
-	public function populate_controls($widget_data = FALSE)
+	public function populate_controls($control_data = FALSE)
 	{
 		if (isset($_POST['submit']))
 		{
@@ -162,7 +261,7 @@ class Widgets_model extends CI_Model {
 			if (is_array($control_keys))
 			{
 				// Fetch icon and label metadata for posted controls
-				$control_meta = elements($control_keys, $this->widget->fetch_controls());
+				$control_meta = elements($control_keys, $this->fetch_controls());
 			
 				// Populate classes, disp_paths, value_paths and formats data
 				for($idx = 0; $idx < count($control_keys); $idx++)
@@ -187,31 +286,14 @@ class Widgets_model extends CI_Model {
 				return array();
 			}
 		}
-		else if ($widget_data !== FALSE)
+		else if ($control_data !== FALSE)
 		{
-			return $widget_data;
+			return $control_data;
 		}
 		else
 		{
 			return array();
 		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetches a list of widget widths
-	 *
-	 * @access	public
-	 * @return	array	list of widths
-	 */
-	public function populate_widths()
-	{
-		return array(
-			'1' => '1',
-			'2' => '2',
-			'3' => '3'
-		);
 	}
 
 	// --------------------------------------------------------------------
@@ -225,11 +307,11 @@ class Widgets_model extends CI_Model {
 	public function populate_hubs()
 	{
 		$hubs		= $this->hub->fetch_list();
-		$hubs_ary	= array('-1' => NULL);
+		$hubs_ary	= array(HUB_NONE => NULL);
 
 		foreach ($hubs as $hub)
 		{
-			$hubs_ary[$hub->hub_name] = $hub->hub_name;
+			$hubs_ary[$hub->hub_id] = $hub->hub_name;
 		}
 
 		return $hubs_ary;

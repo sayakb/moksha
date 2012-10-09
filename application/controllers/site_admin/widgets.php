@@ -7,7 +7,7 @@
  *
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Widgets extends CI_Controller {
 
@@ -37,7 +37,7 @@ class Widgets extends CI_Controller {
 		$this->pagination->initialize(
 			array_merge($this->config->item('pagination'), array(
 				'base_url'		=> base_url('admin/widgets/manage'),
-				'total_rows'	=> $this->widget->count(),
+				'total_rows'	=> $this->widgets_model->count_widgets(),
 				'uri_segment'	=> 4,
 			))
 		);
@@ -81,15 +81,14 @@ class Widgets extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('add_widget'),
-			'toolbox_items'	=> $this->widget->fetch_controls(),
-			'validations'	=> $this->widget->fetch_validations(),
+			'toolbox_items'	=> $this->widgets_model->fetch_controls(),
+			'validations'	=> $this->widgets_model->fetch_validations(),
 			'roles'			=> $this->widgets_model->fetch_roles(),
 			'widget_items'	=> $this->widgets_model->populate_controls(),
-			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name'),
-			'widget_width'	=> set_value('widget_width'),
 			'widget_roles'	=> set_value('widget_roles'),
+			'widget_key'	=> set_value('widget_key'),
 			'attached_hub'	=> set_value('attached_hub'),
 			'data_filters'	=> set_value('data_filters'),
 			'order_by'		=> set_value('order_by'),
@@ -110,7 +109,7 @@ class Widgets extends CI_Controller {
 	public function edit($widget_id)
 	{
 		// Fetch widget data
-		$widget		= $this->widget->fetch($widget_id);
+		$widget		= $this->widgets_model->fetch_widget($widget_id);
 		$hub_data	= $widget->widget_data->hub;
 
 		// Exempt widget name from unique validation
@@ -135,15 +134,14 @@ class Widgets extends CI_Controller {
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
 			'editor_title'	=> $this->lang->line('edit_widget'),
-			'toolbox_items'	=> $this->widget->fetch_controls(),
-			'validations'	=> $this->widget->fetch_validations(),
+			'toolbox_items'	=> $this->widgets_model->fetch_controls(),
+			'validations'	=> $this->widgets_model->fetch_validations(),
 			'roles'			=> $this->widgets_model->fetch_roles(),
 			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data->controls),
-			'widget_widths'	=> $this->widgets_model->populate_widths(),
 			'hubs_list'		=> $this->widgets_model->populate_hubs(),
 			'widget_name'	=> set_value('widget_name', $widget->widget_name),
-			'widget_width'	=> set_value('widget_width', $widget->widget_width),
 			'widget_roles'	=> set_value('widget_roles', $widget->widget_roles),
+			'widget_key'	=> set_value('widget_key', $widget->widget_key),
 			'attached_hub'	=> set_value('attached_hub', $hub_data->attached_hub),
 			'data_filters'	=> set_value('data_filters', $hub_data->data_filters),
 			'order_by'		=> set_value('order_by', $hub_data->order_by),
@@ -166,7 +164,7 @@ class Widgets extends CI_Controller {
 	{
 		if ($this->template->confirm_box('lang:widget_del_confirm'))
 		{
-			if ($this->widget->delete($widget_id))
+			if ($this->widgets_model->delete_widget($widget_id))
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('widget_deleted'));
 			}
@@ -191,14 +189,15 @@ class Widgets extends CI_Controller {
 	public function check_set_paths($path)
 	{
 		$path		= trim($path);
-		$hub_name	= $this->input->post('attached_hub');
+		$hub_id		= $this->input->post('attached_hub');
+		$hub_name	= $this->widgets_model->fetch_hub_name($hub_id);
 
 		if (empty($path))
 		{
 			return TRUE;
 		}
 
-		if ($hub_name != '-1')
+		if ($hub_name != HUB_NONE)
 		{
 			$columns = $this->hub->column_list($hub_name);
 
@@ -221,9 +220,9 @@ class Widgets extends CI_Controller {
 	 * @param	string	hub name
 	 * @return	bool	true if valid
 	 */
-	public function check_hub($hub_name)
+	public function check_hub($hub_id)
 	{
-		if ($hub_name != '-1')
+		if ($hub_id != HUB_NONE)
 		{
 			$hub_list = $this->hub->fetch_list();
 
@@ -231,7 +230,7 @@ class Widgets extends CI_Controller {
 			{
 				foreach ($hub_list as $hub)
 				{
-					if ($hub->hub_name == $hub_name)
+					if ($hub->hub_id == $hub_id)
 					{
 						return TRUE;
 					}
@@ -255,14 +254,15 @@ class Widgets extends CI_Controller {
 	public function check_filters($filters)
 	{
 		$filters	= trim($filters);
-		$hub_name	= $this->input->post('attached_hub');
+		$hub_id		= $this->input->post('attached_hub');
+		$hub_name	= $this->widgets_model->fetch_hub_name($hub_id);
 
 		if (empty($filters))
 		{
 			return TRUE;
 		}
 
-		if ($hub_name != '-1')
+		if ($hub_name != HUB_NONE)
 		{
 			if ($this->widget->parse_filters($hub_name, $filters) !== FALSE)
 			{
@@ -286,14 +286,15 @@ class Widgets extends CI_Controller {
 	public function check_orderby($order_by)
 	{
 		$order_by	= trim($order_by);
-		$hub_name	= $this->input->post('attached_hub');
+		$hub_id		= $this->input->post('attached_hub');
+		$hub_name	= $this->widgets_model->fetch_hub_name($hub_id);
 
 		if (empty($order_by))
 		{
 			return TRUE;
 		}
 
-		if ($hub_name != '-1')
+		if ($hub_name != HUB_NONE)
 		{
 			if ($this->widget->parse_orderby($hub_name, $order_by) !== FALSE)
 			{
@@ -319,7 +320,7 @@ class Widgets extends CI_Controller {
 
 		if (is_array($control_keys))
 		{
-			$all_controls = $this->widget->fetch_controls();
+			$all_controls = $this->widgets_model->fetch_controls();
 			
 			foreach ($control_keys as $key)
 			{

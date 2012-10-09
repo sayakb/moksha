@@ -5,7 +5,7 @@
  *
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Welcome extends CI_Controller {
 

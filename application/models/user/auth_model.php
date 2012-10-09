@@ -7,7 +7,7 @@
  *
  * @package		Moksha
  * @category	Authentication
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Auth_model extends CI_Model {
 

@@ -6,7 +6,7 @@
  *
  * @package		Moksha
  * @category	Libraries
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Hub {
 
@@ -115,10 +115,11 @@ class Hub {
 	 * @param	string	new hub data
 	 * @return	object	of class Hub
 	 */
-	public function rename($hub_name, $new_data)
+	public function modify($hub_name, $new_data)
 	{
 		$this->CI->db->where('hub_name', $hub_name);
 		$this->CI->db->update("site_hubs_{$this->CI->bootstrap->site_id}", $new_data);
+		$this->CI->cache->delete_group("hubidx_{$this->CI->bootstrap->site_id}");
 
 		return $this;
 	}

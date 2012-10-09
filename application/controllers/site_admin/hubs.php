@@ -7,7 +7,7 @@
  * 
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Hubs extends CI_Controller {
 
@@ -127,6 +127,9 @@ class Hubs extends CI_Controller {
 				}
 			}
 
+			// We don't need this data anymore
+			$this->session->unset_userdata('hub_name');
+
 			// Assign view data
 			$data = array(
 				'page_title'		=> $this->lang->line('site_adm'),
@@ -196,7 +199,7 @@ class Hubs extends CI_Controller {
 
 				if ($this->form_validation->run('site_admin/hubs/edit/rename_hub'))
 				{
-					if ($this->hubs_model->modify_hub())
+					if ($this->hubs_model->update_hub())
 					{
 						$this->session->set_flashdata('success_msg', $this->lang->line('hub_renamed'));
 						redirect(base_url('admin/hubs/manage'), 'refresh');
@@ -285,7 +288,7 @@ class Hubs extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('site_adm'),
 			'page_desc'		=> $this->lang->line('manage_hubs_exp'),
-			'data_types'	=> $this->hubs_model->fetch_datatypes(),
+			'data_types'	=> $this->hubs_model->fetch_datatypes(TRUE),
 			'hub_columns'	=> $this->hubs_model->fetch_columns($hub->hub_name),
 			'hub'			=> $hub
 		);
@@ -359,17 +362,24 @@ class Hubs extends CI_Controller {
 		$column_names		= $this->input->post('column_names');
 		$column_datatypes	= $this->input->post('column_datatypes');
 
+		// At least one unique key is required
+		if ( ! in_array(DBTYPE_KEY, $column_datatypes))
+		{
+			$this->form_validation->set_message('check_column_add', $this->lang->line('unique_key_reqd'));
+			return FALSE;
+		}
+
 		// Only one unique key column is allowed
 		if (array_has_duplicates($column_datatypes, DBTYPE_KEY))
 		{
-			$this->form_validation->set_message('check_columns', $this->lang->line('one_unique_key'));
+			$this->form_validation->set_message('check_column_add', $this->lang->line('one_unique_key'));
 			return FALSE;
 		}
 
 		// Column names must be unique
 		if (array_has_duplicates($column_names))
 		{
-			$this->form_validation->set_message('check_columns', $this->lang->line('duplicate_colname'));
+			$this->form_validation->set_message('check_column_add', $this->lang->line('duplicate_colname'));
 			return FALSE;
 		}
 
@@ -413,6 +423,31 @@ class Hubs extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Validates column when deleting it. Disallows deleting if it is the
+	 * last column in the hub
+	 *
+	 * @access	public
+	 * @return	bool	true if valid
+	 */
+	public function check_column_delete($column_name)
+	{
+		$hub_name		= $this->input->post('hub_name');
+		$hub_columns	= $this->hubs_model->fetch_columns($hub_name);
+
+		if (count($hub_columns) == 1)
+		{
+			$this->form_validation->set_message('check_column_delete', $this->lang->line('column_last'));
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Validates hub column data when adding columns
 	 *
 	 * @access	public
@@ -442,11 +477,34 @@ class Hubs extends CI_Controller {
 	 * @access	public
 	 * @return	bool	true if column data type is valid
 	 */
-	public function check_column_datatype($datatype)
+	public function check_column_datatype($data_type)
 	{
-		if ( ! in_array(intval($datatype), array(DBTYPE_KEY, DBTYPE_INT, DBTYPE_TEXT, DBTYPE_PASSWORD, DBTYPE_DATETIME)))
+		$data_types = $this->hubs_model->fetch_datatypes();
+
+		if ( ! isset($data_types[$data_type]))
 		{
 			$this->form_validation->set_message('check_column_datatype', $this->lang->line('select_datatype'));
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Disallows adding a column of datatype unique key
+	 *
+	 * @access	public
+	 * @return	bool	true if column data type is valid
+	 */
+	public function check_disallow_unique($datatype)
+	{
+		if ($datatype == DBTYPE_KEY)
+		{
+			$this->form_validation->set_message('check_disallow_unique', $this->lang->line('one_unique_key'));
 			return FALSE;
 		}
 		else

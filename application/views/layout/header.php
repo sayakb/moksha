@@ -8,7 +8,6 @@
 	<title><?= $page_title ?></title>
 
 	<link href="<?= base_url('assets/css/stylesheet.css') ?>" rel="stylesheet" />
-	<link href="<?= base_url('assets/css/wysiwyg.css') ?>" rel="stylesheet" />
 	<link href="<?= base_url('assets/css/jquery-ui.css') ?>" rel="stylesheet" />
 	<script type="text/javascript" src="<?= base_url('assets/js/jquery.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/jquery-ui.js') ?>"></script>

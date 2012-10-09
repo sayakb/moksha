@@ -7,7 +7,7 @@
  *
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Users_model extends CI_Model {
 

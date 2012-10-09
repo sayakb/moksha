@@ -43,6 +43,7 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 | These define the different data drivers supported by the Hub library
 |
  */
+define('HUB_NONE',			'none');
 define('HUB_DATABASE',		'db');
 define('HUB_RSS',			'rss');
 

@@ -4,7 +4,7 @@
  *
  * @package		Moksha
  * @category	Library
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Sys_Form_validation extends CI_Form_validation {
 

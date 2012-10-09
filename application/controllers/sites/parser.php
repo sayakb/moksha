@@ -7,7 +7,7 @@
  * 
  * @package		Moksha
  * @category	Site
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Parser extends CI_Controller {
 

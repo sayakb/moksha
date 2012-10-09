@@ -188,7 +188,8 @@ $config = array(
 		array(
 			'field'	=>	'column_datatype',
 			'label'	=>	'lang:data_type',
-			'rules'	=>	'callback_check_column_datatype'
+			'rules'	=>	'callback_check_column_datatype|'.
+						'callback_check_disallow_unique'
 		)
 	),
 	
@@ -215,7 +216,8 @@ $config = array(
 		array(
 			'field'	=>	'column_name_existing',
 			'label'	=>	'lang:column_name',
-			'rules'	=>	'callback_check_column_dropdown'
+			'rules'	=>	'callback_check_column_dropdown|'.
+						'callback_check_column_delete'
 		)
 	),
 
@@ -230,12 +232,9 @@ $config = array(
 						'is_unique[site_widgets.widget_name]'
 		),
 		array(
-			'field'	=>	'widget_width',
-			'label'	=>	'lang:widget_width',
-			'rules'	=>	'required|'.
-						'integer|'.
-						'greater_than[0]|'.
-						'less_than[4]'
+			'field'	=>	'widget_key',
+			'label'	=>	'lang:widget_key',
+			'rules'	=>	'max_length[100]'
 		),
 		array(
 			'field'	=>	'widget_roles',
@@ -379,6 +378,40 @@ $config = array(
 						'trim|'.
 						'is_unique[site_roles.role_name]'
 		)
+	),
+
+	// Site admin: add/edit pages
+	'site_admin/pages' => array(
+		array(
+			'field'	=>	'pg_title',
+			'label'	=>	'lang:page_title',
+			'rules'	=>	'required|'.
+						'max_length[100]|'.
+						'is_unique[site_pages.page_title]'
+		),
+		array(
+			'field'	=>	'pg_url',
+			'label'	=>	'lang:page_url',
+			'rules'	=>	'required|'.
+						'max_length[255]|'.
+						'trim|'.
+						'is_unique[site_pages.page_url]'
+		),
+		array(
+			'field'	=>	'pg_layout',
+			'label'	=>	'lang:page_layout',
+			'rules'	=>	'callback_check_layout'
+		),
+		array(
+			'field'	=>	'pg_roles',
+			'label'	=>	'lang:roles',
+			'rules'	=>	'callback_check_roles'
+		),
+		array(
+			'field'	=>	'add_page',
+			'label'	=>	'lang:page',
+			'rules'	=>	'callback_check_widgets'
+		),
 	)
 );
 

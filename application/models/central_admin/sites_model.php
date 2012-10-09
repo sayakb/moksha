@@ -7,7 +7,7 @@
  *
  * @package		Moksha
  * @category	Administration
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Sites_model extends CI_Model {
 
@@ -155,7 +155,7 @@ class Sites_model extends CI_Model {
 			// Drop all hubs
 			foreach ($this->hub->fetch_list() as $hub)
 			{
-				$table = "site_hub_{$site_id}_{$hub->hub_id}";
+				$table = "site_hub_{$hub->hub_id}_{$site_id}";
 
 				if ($hub->hub_driver == HUB_DATABASE AND $this->db->table_exists($table))
 				{

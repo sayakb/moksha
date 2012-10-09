@@ -6,7 +6,7 @@
  *
  * @package		Moksha
  * @category	Libraries
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 class Widget {
 
@@ -25,148 +25,6 @@ class Widget {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Fetch different types of available controls
-	 *
-	 * @access	public
-	 * @return	array	control list
-	 */
-	public function fetch_controls()
-	{
-		$config = $this->CI->config->item('widgets');
-		return $config['controls'];
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetch different types of validations for controls
-	 *
-	 * @access	public
-	 * @return	array	validation list
-	 */
-	public function fetch_validations()
-	{
-		$config = $this->CI->config->item('widgets');
-		return $config['validations'];
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Gets a list of equality operators in a filter
-	 *
-	 * @access	public
-	 * @return	array	list of operators
-	 */
-	public function fetch_operators()
-	{
-		return array(
-			'[EQ]'		=> '',
-			'[NEQ]'		=> '!=',
-			'[GRTR]'	=> '>',
-			'[LESS]'	=> '<',
-			'[GRTREQ]'	=> '>=',
-			'[LESSEQ]'	=> '<=',
-			'[LIKE]'	=> '[LIKE]'
-		);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetches a specific widget for a site
-	 *
-	 * @access	public
-	 * @param	int		widget identifier
-	 * @return	object	widget details
-	 */
-	public function fetch($widget_id)
-	{
-		$this->CI->db->where('widget_id', $widget_id);
-
-		$widget = $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->row();
-		$widget->widget_data = unserialize($widget->widget_data);
-
-		return $widget;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fetches a count of widgets added to the site
-	 *
-	 * @access	public
-	 * @return	int		count of widgets
-	 */
-	public function count()
-	{
-		return $this->CI->db->count_all("site_widgets_{$this->CI->bootstrap->site_id}");
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Add a new widget to the DB
-	 *
-	 * @access	public
-	 * @param	string	widget name
-	 * @param	int		widget width
-	 * @param	array	widget metadata
-	 * @return	bool	true if succeeded
-	 */
-	public function add($widget_name, $widget_width, $widget_data)
-	{
-		$data = array(
-			'widget_name'	=> $widget_name,
-			'widget_width'	=> $widget_width,
-			'widget_data'	=> serialize($widget_data)
-		);
-
-		return $this->CI->db->insert("site_widgets_{$this->CI->bootstrap->site_id}", $data);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Updated an existing widget
-	 *
-	 * @access	public
-	 * @param	int		widget identifier
-	 * @param	string	widget name
-	 * @param	int		widget width
-	 * @param	array	widget metadata
-	 * @return	bool	true if succeeded
-	 */
-	public function update($widget_id, $widget_name, $widget_width, $widget_data)
-	{
-		$data = array(
-			'widget_name'	=> $widget_name,
-			'widget_width'	=> $widget_width,
-			'widget_data'	=> serialize($widget_data)
-		);
-
-		$this->CI->db->where('widget_id', $widget_id);
-		return $this->CI->db->update("site_widgets_{$this->CI->bootstrap->site_id}", $data);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Deletes a specific widget
-	 *
-	 * @access	public
-	 * @param	int		widget identifier
-	 * @return	bool	true if succeeded
-	 */
-	public function delete($widget_id)
-	{
-		$this->CI->db->where('widget_id', $widget_id);
-		return $this->CI->db->delete("site_widgets_{$this->CI->bootstrap->site_id}");
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Parses data filter for a widget
 	 *
 	 * @access	public
@@ -177,7 +35,7 @@ class Widget {
 	public function parse_filters($hub_name, $filters)
 	{
 		$hub_columns	= $this->CI->hub->column_list($hub_name);
-		$operators		= $this->fetch_operators();
+		$operators		= $this->operators();
 		$filters		= explode("\n", $filters);
 		$first_filter	= TRUE;
 
@@ -317,20 +175,28 @@ class Widget {
 			$row = new stdClass();
 		}
 
-		// Parse expressions
-		foreach ($expressions as $exp)
+		if (preg_match_all('/\{(.*?):(.*)\}/i', $text, $matches) !== FALSE)
 		{
-			if (preg_match_all($exp->regex, $text, $matches) !== FALSE)
+			$originals	= $matches[0];
+			$types		= $matches[1];
+			$values		= $matches[2];
+
+			for ($idx = 0; $idx < count($originals); $idx++)
 			{
-				$originals	= $matches[0];
-				$values		= $matches[1];
-
-				for ($idx = 0; $idx < count($originals); $idx++)
+				$type	= $types[$idx];
+				$value	= $values[$idx];
+				
+				// Check if value contains an expression. If so, parse it first
+				if (preg_match('/\{(.*?):(.*)\}/i', $value))
 				{
-					$value	= $values[$idx];
+					$value = $this->parse_expr($value, $row);
+				}
 
-					$old	= $originals[$idx];
-					$new	= eval("return {$exp->output};");
+				// Parse the expression
+				if (isset($expressions[$type]))
+				{
+					$old = $originals[$idx];
+					$new = @eval("return {$expressions[$type]};");
 
 					$text = str_replace($old, $new, $text);
 				}
@@ -338,6 +204,27 @@ class Widget {
 		}
 
 		return $text;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Gets a list of equality operators in a filter
+	 *
+	 * @access	private
+	 * @return	array	list of operators
+	 */
+	private function operators()
+	{
+		return array(
+		'[EQ]'		=> '',
+		'[NEQ]'		=> '!=',
+		'[GRTR]'	=> '>',
+		'[LESS]'	=> '<',
+		'[GRTREQ]'	=> '>=',
+		'[LESSEQ]'	=> '<=',
+		'[LIKE]'	=> '[LIKE]'
+		);
 	}
 
 	// --------------------------------------------------------------------

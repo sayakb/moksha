@@ -168,14 +168,14 @@ $config['schema']['site_widgets'] = array(
 			'null'				=> FALSE
 		),
 
-		'widget_width' => array(
-			'type'				=> 'TINYINT',
-			'constraint'		=> 1,
+		'widget_roles' => array(
+			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		),
 
-		'widget_roles' => array(
-			'type'				=> 'TEXT',
+		'widget_key' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
 
@@ -187,6 +187,49 @@ $config['schema']['site_widgets'] = array(
 
 	'keys' => array(
 		'widget_id'				=> TRUE
+	)
+);
+
+$config['schema']['site_pages'] = array(
+	'fields' => array(
+		'page_id' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
+		),
+
+		'page_title' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 100,
+			'null'				=> FALSE
+		),
+
+		'page_url' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255,
+			'null'				=> FALSE
+		),
+
+		'page_roles' => array(
+			'type'				=> 'TEXT',
+			'null'				=> FALSE
+		),
+
+		'page_layout' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 5,
+			'null'				=> FALSE
+		),
+
+		'page_widgets' => array(
+			'type'				=> 'TEXT',
+			'null'				=> FALSE
+		)
+	),
+
+	'keys' => array(
+		'page_id'				=> TRUE
 	)
 );
 

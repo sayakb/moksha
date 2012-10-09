@@ -17,17 +17,6 @@
 				<?= form_input('widget_name', $widget_name) ?>
 			</div>
 		</div>
-
-		<div class="control-group">
-			<label class="control-label">
-				<?= $this->lang->line('widget_width') ?>
-			</label>
-
-			<div class="controls">
-				<?= form_dropdown('widget_width', $widget_widths, $widget_width) ?>
-				<div class="help-block"><?= $this->lang->line('widget_width_exp') ?></div>
-			</div>
-		</div>
 	</div>
 	<hr />
 
@@ -39,6 +28,10 @@
 
 			<li>
 				<a href="#hub-config" data-toggle="tab"><?= $this->lang->line('hub_config') ?></a>
+			</li>
+
+			<li>
+				<a href="#advanced-options" data-toggle="tab"><?= $this->lang->line('advanced_options') ?></a>
 			</li>
 
 			<li>
@@ -82,6 +75,7 @@
 				<div class="widget-box">
 					<h1><?= $this->lang->line('widget') ?></h1>
 					<div class="widget-area"></div>
+
 					<div class="widget-autoloaded">
 						<?php foreach($widget_items as $item): ?>
 							<span class="control dropped">
@@ -129,6 +123,7 @@
 
 						<div class="controls">
 							<?= form_textarea(array('name' => 'data_filters', 'rows' => '4'), $data_filters) ?>
+							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
 							<div class="help-block"><?= $this->lang->line('data_filters_exp') ?></div>
 						</div>
 					</div>
@@ -151,6 +146,23 @@
 
 						<div class="controls">
 							<?= form_input('max_records', $max_records) ?>
+							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="advanced-options" class="tab-pane fade">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('widget_key') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_input('widget_key', $widget_key) ?>
+							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
+							<div class="help-block"><?= $this->lang->line('widget_key_exp') ?></div>
 						</div>
 					</div>
 				</div>
@@ -208,8 +220,9 @@
 				</label>
 
 				<div class="controls">
+					<i class="icon-refresh icon-style-float" title="<?= $this->lang->line('supports_expr') ?>"></i>
 					<?= form_textarea(array('name' => 'control_disp_src', 'rows' => '5')) ?>
-					<div class="help-block help-wysiwyg"><?= $this->lang->line('control_disp_src_exp') ?></div>
+					<div class="help-block"><?= $this->lang->line('control_disp_src_exp') ?></div>
 				</div>
 			</div>
 
@@ -220,6 +233,7 @@
 
 				<div class="controls">
 					<?= form_input('control_get_path') ?>
+					<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
 					<div class="help-block"><?= $this->lang->line('control_get_path_exp') ?></div>
 				</div>
 			</div>
@@ -299,11 +313,14 @@
 		// Drag from toolbar to widget box
 		$('.toolbox .control').draggable({
 			appendTo: 'body',
-			helper: 'clone'
+			helper: 'clone',
+			revert: 'invalid'
 		});
+
 		$('.widget-area')
 			.droppable({
-				activeClass: 'widget-drop-highlight',
+				activeClass: 'widget-drop-active',
+				hoverClass: 'widget-drop-hover',
 				accept: ':not(.dropped)',
 				drop: function(event, ui) {
 					addControl(ui.draggable.html());
@@ -314,10 +331,14 @@
 			});
 
 		// Drag back to toolbox from widget box
-		$('.widget-area .control').draggable();
+		$('.widget-area .control').draggable({
+			revert: 'invalid'
+		});
+
 		$('.toolbox-area').droppable({
 			accept: '.dropped',
-			activeClass: 'widget-drop-highlight',
+			activeClass: 'widget-drop-active',
+			hoverClass: 'widget-drop-hover',
 			drop: function(event, ui) {
 				$(ui.draggable).remove();
 			},
@@ -485,9 +506,7 @@
 	});
 
 	// Initialize the WYSIWYG editor for display source
-	$('[name=control_disp_src]').wysihtml5({
-		stylesheets: ["<?= base_url() ?>assets/css/wysiwyg-color.css"]
-	});
+	$('[name=control_disp_src]').wysihtml5();
 
 
 	// Add/remove controls from the widget

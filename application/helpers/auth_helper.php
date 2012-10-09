@@ -4,7 +4,7 @@
  *
  * @package		Moksha
  * @category	Helpers
- * @author		Moksha Team
+ * @author		Sayak Banerjee <sayakb@kde.org>
  */
 
 // ------------------------------------------------------------------------
