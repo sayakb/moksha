@@ -75,6 +75,7 @@ class Hub_rss {
 	public function schema($hub_id)
 	{
 		return array(
+			'id'		=> DBTYPE_KEY,
 			'title'		=> DBTYPE_TEXT,
 			'body'		=> DBTYPE_TEXT,
 			'pub_date'	=> DBTYPE_TEXT,
@@ -99,6 +100,7 @@ class Hub_rss {
 	{
 		$xml = new SimpleXmlElement($this->fetch_feed($hub_id));
 		$output = array();
+		$index = 1;
 
 		if ($xml->channel)
 		{
@@ -106,6 +108,7 @@ class Hub_rss {
 			{
 				$data = new stdClass();
 
+				$data->id		= crc32($item->link.$index++);
 				$data->title	= (string)$item->title;
 				$data->body		= (string)$item->description;
 				$data->pub_date	= (string)$item->pubDate;
@@ -121,6 +124,7 @@ class Hub_rss {
 			{
 				$data = new stdClass();
 
+				$data->id		= crc32($item->link.$index++);
 				$data->title	= (string)$item->title;
 				$data->body		= (string)$item->content;
 				$data->pub_date	= (string)$item->published;
