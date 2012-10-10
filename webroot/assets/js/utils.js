@@ -10,3 +10,14 @@ function hash() {
 		return v.toString(16);
 	});
 }
+
+/**
+ * Checks if an element has scroll bars
+ *
+ * @access	public
+ * @return	bool	true if scroll is found
+ */
+function hasScrollBar(jQobj) {
+	var elt = jQobj[0];
+	return elt.clientHeight < elt.scrollHeight || elt.clientWidth < elt.scrollWidth;
+}

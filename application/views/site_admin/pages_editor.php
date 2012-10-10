@@ -25,6 +25,7 @@
 
 			<div class="controls">
 				<?= form_input('pg_url', $pg_url) ?>
+				<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
 				<span class="help-block"><?= $this->lang->line('page_url_exp') ?></span>
 			</div>
 		</div>
@@ -84,18 +85,28 @@
 					<h1><?= $this->lang->line('widgets') ?></h1>
 
 					<div class="widget-area widget-area-page">
-						<?php foreach($widgets as $widget): ?>
-							<span class="widget" data-widget-id="<?= $widget->widget_id ?>">
-								<a href="#" title="<?= $this->lang->line('widget_remove') ?>" class="widget-remove">
-									<i class="icon-remove"></i>
+						<?php if (count($widgets) > 0): ?>
+							<?php foreach($widgets as $widget): ?>
+								<span class="widget" data-widget-id="<?= $widget->widget_id ?>">
+									<a href="#" title="<?= $this->lang->line('widget_remove') ?>" class="widget-remove">
+										<i class="icon-remove"></i>
+									</a>
+
+									<i class="icon-control-widget"></i>
+									<span class="widget-name"><?= $widget->widget_name ?></span>
+
+									<?= form_hidden('widget_key', $widget->widget_id) ?>
+								</span>
+							<?php endforeach ?>
+						<?php else: ?>
+							<div class="alert alert-well">
+								<?= $this->lang->line('no_widgets_box') ?>
+
+								<a href="<?= base_url('admin/widgets/add') ?>" class="pull-right">
+									<?= $this->lang->line('add_new_widget') ?>
 								</a>
-
-								<i class="icon-control-widget"></i>
-								<?= $widget->widget_name ?>
-
-								<?= form_hidden('widget_key', $widget->widget_id) ?>
-							</span>
-						<?php endforeach ?>
+							</div>
+						<?php endif ?>
 					</div>
 				</div>
 
@@ -105,11 +116,11 @@
 					<div class="page-area column1 span1"></div>
 					<div class="page-area column2 span1"></div>
 					<div class="page-area column3 span1"></div>
-
-					<?= form_hidden('pg_column1', $pg_column1) ?>
-					<?= form_hidden('pg_column2', $pg_column2) ?>
-					<?= form_hidden('pg_column3', $pg_column3) ?>
 				</div>
+
+				<?= form_hidden('pg_column1', $pg_column1) ?>
+				<?= form_hidden('pg_column2', $pg_column2) ?>
+				<?= form_hidden('pg_column3', $pg_column3) ?>
 			</div>
 			
 			<div id="access-control" class="tab-pane fade">
@@ -146,7 +157,8 @@
 		$('.widget-box .widget').draggable({
 			appendTo: 'body',
 			helper: 'clone',
-			revert: 'invalid'
+			revert: 'invalid',
+			revertDuration: 250
 		});
 
 		$('.page-area')
@@ -155,14 +167,30 @@
 				hoverClass: 'widget-drop-hover',
 				accept: ':not(.dropped)',
 				drop: function(event, ui) {
-					$('<span class="widget dropped"></span>').html(ui.draggable.html()).appendTo($(this));
+					ui.draggable.clone()
+						.addClass('dropped')
+						.appendTo($(this));
+
 					syncWidgets();
 				}
 			})
 			.sortable({
 				items: '.widget',
-				stop: syncWidgets
+				stop: syncWidgets,
+				revert: 250
 			});
+
+		// Drag back to widget box from page
+		$('.page-area .widget').draggable();
+
+		$('.widget-area').droppable({
+			accept: '.dropped',
+			activeClass: 'widget-drop-active',
+			hoverClass: 'widget-drop-hover',
+			drop: function(event, ui) {
+				$(ui.draggable).remove();
+			},
+		});
 
 		// Load page widgets
 		loadWidgets($('[name=pg_column1]').val(), '1');
@@ -189,6 +217,15 @@
 				$('.page-roles input[value=' + val + ']').attr('checked', 'checked');
 			});
 		}
+
+		// Add widget names to local storage
+		$('.widget').each(function() {
+			var key = $(this).attr('data-widget-id');
+			var name = $(this).children('.widget-name');
+
+			localStorage.setItem('moksha_widths_' + key, name.width());
+			localStorage.setItem('moksha_names_' + key, name.html());
+		});
 	});
 
 	setInterval(function() {
@@ -201,28 +238,63 @@
 
 				return false;
 			});
-	}, 500);
 
-	// Toggle widget box height
-	$('#widget-box-toggle').click(function() {
-		if ($(this).hasClass('in')) {
-			$('.widget-area').animate({
-				maxHeight: 90
-			}, 'slow', function() {
-				$('#widget-box-toggle').removeClass('in');
-				$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
-			});
+		// Limit widget name on screen to 10 characters
+		$('.widget').each(function() {
+			if (!$(this).hasClass('ui-draggable-dragging') && !$(this).hasClass('ui-sortable-helper')) {
+				var key = $(this).attr('data-widget-id');
+				var name = $(this).children('.widget-name');
+
+				var widgetWidth = $(this).width();
+				var nameWidth = parseInt(localStorage.getItem('moksha_widths_' + key));
+				var nameText = localStorage.getItem('moksha_names_' + key);
+
+				if ((nameWidth + 30) > widgetWidth) {
+					nameText = nameText.substr(0, 8) + '&hellip;';
+				}
+
+				name.html(nameText);
+			}
+		});
+
+		// Toggle widget box height if box is bigger than 125px
+		// If not, disable the toggle button
+		if (!hasScrollBar($('.widget-area'))) {
+			$('#widget-box-toggle')
+				.addClass('disabled')
+				.removeClass('in')
+				.off()
+				.on('click', function() {
+					return false;
+				});
+
+			$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
+			$('.widget-area').css('maxHeight', 90);
 		} else {
-			$('.widget-area').animate({
-				maxHeight: 500
-			}, 'slow', function() {
-				$('#widget-box-toggle').addClass('in');
-				$('#widget-box-toggle i').attr('class', 'icon-chevron-up');
-			});
-		}
+			$('#widget-box-toggle')
+				.removeClass('disabled')
+				.off()
+				.on('click', function() {
+					if ($(this).hasClass('in')) {
+						$('.widget-area').animate({
+							maxHeight: 90
+						}, 'slow', function() {
+							$('#widget-box-toggle').removeClass('in');
+							$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
+						});
+					} else {
+						$('.widget-area').animate({
+							maxHeight: 500
+						}, 'slow', function() {
+							$('#widget-box-toggle').addClass('in');
+							$('#widget-box-toggle i').attr('class', 'icon-chevron-up');
+						});
+					}
 
-		return false;
-	});
+					return false;
+				});
+		}
+	}, 500);
 	
 	// Update the page roles checkbox data to the hidden field
 	$('.page-roles input[type=checkbox]').click(function() {
@@ -236,10 +308,10 @@
 
 		$('[name=pg_roles]').val(page_roles.join('|'));
 	});
-
+	
 	// Set page layout
 	$('#page-layout button').click(changeLayout);
-
+	
 	// Change page layout
 	function changeLayout() {
 		var layout = $('#page-layout input[type=radio]:checked').val();
@@ -306,9 +378,18 @@
 			var widget_ary = widgets.split('|');
 
 			$.each(widget_ary, function(idx, val) {
-				var widgetHTML = $('[data-widget-id=' + val + ']').html();
-				$('<span class="widget dropped"></span>').html(widgetHTML).appendTo($('.column' + column));
+				$('[data-widget-id=' + val + ']')
+					.clone()
+					.addClass('dropped')
+					.appendTo('.column' + column);
 			});
 		}
+	}
+	
+	// Move widgets from one column to another
+	function moveWidgets(src, dest) {
+		$('.column' + src + ' .widget').each(function() {
+			var id = $(this).appendTo('.column' + dest);
+		});
 	}
 </script>

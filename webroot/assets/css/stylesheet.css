@@ -3087,6 +3087,8 @@ input[type="submit"].btn
 	margin: 0;
 	margin-right: -7px;
 	margin-left: -7px;
+	opacity: .6;
+	filter: alpha(Opacity=60);
 }
 
 /* White icons with optional class, or on hover/active states of certain controls */
@@ -5674,6 +5676,20 @@ a.thumbnail:hover
 	color: #3a87ad;
 }
 
+.alert-well
+{
+	background: #fcfcfc;
+	border-color: #ccc;
+	color: #777;
+	margin-top: 10px;
+	margin-bottom: 0;
+}
+
+	.alert-well .pull-right
+	{
+		margin-right: -20px;
+	}
+
 .alert-block
 {
 	padding-top: 14px;
@@ -7007,7 +7023,7 @@ button.close
 {
 	display: inline-table;
 	padding: 15px;
-	width: 230px;
+	width: 182px;
 	margin: 5px;
 	background: #fbfbfb;
 	-webkit-border-radius: 4px;
@@ -7038,10 +7054,10 @@ button.close
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
-	.page-box
-	{
-		min-height: 135px;
-	}
+.page-box
+{
+	min-height: 135px;
+}
 
 	.page-box.row
 	{
@@ -7063,17 +7079,22 @@ button.close
 	{
 		display: inline-block;
 		min-height: 85px;
-		margin: 0;
-		padding: 5px;
+		margin-left: 10px;
 	}
 
-	.toolbox #toolbox-toggle > i
+	.page-box .column1
 	{
-		margin-top: -1px;
+		margin-left: 0 !important;
 	}
+
+.toolbox #toolbox-toggle > i
+{
+	margin-top: -1px;
+}
 
 .widget-area-page
 {
+	min-height: 35px !important;
 	max-height: 125px;
 	overflow-y: auto;
 }
@@ -7090,33 +7111,43 @@ button.close
 	{
 		display: block;
 		margin-bottom: 8px;
-		width: 97%;
+		width: 97.5%;
 	}
 
-	.page-area .widget
-	{
-		width: 100%;
-	}
-
-	.page-area .widget > .widget-remove
-	{
-		display: block;
-	}
+		.page-area .widget > .widget-remove
+		{
+			display: block;
+		}
 
 	.page-area.span1
 	{
-		width: 31%;
+		width: 217px;
 	}
+
+		.page-area.span1 .widget
+		{
+			width: 97.5%;
+		}
 
 	.page-area.span2
 	{
-		width: 64%;
+		width: 446px;
 	}
+
+		.page-area.span2 .widget
+		{
+			width: 98.5%;
+		}
 
 	.page-area.span3
 	{
-		width: 96%;
+		width: 675px;
 	}
+
+		.page-area.span3 .widget
+		{
+			width: 99.5%;
+		}
 
 .toolbox-area
 {
@@ -7124,10 +7155,15 @@ button.close
 	overflow-y: auto;
 }
 
-		.widget-area .control > .control-actions
-		{
-			display: block;
-		}
+.widget-area .control > .control-actions
+{
+	display: block;
+}
+
+.widget-name
+{
+	margin-left: 5px;
+}
 
 .widget-drop-active
 {
@@ -7898,6 +7934,26 @@ ul.wysihtml5-toolbar div[data-wysihtml5-command-value="orange"]
 		width: 540px;
 		max-width: 540px;
 	}
+
+	.widget
+	{
+		width: 128px;
+	}
+	
+	.page-area.span1
+	{
+		width: 163px;
+	}
+
+	.page-area.span2
+	{
+		width: 338px;
+	}
+
+	.page-area.span3
+	{
+		width: 513px;
+	}
 }
 
 @media (min-width: 1200px)
@@ -8406,5 +8462,25 @@ ul.wysihtml5-toolbar div[data-wysihtml5-command-value="orange"]
 	{
 		width: 990px;
 		max-width: 990px;
+	}
+
+	.widget
+	{
+		width: 239px;
+	}
+
+	.page-area.span1
+	{
+		width: 273px;
+	}
+
+	.page-area.span2
+	{
+		width: 558px;
+	}
+
+	.page-area.span3
+	{
+		width: 843px;
 	}
 }

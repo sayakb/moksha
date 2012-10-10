@@ -523,6 +523,174 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Parses data filter for a hub
+	 *
+	 * @access	public
+	 * @param	string	hub name that is being linked
+	 * @param	string	data filter to be parsed
+	 * @return	mixed	array if filter is parsed, false on error
+	 */
+	public function parse_filters($hub_name, $filters)
+	{
+		$hub_columns	= $this->column_list($hub_name);
+		$operators		= $this->operators();
+		$filters		= explode("\n", $filters);
+		$first_filter	= TRUE;
+
+		$parsed = array(
+			'AND'	=> array(),
+			'OR'	=> array()
+		);
+
+		if (is_array($filters))
+		{
+			foreach ($filters as $filter)
+			{
+				$filter = trim($filter);
+				$condition = substr($filter, 0, 1);
+
+				// First filter needs to start with AND
+				if ($first_filter AND $condition == '&')
+				{
+					$first_filter = FALSE;
+				}
+				else
+				{
+					return FALSE;
+				}
+
+				// Determine the condition for this filter
+				$condition = $condition == '&' ? 'AND' : 'OR';
+
+				// Determine the operator
+				foreach ($operators as $opkey => $opval)
+				{
+					$pos = strpos($filter, $opkey);
+
+					if ($pos !== FALSE)
+					{
+						$offset = strlen($opkey);
+						$operator = $opval;
+
+						break;
+					}
+					else
+					{
+						return FALSE;
+					}
+				}
+
+				// Determine the key and value for the parsed array
+				$column = trim(substr($filter, 1, $pos - 1));
+
+				if (in_array($column, $hub_columns))
+				{
+					$key = trim("{$column} {$operator}");
+					$value = substr($filter, $offset);
+
+					$parsed[$condition][$key] = $value;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		}
+
+		// Return the parsed data
+		if (count($parsed['AND']) > 0)
+		{
+			return $parsed;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Parses the order-by value for a hub
+	 *
+	 * @access	public
+	 * @param	string	hub name that is being linked
+	 * @param	string	order-by value
+	 * @return	mixed	array if filter is parsed, false on error
+	 */
+	public function parse_orderby($hub_name, $order_by)
+	{
+		$hub_columns	= $this->column_list($hub_name);
+		$order_by		= explode("\n", $order_by);
+		$parsed			= array();
+
+		if (is_array($order_by))
+		{
+			foreach ($order_by as $column)
+			{
+				$column = trim($column);
+
+				// Check if column name is valid
+				if (in_array($column, $hub_columns))
+				{
+					$parsed[] = $column;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		}
+
+		// Return parsed data
+		if (count($parsed) > 0)
+		{
+			return $parsed;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Checks if a hub is writable
+	 *
+	 * @access	public
+	 * @param	string	name of the hub
+	 * @return	bool	true if hub is writable
+	 */
+	public function is_writable($hub_name)
+	{
+		return in_array($this->details($hub_name)->hub_driver, $this->_writable_hubs);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Gets a list of equality operators in a filter
+	 *
+	 * @access	private
+	 * @return	array	list of operators
+	 */
+	private function operators()
+	{
+		return array(
+		'[EQ]'		=> '',
+		'[NEQ]'		=> '!=',
+		'[GRTR]'	=> '>',
+		'[LESS]'	=> '<',
+		'[GRTREQ]'	=> '>=',
+		'[LESSEQ]'	=> '<=',
+		'[LIKE]'	=> '[LIKE]'
+		);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Resets local data to start a fresh query
 	 *
 	 * @access	private
@@ -541,20 +709,6 @@ class Hub {
 		);
 
 		return $this;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Checks if a hub is writable
-	 *
-	 * @access	private
-	 * @param	string	name of the hub
-	 * @return	bool	true if hub is writable
-	 */
-	private function is_writable($hub_name)
-	{
-		return in_array($this->details($hub_name)->hub_driver, $this->_writable_hubs);
 	}
 
 	// --------------------------------------------------------------------

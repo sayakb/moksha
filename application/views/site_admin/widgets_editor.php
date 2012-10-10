@@ -147,6 +147,7 @@
 						<div class="controls">
 							<?= form_input('max_records', $max_records) ?>
 							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
+							<div class="help-block"><?= $this->lang->line('max_records_exp') ?></div>
 						</div>
 					</div>
 				</div>
@@ -307,14 +308,15 @@
 	$(function() {
 		// Allow double clicking on control
 		$('.toolbox .control').dblclick(function() {
-			addControl($(this).html());
+			addControl($(this));
 		});
 
 		// Drag from toolbar to widget box
 		$('.toolbox .control').draggable({
 			appendTo: 'body',
 			helper: 'clone',
-			revert: 'invalid'
+			revert: 'invalid',
+			revertDuration: 250
 		});
 
 		$('.widget-area')
@@ -323,17 +325,16 @@
 				hoverClass: 'widget-drop-hover',
 				accept: ':not(.dropped)',
 				drop: function(event, ui) {
-					addControl(ui.draggable.html());
+					addControl(ui.draggable);
 				}
 			})
 			.sortable({
-				items: '.control'
+				items: '.control',
+				revert: 250
 			});
 
 		// Drag back to toolbox from widget box
-		$('.widget-area .control').draggable({
-			revert: 'invalid'
-		});
+		$('.widget-area .control').draggable();
 
 		$('.toolbox-area').droppable({
 			accept: '.dropped',
@@ -510,7 +511,9 @@
 
 
 	// Add/remove controls from the widget
-	function addControl(controlHTML) {
+	function addControl(control) {
+		var controlHTML = control.html();
+
 		// Key field is already present, just change the name
 		controlHTML = controlHTML.replace('toolbox_keys[]', 'control_keys[]');
 		
@@ -524,6 +527,10 @@
 		controlHTML += '<?= trim(form_hidden('control_roles[]')) ?>';
 		
 		// We're done, add the control to the widget
-		$('<span class="control dropped"></span>').html(controlHTML).appendTo('.widget-area');
+		control
+			.clone()
+			.addClass('dropped')
+			.html(controlHTML)
+			.appendTo('.widget-area');
 	}
 </script>

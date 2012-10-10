@@ -255,7 +255,7 @@ class Pages_model extends CI_Model {
 		}
 		else
 		{
-			return array();
+			return '';
 		}
 	}
 

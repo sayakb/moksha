@@ -30,7 +30,9 @@
 					</td>
 
 					<td>
-						<?= $page->page_url ?>
+						<a href="<?= base_url(expr($page->page_url)) ?>">
+							<?= $page->page_url ?>
+						</a>
 					</td>
 
 					<td>

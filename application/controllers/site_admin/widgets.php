@@ -264,7 +264,7 @@ class Widgets extends CI_Controller {
 
 		if ($hub_name != HUB_NONE)
 		{
-			if ($this->widget->parse_filters($hub_name, $filters) !== FALSE)
+			if ($this->hub->parse_filters($hub_name, $filters) !== FALSE)
 			{
 				return TRUE;
 			}
@@ -296,7 +296,7 @@ class Widgets extends CI_Controller {
 
 		if ($hub_name != HUB_NONE)
 		{
-			if ($this->widget->parse_orderby($hub_name, $order_by) !== FALSE)
+			if ($this->hub->parse_orderby($hub_name, $order_by) !== FALSE)
 			{
 				return TRUE;
 			}
@@ -316,8 +316,13 @@ class Widgets extends CI_Controller {
 	 */
 	public function check_controls()
 	{
-		$control_keys = $this->input->post('control_keys');
+		$control_keys		= $this->input->post('control_keys');
+		$control_set_paths	= $this->input->post('control_set_paths');
 
+		$hub_id				= $this->input->post('attached_hub');
+		$hub_name			= $this->widgets_model->fetch_hub_name($hub_id);
+
+		// Validate each control
 		if (is_array($control_keys))
 		{
 			$all_controls = $this->widgets_model->fetch_controls();
@@ -330,12 +335,29 @@ class Widgets extends CI_Controller {
 					return FALSE;
 				}
 			}
-			
-			return TRUE;
+		}
+		else
+		{
+			$this->form_validation->set_message('check_controls', $this->lang->line('control_required'));
+			return FALSE;
 		}
 
-		$this->form_validation->set_message('check_controls', $this->lang->line('control_required'));
-		return FALSE;
+		// Unique identifier cannot be used as a set path
+		if ($hub_name != HUB_NONE AND is_array($control_set_paths))
+		{
+			$column = $this->hub->schema($hub_name);
+			
+			foreach($control_set_paths as $path)
+			{
+				if (isset($column[$path]) AND $column[$path] == DBTYPE_KEY)
+				{
+					$this->form_validation->set_message('check_controls', $this->lang->line('key_set_path'));
+					return FALSE;
+				}
+			}
+		}
+		
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

@@ -240,6 +240,34 @@ class Pages extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Validates the site URL to check for restricted paths
+	 *
+	 * @access	public
+	 * @param	string	url to validate
+	 * @return	bool	true if valid
+	 */
+	public function check_url($url)
+	{
+		$config		= $this->config->item('pages');
+		$disallowed	= $config['disallowed_urls'];
+
+		foreach ($disallowed as $item)
+		{
+			$regex = '/^\/?'.$item.'(\/(.*?)|$)/';
+
+			if (preg_match($regex, $url))
+			{
+				$this->form_validation->set_message('check_url', $this->lang->line('disallowed_url'));
+				return FALSE;
+			}
+		}
+
+		return TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Validates submitted user roles
 	 *
 	 * @access	public

@@ -118,24 +118,6 @@ $config['widgets']['validations'] = array(
 	'valid_email'
 );
 
-/*
-| -------------------------------------------------------------------------
-| Expressions
-| -------------------------------------------------------------------------
-| Defines control path expressions and their replacements
-|
-*/
-$config['widgets']['expressions'] = array(
-	'url'		=> '$this->CI->uri->segment($value, "")',
-	'hub'		=> 'isset($row->$value) ? $row->$value : ""',
-	'get'		=> '$this->CI->input->get($value)',
-	'post'		=> '$this->CI->input->post($value)',
-	'cookie'	=> '$this->CI->input->cookie($value)',
-	'server'	=> '$this->CI->input->server(strtoupper($value))',
-	'user'		=> 'user_data($value)',
-	'calc'		=> 'eval("return $value;")'
-);
 
-
-/* End of file controls.php */
-/* Location: ./application/config/controls.php */
+/* End of file widgets.php */
+/* Location: ./application/config/widgets.php */

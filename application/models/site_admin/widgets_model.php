@@ -67,8 +67,15 @@ class Widgets_model extends CI_Model {
 	 */
 	public function fetch_hub_name($hub_id)
 	{
-		$hub = $this->db->get_where("site_hubs_{$this->bootstrap->site_id}", array('hub_id' => $hub_id))->row();
-		return $hub->hub_name;
+		if ($hub_id != '-1')
+		{
+			$hub = $this->db->get_where("site_hubs_{$this->bootstrap->site_id}", array('hub_id' => $hub_id))->row();
+			return $hub->hub_name;
+		}
+		else
+		{
+			return HUB_NONE;
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -307,7 +314,7 @@ class Widgets_model extends CI_Model {
 	public function populate_hubs()
 	{
 		$hubs		= $this->hub->fetch_list();
-		$hubs_ary	= array(HUB_NONE => NULL);
+		$hubs_ary	= array('-1' => NULL);
 
 		foreach ($hubs as $hub)
 		{

@@ -86,5 +86,6 @@ function user_data($key)
 
 // --------------------------------------------------------------------
 
+
 /* End of file auth_helper.php */
 /* Location: ./application/helpers/auth_helper.php */

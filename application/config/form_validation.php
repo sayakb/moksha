@@ -395,7 +395,8 @@ $config = array(
 			'rules'	=>	'required|'.
 						'max_length[255]|'.
 						'trim|'.
-						'is_unique[site_pages.page_url]'
+						'is_unique[site_pages.page_url]|'.
+						'callback_check_url'
 		),
 		array(
 			'field'	=>	'pg_layout',
