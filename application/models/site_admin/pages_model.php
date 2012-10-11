@@ -101,10 +101,6 @@ class Pages_model extends CI_Model {
 		// Add author and logged-in roles
 		$roles = array_merge(array(
 			(object)array(
-				'role_id'	=> ROLE_AUTHOR,
-				'role_name'	=> $this->lang->line('author')
-			),
-			(object)array(
 				'role_id'	=> ROLE_LOGGED_IN,
 				'role_name'	=> $this->lang->line('logged_in')
 			)

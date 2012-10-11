@@ -16,9 +16,12 @@ class Welcome extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for site admin
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/login');
+		}
+
 		$this->lang->load('site_admin');
-		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------

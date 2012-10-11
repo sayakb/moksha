@@ -48,12 +48,7 @@ class Widgets_model extends CI_Model {
 	 */
 	public function fetch_widget($widget_id)
 	{
-		$this->db->where('widget_id', $widget_id);
-
-		$widget = $this->db->get("site_widgets_{$this->bootstrap->site_id}")->row();
-		$widget->widget_data = unserialize($widget->widget_data);
-
-		return $widget;
+		return $this->widget->get($widget_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -67,15 +62,7 @@ class Widgets_model extends CI_Model {
 	 */
 	public function fetch_hub_name($hub_id)
 	{
-		if ($hub_id != '-1')
-		{
-			$hub = $this->db->get_where("site_hubs_{$this->bootstrap->site_id}", array('hub_id' => $hub_id))->row();
-			return $hub->hub_name;
-		}
-		else
-		{
-			return HUB_NONE;
-		}
+		return $this->hub->fetch_name($hub_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -158,7 +145,7 @@ class Widgets_model extends CI_Model {
 	 */
 	public function count_widgets()
 	{
-		return $this->db->count_all("site_widgets_{$this->bootstrap->site_id}");
+		return $this->widget->count();
 	}
 
 	// --------------------------------------------------------------------
@@ -171,26 +158,22 @@ class Widgets_model extends CI_Model {
 	 */
 	public function add_widget()
 	{
-		// Gather widget meta data
-		$widget_data = (object)array(
+		$widget_name	= $this->input->post('widget_name');
+		$widget_key		= $this->input->post('widget_key');
+		$widget_roles	= $this->input->post('widget_roles');
+
+		$widget_data	= (object)array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
 				'data_filters'	=> $this->input->post('data_filters'),
 				'order_by'		=> $this->input->post('order_by'),
-				'max_records'	=> $this->input->post('max_records')
+				'max_records'	=> $this->input->post('max_records'),
+				'binding'		=> $this->input->post('binding')
 			)
 		);
 
-		// Build the insert data
-		$data = array(
-			'widget_name'	=> $this->input->post('widget_name'),
-			'widget_roles'	=> $this->input->post('widget_roles'),
-			'widget_key'	=> $this->input->post('widget_key'),
-			'widget_data'	=> serialize($widget_data)
-		);
-
-		return $this->db->insert("site_widgets_{$this->bootstrap->site_id}", $data);
+		return $this->widget->create($widget_name, $widget_key, $widget_roles, $widget_data);
 	}
 
 	// --------------------------------------------------------------------
@@ -204,26 +187,22 @@ class Widgets_model extends CI_Model {
 	 */
 	public function update_widget($widget_id)
 	{
-		// Gather widget meta data
-		$widget_data = (object)array(
+		$widget_name	= $this->input->post('widget_name');
+		$widget_key		= $this->input->post('widget_key');
+		$widget_roles	= $this->input->post('widget_roles');
+
+		$widget_data	= (object)array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
 				'data_filters'	=> $this->input->post('data_filters'),
 				'order_by'		=> $this->input->post('order_by'),
-				'max_records'	=> $this->input->post('max_records')
+				'max_records'	=> $this->input->post('max_records'),
+				'binding'		=> $this->input->post('binding')
 			)
 		);
 
-		// Build the update data
-		$data = array(
-			'widget_name'	=> $this->input->post('widget_name'),
-			'widget_roles'	=> $this->input->post('widget_roles'),
-			'widget_key'	=> $this->input->post('widget_key'),
-			'widget_data'	=> serialize($widget_data)
-		);
-
-		return $this->db->update("site_widgets_{$this->bootstrap->site_id}", $data, array('widget_id' => $widget_id));
+		return $this->widget->modify($widget_id, $widget_name, $widget_key, $widget_roles, $widget_data);
 	}
 
 	// --------------------------------------------------------------------
@@ -237,7 +216,7 @@ class Widgets_model extends CI_Model {
 	 */
 	public function delete_widget($widget_id)
 	{
-		return $this->db->delete("site_widgets_{$this->bootstrap->site_id}", array('widget_id' => $widget_id));
+		return $this->widget->delete($widget_id);
 	}
 
 	// --------------------------------------------------------------------

@@ -38,7 +38,7 @@ class Auth extends CI_Controller {
 		{
 			if ($this->auth_model->validate_user())
 			{
-				redirect(auth_redir($redirect), 'refresh');
+				redirect(auth_redir($redirect));
 			}
 			else
 			{
@@ -67,7 +67,7 @@ class Auth extends CI_Controller {
 	public function logout($redirect)
 	{
 		$this->auth_model->clear_session();
-		redirect(auth_redir($redirect), 'refresh');
+		redirect(auth_redir($redirect));
 	}
 
 	// --------------------------------------------------------------------

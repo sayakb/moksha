@@ -27,7 +27,7 @@
 			</li>
 
 			<li>
-				<a href="#hub-config" data-toggle="tab"><?= $this->lang->line('hub_config') ?></a>
+				<a href="#data-config" data-toggle="tab"><?= $this->lang->line('data_config') ?></a>
 			</li>
 
 			<li>
@@ -104,7 +104,7 @@
 				</div>
 			</div>
 
-			<div id="hub-config" class="tab-pane fade">
+			<div id="data-config" class="tab-pane fade">
 				<div class="form-horizontal">
 					<div class="control-group">
 						<label class="control-label">
@@ -148,6 +148,19 @@
 							<?= form_input('max_records', $max_records) ?>
 							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
 							<div class="help-block"><?= $this->lang->line('max_records_exp') ?></div>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('binding_type') ?>
+						</label>
+
+						<div class="controls">
+							<label class="checkbox">
+								<?= form_checkbox('binding', 'hard', $binding) ?>
+								<?= $this->lang->line('enable_hard_binding') ?>
+							</label>
 						</div>
 					</div>
 				</div>
@@ -341,7 +354,7 @@
 			activeClass: 'widget-drop-active',
 			hoverClass: 'widget-drop-hover',
 			drop: function(event, ui) {
-				$(ui.draggable).remove();
+				ui.draggable.remove();
 			},
 		});
 

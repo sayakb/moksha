@@ -18,10 +18,13 @@ class Sites extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for central
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/central/login');
+		}
+
 		$this->load->model('central_admin/sites_model');
 		$this->lang->load('central_admin');
-		$this->session->enforce_admin('admin/central/login');
 	}
 
 	// --------------------------------------------------------------------

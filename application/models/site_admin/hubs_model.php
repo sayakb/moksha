@@ -204,7 +204,7 @@ class Hubs_model extends CI_Model {
 			else
 			{
 				$this->session->set_userdata('hub_name', $this->input->post('hub_name'));
-				redirect(base_url('admin/hubs/add/columns', 'refresh'));
+				redirect(base_url('admin/hubs/add/columns'));
 			}
 		}
 

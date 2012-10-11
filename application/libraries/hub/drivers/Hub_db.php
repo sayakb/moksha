@@ -46,7 +46,7 @@ class Hub_db {
 
 			if ($this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data))
 			{
-				$ci_schema	= $this->resolve_ci_schema($schema);
+				$ci_schema	= $this->resolve_ci_schema($schema, TRUE);
 				$fields		= $ci_schema->fields;
 				$key		= $ci_schema->key;
 
@@ -239,6 +239,7 @@ class Hub_db {
 	 */
 	public function insert($hub_id, $data)
 	{
+		$this->inject_metadata($data);
 		$this->CI->db->insert("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
 	}
 
@@ -256,6 +257,8 @@ class Hub_db {
 	public function update($hub_id, $data, $where)
 	{
 		$this->resolve_where($where);
+		$this->inject_metadata($data);
+
 		$this->CI->db->update("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
 	}
 
@@ -282,9 +285,10 @@ class Hub_db {
 	 *
 	 * @access	private
 	 * @param	array	hub style schema
+	 * @param	bool	add metadata columns
 	 * @return	array	having CI style schema and key info
 	 */
-	private function resolve_ci_schema($schema)
+	private function resolve_ci_schema($schema, $add_meta = FALSE)
 	{
 		$fields = array();
 		$key = FALSE;
@@ -324,12 +328,27 @@ class Hub_db {
 
 				case DBTYPE_DATETIME:
 					$fields[$name] = array(
-						'type'				=> 'int',
-						'constraint'		=> 11,
-						'unsigned'			=> TRUE
+						'type'				=> 'datetime'
 					);
 					break;
 			}
+		}
+
+		// Add metadata columns
+		if ($add_meta)
+		{
+			$fields['_moksha_author'] = array(
+				'type'			=> 'varchar',
+				'constraint'	=> 100,
+				'null'			=> false
+			);
+
+			$fields['_moksha_timestamp'] = array(
+				'type'			=> 'int',
+				'constraint'	=> 11,
+				'unsigned'		=> true,
+				'null'			=> false
+			);
 		}
 
 		$ci_schema = new stdClass();
@@ -354,12 +373,19 @@ class Hub_db {
 
 		foreach ($ci_fields as $field)
 		{
+			// Skip reserved columns
+			if (in_array($field->name, array('_moksha_author', '_moksha_timestamp')))
+			{
+				continue;
+			}
+
+			// Resolve general columns to moksha style schema
 			if ($field->type == 'bigint')
 			{
 				$hub_schema[$field->name] = DBTYPE_KEY;
 			}
 
-			if ($field->type == 'int' AND $field->max_length = 10)
+			if ($field->type == 'int')
 			{
 				$hub_schema[$field->name] = DBTYPE_INT;
 			}
@@ -374,7 +400,7 @@ class Hub_db {
 				$hub_schema[$field->name] = DBTYPE_PASSWORD;
 			}
 
-			if ($field->type == 'int' AND $field->max_length = 11)
+			if ($field->type == 'datetime')
 			{
 				$hub_schema[$field->name] = DBTYPE_DATETIME;
 			}
@@ -428,6 +454,23 @@ class Hub_db {
 				}
 			}
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Inject metadata info when inserting/updating data
+	 *
+	 * @access	private
+	 * @param	array	data to be injected to
+	 * @return	void
+	 */
+	private function inject_metadata(&$data)
+	{
+		$data = array_merge($data, array(
+			'_moksha_author'	=> user_data('user_name'),
+			'_moksha_timestamp'	=> time()
+		));
 	}
 
 	// --------------------------------------------------------------------

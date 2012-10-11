@@ -18,10 +18,13 @@ class Hubs extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for hub management
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/login');
+		}
+
 		$this->lang->load('site_admin');
 		$this->load->model('site_admin/hubs_model');
-		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -84,7 +87,7 @@ class Hubs extends CI_Controller {
 			array_merge($this->config->item('pagination'), array(
 				'base_url'		=> base_url('admin/hubs/manage'),
 				'total_rows'	=> $this->hubs_model->count_hubs(),
-				'uri_segment'	=> 4,
+				'uri_segment'	=> 4
 			))
 		);
 
@@ -119,7 +122,7 @@ class Hubs extends CI_Controller {
 				if ($this->hubs_model->add_hub($hub_type))
 				{
 					$this->session->set_flashdata('success_msg', $this->lang->line('hub_added'));
-					redirect(base_url('admin/hubs/manage'), 'refresh');
+					redirect(base_url('admin/hubs/manage'));
 				}
 				else
 				{
@@ -151,7 +154,7 @@ class Hubs extends CI_Controller {
 					if ($this->hubs_model->add_hub(HUB_DATABASE))
 					{
 						$this->session->set_flashdata('success_msg', $this->lang->line('hub_added'));
-						redirect(base_url('admin/hubs/manage'), 'refresh');
+						redirect(base_url('admin/hubs/manage'));
 					}
 					else
 					{
@@ -171,7 +174,7 @@ class Hubs extends CI_Controller {
 			}
 			else
 			{
-				redirect(base_url('admin/hubs/add'), 'refresh');
+				redirect(base_url('admin/hubs/add'));
 			}
 		}
 	}
@@ -202,7 +205,7 @@ class Hubs extends CI_Controller {
 					if ($this->hubs_model->update_hub())
 					{
 						$this->session->set_flashdata('success_msg', $this->lang->line('hub_renamed'));
-						redirect(base_url('admin/hubs/manage'), 'refresh');
+						redirect(base_url('admin/hubs/manage'));
 					}
 					else
 					{
@@ -219,7 +222,7 @@ class Hubs extends CI_Controller {
 					if ($this->hubs_model->add_column())
 					{
 						$this->session->set_flashdata('success_msg', $this->lang->line('column_added'));
-						redirect(base_url('admin/hubs/manage'), 'refresh');
+						redirect(base_url('admin/hubs/manage'));
 					}
 					else
 					{
@@ -238,7 +241,7 @@ class Hubs extends CI_Controller {
 					if ($this->hubs_model->rename_column())
 					{
 						$this->session->set_flashdata('success_msg', $this->lang->line('column_renamed'));
-						redirect(base_url('admin/hubs/manage'), 'refresh');
+						redirect(base_url('admin/hubs/manage'));
 					}
 					else
 					{
@@ -255,7 +258,7 @@ class Hubs extends CI_Controller {
 					if ($this->hubs_model->delete_column())
 					{
 						$this->session->set_flashdata('success_msg', $this->lang->line('column_deleted'));
-						redirect(base_url('admin/hubs/manage'), 'refresh');
+						redirect(base_url('admin/hubs/manage'));
 					}
 					else
 					{
@@ -275,7 +278,7 @@ class Hubs extends CI_Controller {
 				if ($this->hubs_model->modify_hub())
 				{
 					$this->session->set_flashdata('success_msg', $this->lang->line('hub_modified'));
-					redirect(base_url('admin/hubs/manage'), 'refresh');
+					redirect(base_url('admin/hubs/manage'));
 				}
 				else
 				{
@@ -319,7 +322,7 @@ class Hubs extends CI_Controller {
 			}
 		}
 
-		redirect(base_url('admin/hubs/manage'), 'refresh');
+		redirect(base_url('admin/hubs/manage'));
 	}
 
 	// --------------------------------------------------------------------
@@ -383,6 +386,16 @@ class Hubs extends CI_Controller {
 			return FALSE;
 		}
 
+		// Disallow reserved column names
+		foreach ($column_names as $name)
+		{
+			if (in_array($name, array('_moksha_author', '_moksha_timestamp')))
+			{
+				$this->form_validation->set_message('check_column_add', $this->lang->line('column_reserved'));
+				return FALSE;
+			}
+		}
+
 		// Both column name and data types should be set
 		for ($idx = 0; $idx < 100; $idx++)
 		{
@@ -409,15 +422,24 @@ class Hubs extends CI_Controller {
 		$hub_name		= $this->input->post('hub_name');
 		$hub_columns	= $this->hubs_model->fetch_columns($hub_name);
 
+		// Disallow reserved column names
+		foreach ($column_names as $name)
+		{
+			if (in_array($name, array('_moksha_author', '_moksha_timestamp')))
+			{
+				$this->form_validation->set_message('check_column_edit', $this->lang->line('column_reserved'));
+				return FALSE;
+			}
+		}
+
+		// Check for duplicate columns
 		if (in_array($column_name, $hub_columns))
 		{
 			$this->form_validation->set_message('check_column_edit', $this->lang->line('column_exists'));
 			return FALSE;
 		}
-		else
-		{
-			return TRUE;
-		}
+
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -434,15 +456,24 @@ class Hubs extends CI_Controller {
 		$hub_name		= $this->input->post('hub_name');
 		$hub_columns	= $this->hubs_model->fetch_columns($hub_name);
 
+		// Disallow deleting reserved columns
+		foreach ($column_names as $name)
+		{
+			if (in_array($name, array('_moksha_author', '_moksha_timestamp')))
+			{
+				$this->form_validation->set_message('check_column_delete', $this->lang->line('reserved_no_del'));
+				return FALSE;
+			}
+		}
+
+		// Disallow deleting the last column
 		if (count($hub_columns) == 1)
 		{
 			$this->form_validation->set_message('check_column_delete', $this->lang->line('column_last'));
 			return FALSE;
 		}
-		else
-		{
-			return TRUE;
-		}
+
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

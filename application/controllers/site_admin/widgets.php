@@ -18,10 +18,13 @@ class Widgets extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for widgets management
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/login');
+		}
+
 		$this->lang->load('site_admin');
 		$this->load->model('site_admin/widgets_model');
-		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -68,7 +71,7 @@ class Widgets extends CI_Controller {
 			if ($this->widgets_model->add_widget())
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('widget_added'));
-				redirect(base_url('admin/widgets/manage'), 'refresh');
+				redirect(base_url('admin/widgets/manage'));
 			}
 			else
 			{
@@ -92,7 +95,8 @@ class Widgets extends CI_Controller {
 			'attached_hub'	=> set_value('attached_hub'),
 			'data_filters'	=> set_value('data_filters'),
 			'order_by'		=> set_value('order_by'),
-			'max_records'	=> set_value('max_records')
+			'max_records'	=> set_value('max_records'),
+			'binding'		=> set_value('binding')
 		);
 
 		// Load the view
@@ -121,7 +125,7 @@ class Widgets extends CI_Controller {
 			if ($this->widgets_model->update_widget($widget_id))
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('widget_updated'));
-				redirect(base_url('admin/widgets/manage'), 'refresh');
+				redirect(base_url('admin/widgets/manage'));
 			}
 			else
 			{
@@ -145,7 +149,8 @@ class Widgets extends CI_Controller {
 			'attached_hub'	=> set_value('attached_hub', $hub_data->attached_hub),
 			'data_filters'	=> set_value('data_filters', $hub_data->data_filters),
 			'order_by'		=> set_value('order_by', $hub_data->order_by),
-			'max_records'	=> set_value('max_records', $hub_data->max_records)
+			'max_records'	=> set_value('max_records', $hub_data->max_records),
+			'binding'		=> set_value('binding', $hub_data->binding)
 		);
 
 		// Load the view
@@ -174,7 +179,7 @@ class Widgets extends CI_Controller {
 			}
 		}
 
-		redirect(base_url('admin/widgets/manage'), 'refresh');
+		redirect(base_url('admin/widgets/manage'));
 	}
 
 	// --------------------------------------------------------------------
@@ -222,7 +227,10 @@ class Widgets extends CI_Controller {
 	 */
 	public function check_hub($hub_id)
 	{
-		if ($hub_id != HUB_NONE)
+		$hub_id		= $this->input->post('attached_hub');
+		$hub_name	= $this->widgets_model->fetch_hub_name($hub_id);
+
+		if ($hub_name != HUB_NONE)
 		{
 			$hub_list = $this->hub->fetch_list();
 
@@ -236,10 +244,12 @@ class Widgets extends CI_Controller {
 					}
 				}
 			}
+
+			$this->form_validation->set_message('check_hub', $this->lang->line('invalid_hub'));
+			return FALSE;
 		}
 
-		$this->form_validation->set_message('check_hub', $this->lang->line('invalid_hub'));
-		return FALSE;
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

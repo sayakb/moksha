@@ -14,19 +14,15 @@
  *
  * @access	public
  * @param	string	text to be parsed
- * @param	object	hub row
+ * @param	object	current data context
+ * @param	string	format expression for the string
  * @return	string	parsed string
  */
-function expr($text, $row = FALSE)
+function expr($text, $data = FALSE, $format = FALSE)
 {
 	$CI				=& get_instance();
-	$config			= $CI->config->item('parser');
-	$expressions	= $config['expr'];
-
-	if ($row === FALSE OR gettype($row) == 'object')
-	{
-		$row = new stdClass();
-	}
+	$config			= $CI->config->item('expressions');
+	$expressions	= $config['functions'];
 
 	if (preg_match_all('/\{(.*?):(.*)\}/i', $text, $matches) !== FALSE)
 	{
@@ -42,17 +38,56 @@ function expr($text, $row = FALSE)
 			// Check if value contains an expression. If so, parse it first
 			if (preg_match('/\{(.*?):(.*)\}/i', $value))
 			{
-				$value = expr($value, $row);
+				$value = expr($value, $data);
 			}
 
 			// Parse the expression
 			if (isset($expressions[$type]))
 			{
 				$old = $originals[$idx];
-				$new = @eval("return {$expressions[$type]};");
+				$new = eval("return {$expressions[$type]};");
+
+				if ($format !== FALSE AND ! empty($format))
+				{
+					$new = @expr_format($new, $format);
+				}
 
 				$text = str_replace($old, $new, $text);
 			}
+		}
+	}
+
+	return $text;
+}
+
+// --------------------------------------------------------------------
+
+/**
+ * Format hub data before displaying
+ *
+ * @access	public
+ * @param	string	text to be parsed
+ * @param	object	current data context
+ * @param	string	format expression for the string
+ * @return	string	parsed string
+ */
+function expr_format($text, $format)
+{
+	$format = explode(':', $format);
+
+	if (count($format) == 2)
+	{
+		switch($format[0])
+		{
+			case 'date':
+			case 'time':
+				$date = new DateTime($text);
+				$text = $date->format($format);
+				break;
+
+			case 'string':
+				$text = sprintf($format, $text);
+				break;
 		}
 	}
 

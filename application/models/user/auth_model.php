@@ -51,8 +51,11 @@ class Auth_model extends CI_Model {
 			// Set the admin role for central, as there is no role data in the DB
 			if ($in_central)
 			{
-				$user->user_roles = serialize(array(ROLE_ADMIN));
+				$user->user_roles = ROLE_ADMIN;
 			}
+
+			// Add additional roles
+			$user->user_roles .= '|'.ROLE_LOGGED_IN;
 
 			$this->session->set_userdata($this->bootstrap->session_key.'user', $user);
 			return TRUE;

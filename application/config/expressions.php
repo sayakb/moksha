@@ -6,16 +6,16 @@
 | Defines control path expressions and their replacements
 |
 */
-$config['parser']['expr'] = array(
+$config['expressions']['functions'] = array(
 	'url'		=> '$this->CI->uri->segment($value, "")',
-	'hub'		=> 'isset($row->$value) ? $row->$value : ""',
+	'hub'		=> 'isset($data->$value) ? $data->$value : ""',
 	'get'		=> '$this->CI->input->get($value)',
 	'post'		=> '$this->CI->input->post($value)',
 	'cookie'	=> '$this->CI->input->cookie($value)',
 	'server'	=> '$this->CI->input->server(strtoupper($value))',
 	'user'		=> 'user_data($value)',
 	'calc'		=> 'eval("return $value;")',
-	'sys'		=> 'in_array($value, $config["sys_fns"]) ? $value() : ""'
+	'sys'		=> 'in_array($value, $config["sys_functions"]) ? $value() : ""'
 );
 
 /*
@@ -26,7 +26,7 @@ $config['parser']['expr'] = array(
 | limit on what he can execute
 |
  */
-$config['parser']['sys_fns'] = array(
+$config['expressions']['sys_functions'] = array(
 	'base_url',
 	'current_url',
 	'homepage'

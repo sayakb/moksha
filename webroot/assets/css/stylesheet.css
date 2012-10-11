@@ -6944,6 +6944,11 @@ button.close
 	display: inherit !important;
 }
 
+.page
+{
+	margin-top: 20px;
+}
+
 .page-header
 {
 	padding: 30px;
@@ -7078,7 +7083,7 @@ button.close
 	.page-box .span3
 	{
 		display: inline-block;
-		min-height: 85px;
+		min-height: 125px;
 		margin-left: 10px;
 	}
 
@@ -7100,8 +7105,7 @@ button.close
 }
 
 .toolbox-area,
-.widget-area,
-.page-area
+.widget-area
 {
 	min-height: 90px;
 	border: 1px solid transparent;
@@ -7114,10 +7118,16 @@ button.close
 		width: 97.5%;
 	}
 
-		.page-area .widget > .widget-remove
-		{
-			display: block;
-		}
+.page-area
+{
+	min-height: 125px;
+	border: 1px solid transparent;
+}
+
+	.page-area .widget > .widget-remove
+	{
+		display: block;
+	}
 
 	.page-area.span1
 	{
@@ -7939,7 +7949,7 @@ ul.wysihtml5-toolbar div[data-wysihtml5-command-value="orange"]
 	{
 		width: 128px;
 	}
-	
+
 	.page-area.span1
 	{
 		width: 163px;

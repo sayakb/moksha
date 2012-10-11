@@ -312,6 +312,7 @@ class Cache {
 
 		// check if filename contains dirs
 		$subdirs = explode(DIRECTORY_SEPARATOR, $this->_filename);
+
 		if (count($subdirs) > 1)
 		{
 			array_pop($subdirs);

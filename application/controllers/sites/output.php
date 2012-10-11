@@ -41,7 +41,8 @@ class Output extends CI_Controller {
 		// Assign view data
 		$data = array(
 			'page_title'	=> $page->page_title,
-			'page_content'	=> 'test'
+			'page_content'	=> $this->dynamic->generate_page($page),
+			'page_class'	=> 'page-'.strtolower(url_title($page->page_title))
 		);
 
 		// Load the view. We do not use template as we don't need the

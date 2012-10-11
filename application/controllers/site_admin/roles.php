@@ -18,10 +18,13 @@ class Roles extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for widgets management
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/login');
+		}
+
 		$this->lang->load('site_admin');
 		$this->load->model('site_admin/roles_model');
-		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -68,7 +71,7 @@ class Roles extends CI_Controller {
 			if ($this->roles_model->add_role())
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('role_added'));
-				redirect(base_url('admin/roles/manage'), 'refresh');
+				redirect(base_url('admin/roles/manage'));
 			}
 			else
 			{
@@ -109,7 +112,7 @@ class Roles extends CI_Controller {
 			if ($this->roles_model->update_role($role_id))
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('role_updated'));
-				redirect(base_url('admin/roles/manage'), 'refresh');
+				redirect(base_url('admin/roles/manage'));
 			}
 			else
 			{
@@ -150,7 +153,7 @@ class Roles extends CI_Controller {
 			}
 		}
 
-		redirect(base_url('admin/roles/manage'), 'refresh');
+		redirect(base_url('admin/roles/manage'));
 	}
 
 	// --------------------------------------------------------------------

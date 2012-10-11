@@ -72,7 +72,7 @@ function user_data($key)
 		// Unserialize the user roles array
 		if ( ! is_array($data->user_roles))
 		{
-			$data->user_roles = unserialize($data->user_roles);
+			$data->user_roles = explode('|', $data->user_roles);
 		}
 
 		if (isset($data->$key))
@@ -80,8 +80,55 @@ function user_data($key)
 			return $data->$key;
 		}
 	}
+	else
+	{
+		$data = new stdClass();
 
-	return false;
+		$data->user_id			= 0;
+		$data->user_name		= 'anonymous';
+		$data->user_password	= NULL;
+		$data->user_email		= NULL;
+		$data->user_roles		= NULL;
+		$data->user_founder		= 0;
+
+		return $data;
+	}
+}
+
+// --------------------------------------------------------------------
+
+/**
+ * Checks if the user has the specified roles
+ *
+ * @access	private
+ * @param	mixed	array of roles or roles separated by |
+ * @return	bool	true if user has all the roles
+ */
+function check_roles($roles)
+{
+	$user_roles = user_data('user_roles');
+
+	if ( ! is_array($roles))
+	{
+		$roles = explode('|', $roles);
+	}
+
+	// Admins have access to everything
+	if (in_array(ROLE_ADMIN, $user_roles))
+	{
+		return TRUE;
+	}
+
+	// Check for the specific role
+	foreach ($roles as $role)
+	{
+		if ($role !== '' AND ! in_array($role, $user_roles))
+		{
+			return FALSE;
+		}
+	}
+
+	return TRUE;
 }
 
 // --------------------------------------------------------------------

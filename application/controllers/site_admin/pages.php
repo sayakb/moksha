@@ -18,10 +18,13 @@ class Pages extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for widgets management
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/login');
+		}
+
 		$this->lang->load('site_admin');
 		$this->load->model('site_admin/pages_model');
-		$this->session->enforce_admin('admin/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -68,7 +71,7 @@ class Pages extends CI_Controller {
 			if ($this->pages_model->add_page())
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('page_added'));
-				redirect(base_url('admin/pages/manage'), 'refresh');
+				redirect(base_url('admin/pages/manage'));
 			}
 			else
 			{
@@ -118,7 +121,7 @@ class Pages extends CI_Controller {
 			if ($this->pages_model->update_page($page_id))
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('page_updated'));
-				redirect(base_url('admin/pages/manage'), 'refresh');
+				redirect(base_url('admin/pages/manage'));
 			}
 			else
 			{
@@ -167,7 +170,7 @@ class Pages extends CI_Controller {
 			}
 		}
 
-		redirect(base_url('admin/pages/manage'), 'refresh');
+		redirect(base_url('admin/pages/manage'));
 	}
 
 	// --------------------------------------------------------------------

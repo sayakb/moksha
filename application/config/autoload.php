@@ -62,6 +62,8 @@ $autoload['libraries'] = array(
 	'session',
 	'form_validation',
 	'hub',
+	'widget',
+	'dynamic',
 	'pagination'
 );
 
@@ -78,6 +80,7 @@ $autoload['libraries'] = array(
 $autoload['helper'] = array(
 	'url',
 	'form',
+	'control',
 	'auth',
 	'array',
 	'expression'
@@ -100,7 +103,7 @@ $autoload['helper'] = array(
 $autoload['config'] = array(
 	'pagination',
 	'cache',
-	'parser',
+	'expressions',
 	'widgets',
 	'pages'
 );

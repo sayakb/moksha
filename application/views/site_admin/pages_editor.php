@@ -154,42 +154,48 @@
 <script type="text/javascript">
 	$(function() {
 		// Drag from widget box to page area
-		$('.widget-box .widget').draggable({
+		$('.widget').draggable({
 			appendTo: 'body',
 			helper: 'clone',
 			revert: 'invalid',
 			revertDuration: 250
 		});
 
-		$('.page-area')
-			.droppable({
-				activeClass: 'widget-drop-active',
-				hoverClass: 'widget-drop-hover',
-				accept: ':not(.dropped)',
-				drop: function(event, ui) {
-					ui.draggable.clone()
-						.addClass('dropped')
-						.appendTo($(this));
+		<?php for ($col = 1; $col <= 3; $col++): ?>
+			$('.column<?= $col ?>')
+				.droppable({
+					activeClass: 'widget-drop-active',
+					hoverClass: 'widget-drop-hover',
+					accept: ':not(.dropped<?= $col ?>)',
+					drop: function(event, ui) {
+						ui.draggable.clone()
+							.removeClass('dropped1 dropped2 dropped3 ui-draggable ui-sortable-helper')
+							.removeAttr('style')
+							.addClass('dropped dropped<?= $col ?>')
+							.appendTo('.column<?= $col ?>');
 
-					syncWidgets();
-				}
-			})
-			.sortable({
-				items: '.widget',
-				stop: syncWidgets,
-				revert: 250
-			});
+						if (ui.draggable.hasClass('dropped')) {
+							ui.draggable.remove();
+						}
+
+						syncWidgets();
+					}
+				})
+				.sortable({
+					items: '.widget',
+					stop: syncWidgets,
+					revert: 250
+				});
+		<?php endfor ?>
 
 		// Drag back to widget box from page
-		$('.page-area .widget').draggable();
-
 		$('.widget-area').droppable({
 			accept: '.dropped',
 			activeClass: 'widget-drop-active',
 			hoverClass: 'widget-drop-hover',
 			drop: function(event, ui) {
-				$(ui.draggable).remove();
-			},
+				ui.draggable.remove();
+			}
 		});
 
 		// Load page widgets
@@ -378,9 +384,9 @@
 			var widget_ary = widgets.split('|');
 
 			$.each(widget_ary, function(idx, val) {
-				$('[data-widget-id=' + val + ']')
+				$('.widget-box [data-widget-id=' + val + ']')
 					.clone()
-					.addClass('dropped')
+					.addClass('dropped dropped' + column)
 					.appendTo('.column' + column);
 			});
 		}

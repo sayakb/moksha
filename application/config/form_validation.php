@@ -131,7 +131,7 @@ $config = array(
 		array(
 			'field'	=>	'column_names[]',
 			'label'	=>	'lang:column_name',
-			'rules'	=>	'alpha|'.
+			'rules'	=>	'alpha_dash|'.
 						'max_length[64]'
 		),
 		array(
@@ -180,7 +180,7 @@ $config = array(
 			'field'	=>	'column_name',
 			'label'	=>	'lang:column_name',
 			'rules'	=>	'required|'.
-						'alpha|'.
+						'alpha_dash|'.
 						'max_length[64]|'.
 						'trim|'.
 						'callback_check_column_edit',
@@ -204,7 +204,7 @@ $config = array(
 			'field'	=>	'column_name',
 			'label'	=>	'lang:column_name',
 			'rules'	=>	'required|'.
-						'alpha|'.
+						'alpha_dash|'.
 						'max_length[64]|'.
 						'trim|'.
 						'callback_check_column_edit',
@@ -286,7 +286,12 @@ $config = array(
 		array(
 			'field'	=>	'max_records',
 			'label'	=>	'lang:max_records',
-			'rules'	=>	'is_natural_no_zero'
+			'rules'	=>	'trim'
+		),
+		array(
+			'field'	=>	'binding',
+			'label'	=>	'lang:binding_type',
+			'rules'	=>	'trim'
 		),
 		array(
 			'field'	=>	'submit',

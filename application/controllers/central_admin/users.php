@@ -18,10 +18,13 @@ class Users extends CI_Controller {
 	{
 		parent::__construct();
 
-		// Load stuff we need for central
+		if ( ! check_roles(ROLE_ADMIN))
+		{
+			redirect('admin/central/login');
+		}
+
 		$this->load->model('central_admin/users_model');
 		$this->lang->load('central_admin');
-		$this->session->enforce_admin('admin/central/login');
 	}
 
 	// --------------------------------------------------------------------
@@ -68,7 +71,7 @@ class Users extends CI_Controller {
 			if ($this->users_model->add_user())
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('user_added'));
-				redirect(base_url('admin/central/users/manage'), 'refresh');
+				redirect(base_url('admin/central/users/manage'));
 			}
 			else
 			{
@@ -113,7 +116,7 @@ class Users extends CI_Controller {
 			if ($this->users_model->update_user($user_id))
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('user_updated'));
-				redirect(base_url('admin/central/users/manage'), 'refresh');
+				redirect(base_url('admin/central/users/manage'));
 			}
 			else
 			{
@@ -162,7 +165,7 @@ class Users extends CI_Controller {
 			}
 		}
 
-		redirect(base_url('admin/central/users/manage'), 'refresh');
+		redirect(base_url('admin/central/users/manage'));
 	}
 
 	// --------------------------------------------------------------------

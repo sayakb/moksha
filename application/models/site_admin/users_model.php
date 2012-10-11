@@ -31,12 +31,7 @@ class Users_model extends CI_Model {
 	public function fetch_user($user_id)
 	{
 		$this->db->where('user_id', $user_id);
-		$user = $this->db->get("site_users_{$this->bootstrap->site_id}")->row();
-
-		// We need the role in <role1>|<role2>|.. format
-		$user->user_roles = implode('|', unserialize($user->user_roles));
-
-		return $user;
+		return $this->db->get("site_users_{$this->bootstrap->site_id}")->row();
 	}
 
 	// --------------------------------------------------------------------
@@ -147,15 +142,12 @@ class Users_model extends CI_Model {
 	 */
 	public function add_user()
 	{
-		$roles		= $this->input->post('user_roles');
-		$roles_ary	= explode('|', $roles);
-
 		// Add user data
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
 			'user_password'	=> password_hash($this->input->post('password')),
 			'user_email'	=> $this->input->post('email'),
-			'user_roles'	=> serialize($roles_ary)
+			'user_roles'	=> $this->input->post('user_roles')
 		);
 
 		return $this->db->insert("site_users_{$this->bootstrap->site_id}", $data);
@@ -184,7 +176,7 @@ class Users_model extends CI_Model {
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
 			'user_email'	=> $this->input->post('email'),
-			'user_roles'	=> serialize($roles_ary)
+			'user_roles'	=> implode('|', $roles_ary)
 		);
 
 		if (!empty($password))

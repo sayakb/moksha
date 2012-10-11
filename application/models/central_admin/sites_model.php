@@ -106,16 +106,26 @@ class Sites_model extends CI_Model {
 				$this->dbforge->create_table("{$table}_{$site_id}");
 			}
 
+			// Create anonymous user
+			$anonymous = array(
+				'user_name'		=> 'anonymous',
+				'user_password'	=> '',
+				'user_email'	=> '',
+				'user_roles'	=> '',
+				'user_founder'	=> 0
+			);
+
 			// Create admin user with the same credentials of currently logged in user
-			$user_data = array(
+			$admin = array(
 				'user_name'		=> user_data('user_name'),
 				'user_password'	=> user_data('user_password'),
 				'user_email'	=> user_data('user_email'),
-				'user_roles'	=> serialize(array(ROLE_ADMIN)),
+				'user_roles'	=> ROLE_ADMIN,
 				'user_founder'	=> 1
 			);
 			
-			$this->db->insert("site_users_{$site_id}", $user_data);
+			$this->db->insert("site_users_{$site_id}", $anonymous);
+			$this->db->insert("site_users_{$site_id}", $admin);
 		}
 
 		return $success;

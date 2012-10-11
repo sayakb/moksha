@@ -14,7 +14,11 @@
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-editor.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/utils.js') ?>"></script>
 </head>
-<body>
-	<?= $page_content ?>
+<body class="page <?= $page_class ?>">
+	<div class="container">
+		<div class="row">
+			<?= $page_content ?>
+		</div>
+	</div>
 </body>
 </html>

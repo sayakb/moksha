@@ -27,7 +27,7 @@
 				<?php endforeach ?>
 			<?php else: ?>
 				<tr>
-					<td colspan="2"><?= $this->lang->line('hub_empty') ?></td>
+					<td colspan="<?= count($hub_columns) ?>"><?= $this->lang->line('hub_empty') ?></td>
 				</tr>
 			<?php endif ?>
 		</tbody>

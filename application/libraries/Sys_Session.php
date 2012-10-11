@@ -36,29 +36,6 @@ class Sys_Session extends CI_Session {
 	}
 
 	// --------------------------------------------------------------------
-
-	/**
-	 * Enforces user login - redirects if not logged in
-	 *
-	 * @access	public
-	 * @param	string	url to redirect to if not logged in
-	 */
-	public function enforce_admin($login_url)
-	{
-		$roles = user_data('user_roles');
-
-		if ($roles !== FALSE)
-		{
-			if (in_array(ROLE_ADMIN, $roles))
-			{
-				return;
-			}
-		}
-
-		redirect(base_url($login_url), 'refresh');
-	}
-
-	// --------------------------------------------------------------------
 }
 // END Sys_Session Class
 

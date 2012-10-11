@@ -76,6 +76,30 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Fetches the name for a hub against its ID
+	 *
+	 * @access	public
+	 * @param	int		hub identifier
+	 * @return	string	hub name
+	 */
+	public function fetch_name($hub_id)
+	{
+		if ($hub_id != '-1')
+		{
+			$hub = $this->CI->db->get_where("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+
+			if ($hub->num_rows() == 1)
+			{
+				return $hub->row()->hub_name;
+			}
+		}
+
+		return HUB_NONE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Returns number of hubs this site has
 	 *
 	 * @access	public
@@ -651,6 +675,44 @@ class Hub {
 		{
 			return FALSE;
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Parses the limit value for a hub
+	 *
+	 * @access	public
+	 * @param	string	hub limit value
+	 * @return	mixed	array if filter is parsed, false on error
+	 */
+	public function parse_limit($limit)
+	{
+		$limit = trim($limit);
+		$limit = explode(',', $limit);
+
+		if (count($limit) == 1)
+		{
+			$limit[0] = intval(expr(trim($limit[0])));
+			$limit[1] = 0;
+
+			if ($limit[0] != 0)
+			{
+				return $limit;
+			}
+		}
+		else if (count($limit) == 2)
+		{
+			$limit[0] = intval(expr($trim($limit[0])));
+			$limit[1] = intval(expr($trim($limit[1])));
+
+			if ($limit[0] != 0 AND $limit[1] != 0)
+			{
+				return $limit;
+			}
+		}
+
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------
