@@ -20,7 +20,7 @@ class Dynamic {
 	 * @access public
 	 * @var object
 	 */	
-	var $page;
+	var $context;
 
 	// --------------------------------------------------------------------
 
@@ -29,7 +29,11 @@ class Dynamic {
 	 */
 	function __construct()
 	{
-		$this->CI =& get_instance();
+		$this->CI		=& get_instance();
+		$this->context	= new stdClass();
+
+		$this->context->submit_btns	= array();
+		$this->context->ctrl_keys	= array();
 	}
 
 	// --------------------------------------------------------------------
@@ -43,12 +47,12 @@ class Dynamic {
 	{
 		if (check_roles($page->page_roles))
 		{
-			$this->page = $page;
+			$this->context->page = $page;
 
 			// Process POST data for the page
 			$this->process_post();
 
-			// Determine the layout
+			// Determine the layout and parse each column data
 			$widths	= explode('-', $page->page_layout);
 			$index	= 0;
 			$output	= '';
@@ -59,8 +63,10 @@ class Dynamic {
 				$data	 = $this->generate_widgets($page->page_widgets[$index++]);
 
 				$output	.= "<div class='span{$width}'>{$data}</div>";
-				
 			}
+
+			// Save submit buttons to user data
+			$this->CI->session->set_userdata($this->CI->bootstrap->session_key.'submit_btns', $this->context->submit_btns);
 
 			return $output;
 		}
@@ -80,7 +86,123 @@ class Dynamic {
 	 */
 	private function process_post()
 	{
-		// Implement this
+		// Load the control data from session
+		$submit_btns = $this->CI->session->userdata($this->CI->bootstrap->session_key.'submit_btns');
+
+		if (is_array($submit_btns))
+		{
+			foreach ($submit_btns as $widget_id => $btn)
+			{
+				// Check if data was POSTed
+				if (isset($_POST[$btn]))
+				{
+					$this->handle_postdata($widget_id);
+				}
+			}
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Handles data entry for a widget
+	 *
+	 * @access	private
+	 * @param	int		widget identifier
+	 * @return	void
+	 */
+	private function handle_postdata($widget_id)
+	{
+		$widget = $this->CI->widget->get($widget_id);
+
+		if ($widget !== FALSE AND $widget->widget_data->hub->attached_hub > 0)
+		{
+			// Fetch hub information
+			$hub_name	= $this->CI->hub->fetch_name($config->attached_hub);
+			$schema		= $this->CI->hub->schema($hub_name);
+			$key_col	= array_search(DBTYPE_KEY, $schema);
+			$widget_key	= expr($widget->widget_key);
+
+			if ($key_col !== FALSE AND !empty($widget_key))
+			{
+				// Try to get the matching hub row
+				$row = $this->CI->hub->get($hub_name, array($key_col => $widget_key))->row();
+
+				if ($row !== FALSE)
+				{
+					$data = $this->prepare_for_save($widget_id, $widget->widget_data->controls, $row);
+
+					if (is_array($data))
+					{
+						if ($count = $this->CI->hub->update($hub_name, $data))
+						{
+							return;
+						}
+					}
+				}
+			}
+
+			$data = $this->prepare_for_save($widget_id, $widget->widget_data->controls);
+			$this->CI->hub->insert($hub_name, $data);
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Prepares a control for saving to the DB
+	 *
+	 * @access	private
+	 * @param	int		widget identifier
+	 * @param	array	controls to be parsed
+	 * @param	array	hub schema
+	 * @param	object	data context for the controls
+	 * @return	mixed	data array if validation and 
+	 */
+	private function prepare_for_save($widget_id, $controls, $data = FALSE)
+	{
+		$index = 0;
+
+		foreach ($controls as $control)
+		{
+			if ( ! empty($control->set_path))
+			{
+				$name	= 'control'.crc32($widget_id.$index++);
+				$label	= $name;
+
+				if ( ! empty($control->disp_src) AND substr($control->disp_src, 0, 1) != '-')
+				{
+					$label = expr($control->disp_src, $data);
+				}
+
+				// We always trim the data
+				if (empty($control->validation))
+				{
+					$control->validation = 'trim';
+				}
+				else
+				{
+					$control->validation .= '|trim';
+				}
+
+				// Set form validation rules
+				$this->CI->form_validation->set_rules($name, $label, $control->validation);
+
+				// Prepare the data array
+				$data[$control->set_path] = $this->input->post($name);
+			}
+		}
+
+		if ($this->form_validation->run())
+		{
+			$this->context->success_msgs = $this->CI->lang->line('data_saved');
+			return $data;
+		}
+		else
+		{
+			$this->context->success_msgs = validation_errors();
+			return FALSE;
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -94,12 +216,16 @@ class Dynamic {
 	 */
 	private function generate_widgets($widget_ids)
 	{
+		// Load the widget configuration to context
+		$this->context->config = $this->CI->config->item('widget');
+
+		// Prepare data
 		$widget_ids = explode('|', $widget_ids);
 		$output = '';
 
 		foreach ($widget_ids as $widget_id)
 		{
-			$key = "widgetdata_{$this->CI->bootstrap->site_id}_{$this->page->page_id}_{$widget_id}_".user_data('user_name');
+			$key = "widgetdata_{$this->CI->bootstrap->site_id}_{$widget_id}_".user_data('user_name');
 
 			if ( ! $widget_data = $this->CI->cache->get($key))
 			{
@@ -118,7 +244,11 @@ class Dynamic {
 						$hub_data = array();
 					}
 
-					// Based on hard/soft binding, repeat each control N times for N hub rows
+					// Store the widget and returned row count in context
+					$this->context->widget	= $widget;
+					$this->context->rows	= count($hub_data);
+
+					// If hard bound, repeat each control N times for N hub rows
 					if (count($hub_data) > 0)
 					{
 						foreach($hub_data as $data)
@@ -129,6 +259,8 @@ class Dynamic {
 							}
 						}
 					}
+
+					// For soft binding, produce at least 1 instance of the widget
 					else if ($widget->widget_data->hub->binding != 'hard')
 					{
 						$widget_data = $this->generate_widget($widget);
@@ -156,18 +288,41 @@ class Dynamic {
 	 */
 	private function generate_widget($widget, $data = FALSE)
 	{
-		$key	= strtolower(url_title($widget->widget_name));
-		$output	= '';
+		$key		= strtolower(url_title($widget->widget_name));
+		$controls	= $widget->widget_data->controls;
+		$index		= 0;
+		$output		= '';
 
-		foreach ($widget->widget_data->controls as $control)
+		// Generate control data
+		foreach ($controls as $control)
 		{
 			if ($this->restrict_access($control->roles, $data) AND function_exists("control_{$control->key}"))
 			{
-				$output .= eval("return control_{$control->key}(\$control, \$data);");
+				$name	 = 'control'.crc32($widget->widget_id.$index++);
+				$output	.= eval("return control_{$control->key}(\$name, \$control, \$data);");
+
+				// Save control name to context
+				if ($control->key == $this->context->config['submit'])
+				{
+					$this->context->submit_btns[$widget->widget_id] = $name;
+				}
+				else
+				{
+					$this->context->ctrl_keys[$widget->widget_id] = $name;
+				}
 			}
 		}
 
-		return "<div class='well widget-{$key}'>{$output}</div>";
+		// Check if this is a notice widget
+		// For a notice, we do not need a form or a frame
+		if (count($controls) == 1 AND $controls[0] == $this->context->config['notice'])
+		{
+			return $output;
+		}
+		else
+		{
+			return form_open_multipart(current_url(), array('class' => "well widget-{$key}")).$output.form_close();
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -219,7 +374,7 @@ class Dynamic {
 	 * @param	object	associated hub data context
 	 * @return	bool	if component is accessible
 	 */
-	private function restrict_access($roles, $data)
+	private function restrict_access($roles, $data = FALSE)
 	{
 		$roles_ary		= explode('|', $roles);
 		$author_filter	= TRUE;
@@ -232,7 +387,7 @@ class Dynamic {
 		}
 
 		// Extract the author role, if it's in there
-		if ($author_key !== FALSE)
+		if ($author_key !== FALSE AND $data !== FALSE)
 		{
 			unset($roles_ary[$author_key]);
 			$author_filter = user_data('user_name') == $data->_moksha_author;

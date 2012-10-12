@@ -241,6 +241,8 @@ class Hub_db {
 	{
 		$this->inject_metadata($data);
 		$this->CI->db->insert("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
+
+		return $this->CI->db->affected_rows();
 	}
 
 	// --------------------------------------------------------------------
@@ -252,14 +254,15 @@ class Hub_db {
 	 * @param	int		hub unique identifier
 	 * @param	array	data to be updated
 	 * @param	array	where claus of the query
-	 * @return	void
+	 * @return	int		affected rows
 	 */
 	public function update($hub_id, $data, $where)
 	{
 		$this->resolve_where($where);
 		$this->inject_metadata($data);
-
 		$this->CI->db->update("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
+
+		return $this->CI->db->affected_rows();
 	}
 
 	// --------------------------------------------------------------------
@@ -270,12 +273,14 @@ class Hub_db {
 	 * @access	public
 	 * @param	int		hub unique identifier
 	 * @param	array	where claus of the query
-	 * @return	void
+	 * @return	int		affected rows
 	 */
 	public function delete($hub_id, $where)
 	{
 		$this->resolve_where($where);
 		$this->CI->db->delete("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}");
+
+		return $this->CI->db->affected_rows();
 	}
 
 	// --------------------------------------------------------------------

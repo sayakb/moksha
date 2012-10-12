@@ -198,12 +198,12 @@ class Hubs_model extends CI_Model {
 					}
 				}
 
-				$this->session->unset_userdata('hub_name');
+				$this->session->unset_userdata($this->bootstrap->session_key.'hub_name');
 				return $this->hub->create($hub_name, HUB_DATABASE, $col_data);
 			}
 			else
 			{
-				$this->session->set_userdata('hub_name', $this->input->post('hub_name'));
+				$this->session->set_userdata($this->bootstrap->session_key.'hub_name', $this->input->post('hub_name'));
 				redirect(base_url('admin/hubs/add/columns'));
 			}
 		}

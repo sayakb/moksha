@@ -23,6 +23,7 @@ $lang['email_address']		= 'Email address';
 $lang['administrator']		= 'Administrator';
 $lang['author']				= 'Author';
 $lang['logged_in']			= 'Logged in';
+$lang['data_saved']			= 'Data has been saved successfully';
 
 
 /* End of file global_lang.php */

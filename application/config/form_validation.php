@@ -234,7 +234,8 @@ $config = array(
 		array(
 			'field'	=>	'widget_key',
 			'label'	=>	'lang:widget_key',
-			'rules'	=>	'max_length[100]'
+			'rules'	=>	'trim|'.
+						'max_length[100]'
 		),
 		array(
 			'field'	=>	'widget_roles',
@@ -254,7 +255,8 @@ $config = array(
 		array(
 			'field'	=>	'control_set_paths[]',
 			'label'	=>	'lang:control_set_path',
-			'rules'	=>	'callback_check_set_paths'
+			'rules'	=>	'trim|'.
+						'callback_check_set_paths'
 		),
 		array(
 			'field'	=>	'control_formats[]',

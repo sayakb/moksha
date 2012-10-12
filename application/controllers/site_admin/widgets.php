@@ -326,6 +326,9 @@ class Widgets extends CI_Controller {
 	 */
 	public function check_controls()
 	{
+		$widget_config		= $this->config->item('widget');
+		$submit_button		= $widget_config['submit_button'];
+
 		$control_keys		= $this->input->post('control_keys');
 		$control_set_paths	= $this->input->post('control_set_paths');
 
@@ -339,9 +342,17 @@ class Widgets extends CI_Controller {
 			
 			foreach ($control_keys as $key)
 			{
+				// Check if control is valid
 				if ( ! isset($all_controls[$key]))
 				{
 					$this->form_validation->set_message('check_controls', $this->lang->line('control_invalid'));
+					return FALSE;
+				}
+
+				// Submit button cannot be added to a read only hub
+				if ($hub_name != HUB_NONE AND ! $this->hub->is_writable($hub_name) AND in_array($submit_button, $control_keys))
+				{
+					$this->form_validation->set_message('check_controls', $this->lang->line('submit_read_only'));
 					return FALSE;
 				}
 			}

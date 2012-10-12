@@ -131,7 +131,7 @@ class Hubs extends CI_Controller {
 			}
 
 			// We don't need this data anymore
-			$this->session->unset_userdata('hub_name');
+			$this->session->unset_userdata($this->bootstrap->session_key.'hub_name');
 
 			// Assign view data
 			$data = array(

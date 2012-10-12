@@ -7,12 +7,22 @@
 
 	<link href="<?= base_url('assets/css/stylesheet.css') ?>" rel="stylesheet" />
 	<link href="<?= base_url('assets/css/jquery-ui.css') ?>" rel="stylesheet" />
+
 	<script type="text/javascript" src="<?= base_url('assets/js/jquery.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/jquery-ui.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/script.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-lib.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-editor.js') ?>"></script>
+	<script type="text/javascript" src="<?= base_url('assets/js/prettify.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/utils.js') ?>"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			// Set up WYSIWYG editors and code boxes
+			$('.wysiwyg').wysihtml5();
+			prettyPrint();
+		});
+	</script>
 </head>
 <body class="page <?= $page_class ?>">
 	<div class="container">
@@ -20,5 +30,6 @@
 			<?= $page_content ?>
 		</div>
 	</div>
+</pre>
 </body>
 </html>

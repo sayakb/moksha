@@ -353,17 +353,20 @@ class Hub {
 	 * @access	public
 	 * @param	string	hub name
 	 * @param	array	data to be inserted
-	 * @return	object	of class Hub
+	 * @return	int		affected rows
 	 */
 	public function insert($hub_name, $data)
 	{
 		if ($this->is_writable($hub_name))
 		{
-			$this->obj_by_hub($hub_name)->insert($this->details($hub_name)->hub_id, $data);
-			$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			if ($count = $this->obj_by_hub($hub_name)->insert($this->details($hub_name)->hub_id, $data))
+			{
+				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				return $count;
+			}
 		}
 
-		return $this;
+		return 0;
 	}
 
 	// --------------------------------------------------------------------
@@ -375,7 +378,7 @@ class Hub {
 	 * @param	string	hub name
 	 * @param	array	data to be updated
 	 * @param	array	where claus of the query
-	 * @return	object	of class Hub
+	 * @return	int		affected rows
 	 */
 	public function update($hub_name, $data, $_where = FALSE)
 	{
@@ -398,11 +401,14 @@ class Hub {
 				}
 			}
 
-			$this->obj_by_hub($hub_name)->update($this->details($hub_name)->hub_id, $data, $where);
-			$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			if ($count = $this->obj_by_hub($hub_name)->update($this->details($hub_name)->hub_id, $data, $where))
+			{
+				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				return $count;
+			}
 		}
 
-		return $this;
+		return 0;
 	}
 
 	// --------------------------------------------------------------------
@@ -413,7 +419,7 @@ class Hub {
 	 * @access	public
 	 * @param	string	hub name
 	 * @param	array	where claus of the query
-	 * @return	object	of class Hub
+	 * @return	int		affected rows
 	 */
 	public function delete($hub_name, $_where = FALSE)
 	{
@@ -436,11 +442,14 @@ class Hub {
 				}
 			}
 
-			$this->obj_by_hub($hub_name)->delete($this->details($hub_name)->hub_id, $where);
-			$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			if ($count = $this->obj_by_hub($hub_name)->delete($this->details($hub_name)->hub_id, $where))
+			{
+				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				return $count;
+			}
 		}
 
-		return $this;
+		return 0;
 	}
 
 	// --------------------------------------------------------------------

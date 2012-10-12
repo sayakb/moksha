@@ -60,6 +60,7 @@ $autoload['libraries'] = array(
 	'cache',
 	'template',
 	'session',
+	'upload',
 	'form_validation',
 	'hub',
 	'widget',
