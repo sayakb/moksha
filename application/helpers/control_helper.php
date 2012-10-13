@@ -541,7 +541,7 @@ function control_multiselect($name, $options, $data = FALSE)
 function control_submit_button($name, $options, $data = FALSE)
 {
 	$text = expr($options->disp_src, $data);
-	return "<input name='{$name}' type='submit' text='{$text}' />";
+	return "<input name='{$name}' type='submit' value='{$text}' class='btn {$options->classes}' />";
 }
 
 // ------------------------------------------------------------------------
@@ -558,7 +558,7 @@ function control_submit_button($name, $options, $data = FALSE)
 function control_reset_button($name, $options, $data = FALSE)
 {
 	$text = expr($options->disp_src, $data);
-	return "<input name='{$name}' type='reset' text='{$text}' />";
+	return "<input name='{$name}' type='reset' value='{$text}' class='btn{$options->classes}' />";
 }
 
 // ------------------------------------------------------------------------

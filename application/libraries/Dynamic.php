@@ -97,6 +97,7 @@ class Dynamic {
 				if (isset($_POST[$btn]))
 				{
 					$this->handle_postdata($widget_id);
+					redirect(current_url());
 				}
 			}
 		}
@@ -118,7 +119,7 @@ class Dynamic {
 		if ($widget !== FALSE AND $widget->widget_data->hub->attached_hub > 0)
 		{
 			// Fetch hub information
-			$hub_name	= $this->CI->hub->fetch_name($config->attached_hub);
+			$hub_name	= $this->CI->hub->fetch_name($widget->widget_data->hub->attached_hub);
 			$schema		= $this->CI->hub->schema($hub_name);
 			$key_col	= array_search(DBTYPE_KEY, $schema);
 			$widget_key	= expr($widget->widget_key);
@@ -130,7 +131,7 @@ class Dynamic {
 
 				if ($row !== FALSE)
 				{
-					$data = $this->prepare_for_save($widget_id, $widget->widget_data->controls, $row);
+					$data = $this->prepare_for_save($widget, $widget->widget_data->controls, $row);
 
 					if (is_array($data))
 					{
@@ -142,8 +143,12 @@ class Dynamic {
 				}
 			}
 
-			$data = $this->prepare_for_save($widget_id, $widget->widget_data->controls);
-			$this->CI->hub->insert($hub_name, $data);
+			$data = $this->prepare_for_save($widget, $widget->widget_data->controls);
+
+			if (is_array($data))
+			{
+				$this->CI->hub->insert($hub_name, $data);
+			}
 		}
 	}
 
@@ -153,56 +158,65 @@ class Dynamic {
 	 * Prepares a control for saving to the DB
 	 *
 	 * @access	private
-	 * @param	int		widget identifier
+	 * @param	object	widget containing the controls
 	 * @param	array	controls to be parsed
 	 * @param	array	hub schema
 	 * @param	object	data context for the controls
 	 * @return	mixed	data array if validation and 
 	 */
-	private function prepare_for_save($widget_id, $controls, $data = FALSE)
+	private function prepare_for_save($widget, $controls, $data = FALSE)
 	{
 		$index = 0;
 
-		foreach ($controls as $control)
+		if ($this->restrict_access($widget->widget_roles, $data))
 		{
-			if ( ! empty($control->set_path))
+			// Process POST data for controls
+			foreach ($controls as $control)
 			{
-				$name	= 'control'.crc32($widget_id.$index++);
-				$label	= $name;
-
-				if ( ! empty($control->disp_src) AND substr($control->disp_src, 0, 1) != '-')
+				if ( ! empty($control->set_path))
 				{
-					$label = expr($control->disp_src, $data);
-				}
+					$name	= 'control'.crc32($widget->widget_id.$index++);
+					$label	= $name;
 
-				// We always trim the data
-				if (empty($control->validation))
-				{
-					$control->validation = 'trim';
-				}
-				else
-				{
-					$control->validation .= '|trim';
-				}
+					if ( ! empty($control->disp_src) AND substr($control->disp_src, 0, 1) != '-')
+					{
+						$label = expr($control->disp_src, $data);
+					}
 
-				// Set form validation rules
-				$this->CI->form_validation->set_rules($name, $label, $control->validation);
+					// We always trim the data
+					if (empty($control->validation))
+					{
+						$control->validation = 'trim';
+					}
+					else
+					{
+						$control->validation .= '|trim';
+					}
 
-				// Prepare the data array
-				$data[$control->set_path] = $this->input->post($name);
+					if ($this->restrict_access($control->roles, $data))
+					{
+						// Set form validation rules
+						$this->CI->form_validation->set_rules($name, $label, $control->validation);
+
+						// Prepare the data array
+						$data[$control->set_path] = $this->input->post($name);
+					}
+				}
+			}
+
+			// Validate the form
+			if ($this->CI->form_validation->run())
+			{
+				$this->context->success_msgs = $this->CI->lang->line('data_saved');
+				return $data;
+			}
+			else
+			{
+				$this->context->error_msgs = validation_errors();
 			}
 		}
 
-		if ($this->form_validation->run())
-		{
-			$this->context->success_msgs = $this->CI->lang->line('data_saved');
-			return $data;
-		}
-		else
-		{
-			$this->context->success_msgs = validation_errors();
-			return FALSE;
-		}
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------
@@ -217,7 +231,7 @@ class Dynamic {
 	private function generate_widgets($widget_ids)
 	{
 		// Load the widget configuration to context
-		$this->context->config = $this->CI->config->item('widget');
+		$this->context->config = $this->CI->config->item('widgets');
 
 		// Prepare data
 		$widget_ids = explode('|', $widget_ids);
