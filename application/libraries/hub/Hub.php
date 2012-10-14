@@ -716,10 +716,10 @@ class Hub {
 		}
 		else if (count($limit) == 2)
 		{
-			$limit[0] = intval(expr($trim($limit[0])));
-			$limit[1] = intval(expr($trim($limit[1])));
+			$limit[0] = intval(expr(trim($limit[0])));
+			$limit[1] = intval(expr(trim($limit[1])));
 
-			if ($limit[0] != 0 AND $limit[1] != 0)
+			if ($limit[0])
 			{
 				return $limit;
 			}

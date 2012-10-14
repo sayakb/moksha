@@ -67,19 +67,16 @@ class Widget {
 	 *
 	 * @access	public
 	 * @param	string	widget name
-	 * @param	string	operation key for the widget
-	 * @param	string	roles having access to the widget
+	 * @param	array	widget options
 	 * @param	object	widget data
 	 * @return	bool	true if successful
 	 */
-	public function create($widget_name, $widget_key, $widget_roles, $widget_data)
+	public function create($widget_name, $widget_options, $widget_data)
 	{
-		$data = array(
-			'widget_name'	=> $widget_name,
-			'widget_key'	=> $widget_key,
-			'widget_roles'	=> $widget_roles,
-			'widget_data'	=> serialize($widget_data)
-		);
+		$data = array_merge($widget_options, array(
+			'widget_name'		=> $widget_name,
+			'widget_data'		=> serialize($widget_data)
+		));
 
 		return $this->CI->db->insert("site_widgets_{$this->CI->bootstrap->site_id}", $data);
 	}
@@ -92,19 +89,16 @@ class Widget {
 	 * @access	public
 	 * @param	int		widget identifier
 	 * @param	string	widget name
-	 * @param	string	operation key for the widget
-	 * @param	string	roles having access to the widget
+	 * @param	array	widget options
 	 * @param	object	widget data
 	 * @return	bool	true if successful
 	 */
-	public function modify($widget_id, $widget_name, $widget_key, $widget_roles, $widget_data)
+	public function modify($widget_id, $widget_name, $widget_options, $widget_data)
 	{
-		$data = array(
-			'widget_name'	=> $widget_name,
-			'widget_key'	=> $widget_key,
-			'widget_roles'	=> $widget_roles,
-			'widget_data'	=> serialize($widget_data)
-		);
+		$data = array_merge($widget_options, array(
+			'widget_name'		=> $widget_name,
+			'widget_data'		=> serialize($widget_data)
+		));
 
 		return $this->CI->db->update("site_widgets_{$this->CI->bootstrap->site_id}", $data, array('widget_id' => $widget_id));
 	}

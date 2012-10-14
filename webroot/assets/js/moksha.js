@@ -7,7 +7,7 @@
  */
 
 /**
- * Perform staartup activities
+ * Perform startup activities
  *
  * @access	public
  * @return	void
@@ -20,8 +20,25 @@ function initPage() {
 	prettyPrint();
 
 	// Prepare the confirm delete modal
-	$('.btn-delete').click(confirmDelete);
-	$('#modal-yes').click(submitDelete);
+	var modalDelete = $('#modal-delete');
+
+	var btnDelete = $('.btn-delete').click(function() {
+		if ($(this).data('dialog') !== true) {
+			$(this).data('dialog', true);
+			modalDelete.modal('show');
+
+			return false;
+		}
+	});
+
+	$('#modal-yes').click(function() {
+		btnDelete.click();
+		return false;
+	});
+
+	$('#modal-no').click(function() {
+		btnDelete.data('dialog', false);
+	});
 }
 
 /**
@@ -46,30 +63,4 @@ function hash() {
 function hasScrollBar(jQobj) {
 	var elt = jQobj[0];
 	return elt.clientHeight < elt.scrollHeight || elt.clientWidth < elt.scrollWidth;
-}
-
-/**
- * Deletion confirmation modal
- *
- * @access	public
- * @return	bool	false to stop navigation
- */
-function confirmDelete() {
-	var btn = $(this).attr('name');
-	$('#modal-delete').attr('data-control', btn).modal('show');
-
-	return false;
-}
-
-/**
- * Submit delete confirmation
- *
- * @access	public
- * @return	bool	false to stop navigation
- */
-function submitDelete() {
-	var btn = $('#modal-delete').attr('data-control');
-	$('[name=' + btn + ']').click();
-
-	return false;
 }

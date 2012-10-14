@@ -45,7 +45,7 @@ class Output extends CI_Controller {
 			'page_class'	=> 'page-'.strtolower(url_title($page->page_title))
 		);
 		
-		// Load the view. We do not use template as we don't need the
+		// Load the view. We do not use the template library as we don't need the
 		// typical header and footer
 		$this->load->view('sites/output', $data);
 	}

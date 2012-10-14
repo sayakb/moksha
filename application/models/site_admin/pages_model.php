@@ -169,12 +169,13 @@ class Pages_model extends CI_Model {
 			'page_url'			=> $this->input->post('pg_url'),
 			'page_layout'		=> $this->input->post('pg_layout'),
 			'page_roles'		=> $this->input->post('pg_roles'),
-			'page_url'			=> $this->input->post('pg_url'),
 			'page_success_url'	=> $this->input->post('pg_success_url'),
 			'page_error_url'	=> $this->input->post('pg_error_url'),
+			'page_url'			=> str_replace(base_url(), '', $this->input->post('pg_url')),
 			'page_widgets'		=> serialize($this->populate_widgets())
 		);
 
+		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
 		return $this->db->insert("site_pages_{$this->bootstrap->site_id}", $data);
 	}
 
@@ -194,12 +195,13 @@ class Pages_model extends CI_Model {
 			'page_url'			=> $this->input->post('pg_url'),
 			'page_layout'		=> $this->input->post('pg_layout'),
 			'page_roles'		=> $this->input->post('pg_roles'),
-			'page_url'			=> $this->input->post('pg_url'),
 			'page_success_url'	=> $this->input->post('pg_success_url'),
 			'page_error_url'	=> $this->input->post('pg_error_url'),
+			'page_url'			=> str_replace(base_url(), '', $this->input->post('pg_url')),
 			'page_widgets'		=> serialize($this->populate_widgets())
 		);
 
+		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
 		return $this->db->update("site_pages_{$this->bootstrap->site_id}", $data, array('page_id' => $page_id));
 	}
 
@@ -214,6 +216,7 @@ class Pages_model extends CI_Model {
 	 */
 	public function delete_page($page_id)
 	{
+		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
 		return $this->db->delete("site_pages_{$this->bootstrap->site_id}", array('page_id' => $page_id));
 	}
 

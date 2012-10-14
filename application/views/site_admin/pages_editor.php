@@ -304,7 +304,7 @@
 
 		// Toggle widget box height if box is bigger than 125px
 		// If not, disable the toggle button
-		if (!hasScrollBar($('.widget-area'))) {
+		if (!hasScrollBar($('.widget-area')) && $('.widget-area').height() <= 90) {
 			$('#widget-box-toggle')
 				.addClass('disabled')
 				.removeClass('in')

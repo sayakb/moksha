@@ -159,8 +159,13 @@ class Widgets_model extends CI_Model {
 	public function add_widget()
 	{
 		$widget_name	= $this->input->post('widget_name');
-		$widget_key		= $this->input->post('widget_key');
-		$widget_roles	= $this->input->post('widget_roles');
+
+		$widget_options	= array(
+			'widget_key'		=> $this->input->post('widget_key'),
+			'widget_roles'		=> $this->input->post('widget_roles'),
+			'widget_frameless'	=> $this->input->post('widget_frameless') ? 1 : 0,
+			'widget_empty'		=> $this->input->post('widget_empty')
+		);
 
 		$widget_data	= (object)array(
 			'controls'	=> $this->populate_controls(),
@@ -173,7 +178,7 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
-		return $this->widget->create($widget_name, $widget_key, $widget_roles, $widget_data);
+		return $this->widget->create($widget_name, $widget_options, $widget_data);
 	}
 
 	// --------------------------------------------------------------------
@@ -188,8 +193,13 @@ class Widgets_model extends CI_Model {
 	public function update_widget($widget_id)
 	{
 		$widget_name	= $this->input->post('widget_name');
-		$widget_key		= $this->input->post('widget_key');
-		$widget_roles	= $this->input->post('widget_roles');
+
+		$widget_options	= array(
+			'widget_key'		=> $this->input->post('widget_key'),
+			'widget_roles'		=> $this->input->post('widget_roles'),
+			'widget_frameless'	=> $this->input->post('widget_frameless') ? 1 : 0,
+			'widget_empty'		=> $this->input->post('widget_empty')
+		);
 
 		$widget_data	= (object)array(
 			'controls'	=> $this->populate_controls(),
@@ -202,7 +212,7 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
-		return $this->widget->modify($widget_id, $widget_name, $widget_key, $widget_roles, $widget_data);
+		return $this->widget->modify($widget_id, $widget_name, $widget_options, $widget_data);
 	}
 
 	// --------------------------------------------------------------------

@@ -243,6 +243,17 @@ $config = array(
 			'rules'	=>	'callback_check_roles'
 		),
 		array(
+			'field'	=>	'widget_frameless',
+			'label'	=>	'lang:frameless',
+			'rules'	=>	'trim'
+		),
+		array(
+			'field'	=>	'widget_empty',
+			'label'	=>	'lang:empty_notice',
+			'rules'	=>	'trim|'.
+						'max_length[255]'
+		),
+		array(
 			'field'	=>	'control_keys[]',
 			'label'	=>	'lang:control_keys',
 			'rules'	=>	'strip_tags'

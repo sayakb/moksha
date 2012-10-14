@@ -163,20 +163,19 @@ function control_unordered_list($name, $options, $data = FALSE)
  */
 function control_pagination($name, $options, $data = FALSE)
 {
-	$CI		=& get_instance();
-	$page	= $CI->dynamic->context->page;
-	$rows	= $CI->dynamic->context->rows;
+	$CI			=& get_instance();
+	$page_url	= base_url(expr($CI->dynamic->context->page->page_url, $data));
+	$page_sgmt	= str_replace(base_url(), '', $page_url);
 
 	$CI->pagination->initialize(
 		array_merge($CI->config->item('pagination'), array(
-			'full_tag_open'	=> "<ul class='{$options->classes}'>",
-			'base_url'		=> base_url(expr($page->page_url)),
-			'total_rows'	=> $rows,
-			'uri_segment'	=> count(explode('/', $page->page_url)) + 1
+			'base_url'		=> $page_url,
+			'total_rows'	=> intval(expr($options->get_path, $data, $options->format)),
+			'uri_segment'	=> count(explode('/', $page_sgmt))
 		))
 	);
 
-	return $CI->pagination->create_links();
+	return "<div class='pagination {$options->classes}'>".$CI->pagination->create_links().'</div>';
 }
 
 // ------------------------------------------------------------------------
@@ -256,18 +255,22 @@ function control_textarea($name, $options, $data = FALSE)
 function control_notice($name, $options, $data = FALSE)
 {
 	$CI			=& get_instance();
-	$success	= $CI->session->flashdata("{$CI->bootstrap->session_key}notice_success");
-	$error		= $CI->session->flashdata("{$CI->bootstrap->session_key}notice_error");
+	$success	= $CI->dynamic->context->success_msgs;
+	$error		= $CI->dynamic->context->error_msgs;
 	$notice		= '';
 
 	if ($success !== FALSE)
 	{
-		$notice .=	"<div class='alert alert-success'>{$success}</div>";
+		$notice .=	"<div class='alert alert-success'>".
+						"<button type='button' class='close' data-dismiss='alert'>&times;</button>".$success.
+					"</div>";
 	}
 
 	if ($error !== FALSE)
 	{
-		$notice .=	"<div class='alert alert-error'>{$error}</div>";
+		$notice .=	"<div class='alert alert-error'>".
+						"<button type='button' class='close' data-dismiss='alert'>&times;</button>".$error.
+					"</div>";
 	}
 
 	return $notice;
@@ -402,6 +405,36 @@ function control_file_upload($name, $options, $data = FALSE)
 	$ctrl	= "<input name='{$name}' type='file' class='{$options->classes}' />";
 
 	return form_group($label, $ctrl);
+}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Creates a file download control
+ *
+ * @access	public
+ * @param	string	name of the control
+ * @param	object	control options
+ * @param	object	data context for expressions
+ * @return	string	control markup
+ */
+function control_file_download($name, $options, $data = FALSE)
+{
+	$value	= expr($options->get_path, $data, $options->format);
+	$info	= @unserialize($value);
+
+	if (is_array($info))
+	{
+		$name	= $info['name'];
+		$url	= $info['url'];
+
+		$label	= expr($options->disp_src, $data);
+		$ctrl	= "<i class='icon-download-alt'></i> <a href='{$url}'>{$name}</a>";
+
+		return form_group($label, $ctrl);
+	}
+
+	return NULL;
 }
 
 // ------------------------------------------------------------------------

@@ -74,6 +74,16 @@ define('ROLE_ADMIN',		'0');
 define('ROLE_AUTHOR',		'-1');
 define('ROLE_LOGGED_IN',	'-2');
 
+/*
+|--------------------------------------------------------------------------
+| List constants
+|--------------------------------------------------------------------------
+|
+| These are the list related constants
+|
+ */
+define('PER_PAGE', 10);
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

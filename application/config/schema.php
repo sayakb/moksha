@@ -175,8 +175,19 @@ $config['schema']['site_widgets'] = array(
 
 		'widget_key' => array(
 			'type'				=> 'VARCHAR',
-			'constraint'		=> 100,
-			'null'				=> FALSE
+			'constraint'		=> 100
+		),
+
+		'widget_frameless' => array(
+			'type'				=> 'TINYINT',
+			'constraint'		=> 1,
+			'null'				=> FALSE,
+			'default'			=> 0
+		),
+
+		'widget_empty' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255
 		),
 
 		'widget_data' => array(

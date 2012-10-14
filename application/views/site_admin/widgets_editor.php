@@ -179,6 +179,35 @@
 							<div class="help-block"><?= $this->lang->line('widget_key_exp') ?></div>
 						</div>
 					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('empty_notice') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_input('widget_empty', $widget_empty) ?>
+							<div class="help-block"><?= $this->lang->line('empty_notice_exp') ?></div>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('frame_type') ?>
+						</label>
+
+						<div class="controls">
+							<label class="radio">
+								<?= form_radio('widget_frameless', 0, $frame_box) ?>
+								<?= $this->lang->line('box') ?>
+							</label>
+
+							<label class="radio">
+								<?= form_radio('widget_frameless', 1, $frame_none) ?>
+								<?= $this->lang->line('frameless') ?>
+							</label>
+						</div>
+					</div>
 				</div>
 			</div>
 

@@ -130,13 +130,12 @@ $config['widgets']['delete'] = 'delete_link';
 
 /*
 | -------------------------------------------------------------------------
-| Notice control
+| File upload control
 | -------------------------------------------------------------------------
-| Defines the key for the page notice control
+| Defines the key for the file upload control
 |
  */
-$config['widgets']['notice'] = 'notice';
-
+$config['widgets']['upload'] = 'file_upload';
 
 /*
 | -------------------------------------------------------------------------

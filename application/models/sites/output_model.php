@@ -29,11 +29,26 @@ class Output_model extends CI_Model {
 	 */
 	public function fetch_page()
 	{
-		$this->db->order_by('length(page_url)', 'desc');
-		$pages = $this->db->get("site_pages_{$this->bootstrap->site_id}")->result();
+		// Get the page news
+		if ( ! $pages = $this->cache->get("pageidx_{$this->bootstrap->site_id}"))
+		{
+			$this->db->order_by('length(page_url)', 'desc');
+			$pages = $this->db->get("site_pages_{$this->bootstrap->site_id}")->result();
 
-		$base = base_url();
-		$curr = current_url();
+			$this->cache->write($pages, "pageidx_{$this->bootstrap->site_id}");
+		}
+
+		// If we have only one numeric segment, it means we are on the homepage
+		if ($this->uri->total_segments() == 1 AND ctype_digit($this->uri->segment(1)))
+		{
+			$base = base_url();
+			$curr = base_url();
+		}
+		else
+		{
+			$base = base_url();
+			$curr = current_url();
+		}
 
 		foreach ($pages as $page)
 		{

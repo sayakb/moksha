@@ -46,9 +46,16 @@ class Dynamic {
 		{
 			$this->context->page = $page;
 
-			$this->context->submit_btns = array();
-			$this->context->delete_btns = array();
-			$this->context->delete_data = array();
+			$this->context->submit_btns	= array();
+			$this->context->delete_btns	= array();
+			$this->context->delete_data	= array();
+
+			// Load page notices
+			$this->context->success_msgs	= $this->CI->session->flashdata($this->CI->bootstrap->session_key.'success_msgs');
+			$this->context->error_msgs		= $this->CI->session->flashdata($this->CI->bootstrap->session_key.'error_msgs');
+
+			// Load the widget configuration to context
+			$this->context->config = $this->CI->config->item('widgets');
 
 			// Process POST data for the page
 			$this->process_post();
@@ -172,12 +179,9 @@ class Dynamic {
 				{
 					$data = $this->prepare_for_save($widget, $control_names, $row);
 
-					if (is_array($data))
+					if (is_array($data) AND $this->CI->hub->where($key_col, $widget_key)->update($hub_name, $data))
 					{
-						if ($this->CI->hub->where($key_col, $widget_key)->update($hub_name, $data))
-						{
-							$this->finish_submit('success', $this->CI->lang->line('item_saved'));
-						}
+						$this->finish_submit('success', $this->CI->lang->line('item_saved'));
 					}
 				}
 			}
@@ -185,12 +189,10 @@ class Dynamic {
 			// Insert operation
 			$data = $this->prepare_for_save($widget, $control_names);
 
-			if (is_array($data))
+			if (is_array($data) AND $this->CI->hub->insert($hub_name, $data))
 			{
-				$this->CI->hub->insert($hub_name, $data);
+				$this->finish_submit('success', $this->CI->lang->line('item_saved'));
 			}
-
-			$this->finish_submit('success', $this->CI->lang->line('item_saved'));
 		}
 	}
 
@@ -232,6 +234,56 @@ class Dynamic {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Handle file upload operation
+	 *
+	 * @access	private
+	 * @param	string	control name
+	 * @param	object	control being parsed
+	 * @param	object	widget's data context
+	 * @return	bool	true if upload succeeded or nothing to upload
+	 */
+	private function handle_file_upload($name, $control, $data)
+	{
+		if (isset($_FILES[$name]) AND ! empty($_FILES[$name]['name']))
+		{
+			// Initialize the upload library
+			$config = $this->CI->config->item('upload');
+
+			// Check for supported file types
+			$types = expr($control->get_path, $data, $control->format);
+
+			if ( ! empty($types))
+			{
+				$config['allowed_types'] = $types;
+			}
+
+			// Initialize the upload library
+			$this->CI->upload->initialize($config);
+
+			// Upload the file
+			if ($this->CI->upload->do_upload($name))
+			{
+				$data = $this->CI->upload->data();
+				$info = array(
+					'name'	=> $data['orig_name'],
+					'url'	=> $config['upload_path'].$data['file_name']
+				);
+
+				return serialize($info);
+			}
+			else
+			{
+				$this->finish_submit('error', $this->CI->upload->display_errors());
+				return FALSE;
+			}
+		}
+
+		return NULL;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Prepares a control for saving to the DB
 	 *
 	 * @access	private
@@ -244,6 +296,9 @@ class Dynamic {
 	{
 		if ($this->restrict_access($widget->widget_roles, $data))
 		{
+			$ctrl_data	= array();
+			$uploads	= array();
+
 			// Process POST data for controls
 			foreach ($widget->widget_data->controls as $key => $control)
 			{
@@ -259,22 +314,29 @@ class Dynamic {
 					}
 
 					// We always trim the data
-					if (empty($control->validation))
+					if (empty($control->validations))
 					{
-						$control->validation = 'trim';
+						$control->validations = 'trim';
 					}
 					else
 					{
-						$control->validation .= '|trim';
+						$control->validations .= '|trim';
 					}
 
 					if ($this->restrict_access($control->roles, $data))
 					{
-						// Set form validation rules
-						$this->CI->form_validation->set_rules($name, $label, $control->validation);
-
-						// Prepare the data array
-						$ctrl_data[$control->set_path] = $this->CI->input->post($name);
+						if ($control->key != $this->context->config['upload'])
+						{
+							$this->CI->form_validation->set_rules($name, $label, $control->validations);
+							$ctrl_data[$control->set_path] = $this->CI->input->post($name);
+						}
+						else
+						{
+							if (isset($_FILES[$name]) AND ! empty($_FILES[$name]['name']))
+							{
+								$uploads[] = $control;
+							}
+						}
 					}
 				}
 			}
@@ -282,6 +344,24 @@ class Dynamic {
 			// Validate the form
 			if ($this->CI->form_validation->run())
 			{
+				// As validation passed, process file uploads
+				foreach ($uploads as $upload)
+				{
+					$file_data = $this->handle_file_upload($name, $upload, $data);
+
+					// Error occurred while uploading the files
+					if ($file_data === FALSE)
+					{
+						return FALSE;
+					}
+
+					// File data contains the path info that we save to the DB
+					if ( ! empty($file_data))
+					{
+						$ctrl_data[$upload->set_path] = $file_data;
+					}
+				}
+
 				return $ctrl_data;
 			}
 			else
@@ -305,7 +385,10 @@ class Dynamic {
 	private function finish_submit($status, $message)
 	{
 		// Set the notice message
-		$this->CI->session->set_flashdata("{$this->CI->bootstrap->session_key}notice_{$status}", $message);
+		$notice = "{$status}_msgs";
+
+		$this->context->$notice = $message;
+		$this->CI->session->set_flashdata($this->CI->bootstrap->session_key.$notice, $message);
 
 		// Redirect if set
 		$url = "page_{$status}_url";
@@ -327,9 +410,6 @@ class Dynamic {
 	 */
 	private function generate_widgets($widget_ids)
 	{
-		// Load the widget configuration to context
-		$this->context->config = $this->CI->config->item('widgets');
-
 		// Prepare data
 		$widget_ids = explode('|', $widget_ids);
 		$output = '';
@@ -378,6 +458,12 @@ class Dynamic {
 				{
 					$widget_data = $this->generate_widget($widget);
 				}
+
+				// For hard binding, render the empty notice if set
+				else if ($widget->widget_data->hub->binding == 'hard' AND ! empty($widget->widget_empty))
+				{
+					$widget_data = "<div class='alert alert-info'>{$widget->widget_empty}</div>";
+				}
 			}
 			
 			$output .= $widget_data;
@@ -409,7 +495,7 @@ class Dynamic {
 		{
 			if ($this->restrict_access($control->roles, $data) AND function_exists("control_{$control->key}"))
 			{
-				$name = 'control'.crc32($widget->widget_id.$unique_id.$index++);
+				$name = 'm-ctrl'.crc32($widget->widget_id.$unique_id.$index++);
 				$names[$key] = $name;
 
 				if ($control->key == $this->context->config['submit'])
@@ -432,17 +518,11 @@ class Dynamic {
 			$this->context->submit_btns["{$widget->widget_id}|{$unique_id}"][] = $names;
 		}
 
-		// Check if this is a notice widget
-		// For a notice, we do not need a form or a frame
-		if (count($controls) == 1 AND $controls[0] == $this->context->config['notice'])
-		{
-			return $output;
-		}
-		else
-		{
-			$name = strtolower(url_title($widget->widget_name));
-			return form_open_multipart(current_url(), array('class' => "well widget-{$name}")).$output.form_close();
-		}
+		// Get the frame and unique widget class name
+		$class = strtolower(url_title($widget->widget_name));
+		$frame = $widget->widget_frameless == 0 ? 'm-widget' : '';
+
+		return form_open_multipart(current_url(), array('class' => "{$frame} m-widget-{$class}")).$output.form_close();
 	}
 
 	// --------------------------------------------------------------------

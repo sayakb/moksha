@@ -81,22 +81,25 @@ class Widgets extends CI_Controller {
 
 		// Assign view data
 		$data = array(
-			'page_title'	=> $this->lang->line('site_adm'),
-			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
-			'editor_title'	=> $this->lang->line('add_widget'),
-			'toolbox_items'	=> $this->widgets_model->fetch_controls(),
-			'validations'	=> $this->widgets_model->fetch_validations(),
-			'roles'			=> $this->widgets_model->fetch_roles(),
-			'widget_items'	=> $this->widgets_model->populate_controls(),
-			'hubs_list'		=> $this->widgets_model->populate_hubs(),
-			'widget_name'	=> set_value('widget_name'),
-			'widget_roles'	=> set_value('widget_roles'),
-			'widget_key'	=> set_value('widget_key'),
-			'attached_hub'	=> set_value('attached_hub'),
-			'data_filters'	=> set_value('data_filters'),
-			'order_by'		=> set_value('order_by'),
-			'max_records'	=> set_value('max_records'),
-			'binding'		=> set_value('binding')
+			'page_title'		=> $this->lang->line('site_adm'),
+			'page_desc'			=> $this->lang->line('manage_widgets_exp'),
+			'editor_title'		=> $this->lang->line('add_widget'),
+			'toolbox_items'		=> $this->widgets_model->fetch_controls(),
+			'validations'		=> $this->widgets_model->fetch_validations(),
+			'roles'				=> $this->widgets_model->fetch_roles(),
+			'widget_items'		=> $this->widgets_model->populate_controls(),
+			'hubs_list'			=> $this->widgets_model->populate_hubs(),
+			'widget_name'		=> set_value('widget_name'),
+			'widget_roles'		=> set_value('widget_roles'),
+			'widget_key'		=> set_value('widget_key'),
+			'widget_empty'		=> set_value('widget_empty'),
+			'frame_box'			=> set_radio('widget_frameless', 0),
+			'frame_none'		=> set_radio('widget_frameless', 1),
+			'attached_hub'		=> set_value('attached_hub'),
+			'data_filters'		=> set_value('data_filters'),
+			'order_by'			=> set_value('order_by'),
+			'max_records'		=> set_value('max_records'),
+			'binding'			=> set_value('binding')
 		);
 
 		// Load the view
@@ -135,22 +138,25 @@ class Widgets extends CI_Controller {
 
 		// Assign view data
 		$data = array(
-			'page_title'	=> $this->lang->line('site_adm'),
-			'page_desc'		=> $this->lang->line('manage_widgets_exp'),
-			'editor_title'	=> $this->lang->line('edit_widget'),
-			'toolbox_items'	=> $this->widgets_model->fetch_controls(),
-			'validations'	=> $this->widgets_model->fetch_validations(),
-			'roles'			=> $this->widgets_model->fetch_roles(),
-			'widget_items'	=> $this->widgets_model->populate_controls($widget->widget_data->controls),
-			'hubs_list'		=> $this->widgets_model->populate_hubs(),
-			'widget_name'	=> set_value('widget_name', $widget->widget_name),
-			'widget_roles'	=> set_value('widget_roles', $widget->widget_roles),
-			'widget_key'	=> set_value('widget_key', $widget->widget_key),
-			'attached_hub'	=> set_value('attached_hub', $hub_data->attached_hub),
-			'data_filters'	=> set_value('data_filters', $hub_data->data_filters),
-			'order_by'		=> set_value('order_by', $hub_data->order_by),
-			'max_records'	=> set_value('max_records', $hub_data->max_records),
-			'binding'		=> set_value('binding', $hub_data->binding)
+			'page_title'		=> $this->lang->line('site_adm'),
+			'page_desc'			=> $this->lang->line('manage_widgets_exp'),
+			'editor_title'		=> $this->lang->line('edit_widget'),
+			'toolbox_items'		=> $this->widgets_model->fetch_controls(),
+			'validations'		=> $this->widgets_model->fetch_validations(),
+			'roles'				=> $this->widgets_model->fetch_roles(),
+			'widget_items'		=> $this->widgets_model->populate_controls($widget->widget_data->controls),
+			'hubs_list'			=> $this->widgets_model->populate_hubs(),
+			'widget_name'		=> set_value('widget_name', $widget->widget_name),
+			'widget_roles'		=> set_value('widget_roles', $widget->widget_roles),
+			'widget_key'		=> set_value('widget_key', $widget->widget_key),
+			'widget_empty'		=> set_value('widget_empty', $widget->widget_empty),
+			'frame_box'			=> set_radio('widget_frameless', 0, $widget->widget_frameless == 0),
+			'frame_none'		=> set_radio('widget_frameless', 1, $widget->widget_frameless == 1),
+			'attached_hub'		=> set_value('attached_hub', $hub_data->attached_hub),
+			'data_filters'		=> set_value('data_filters', $hub_data->data_filters),
+			'order_by'			=> set_value('order_by', $hub_data->order_by),
+			'max_records'		=> set_value('max_records', $hub_data->max_records),
+			'binding'			=> set_value('binding', $hub_data->binding)
 		);
 
 		// Load the view

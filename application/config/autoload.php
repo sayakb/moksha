@@ -104,6 +104,7 @@ $autoload['helper'] = array(
 $autoload['config'] = array(
 	'pagination',
 	'cache',
+	'upload',
 	'expressions',
 	'widgets',
 	'pages'

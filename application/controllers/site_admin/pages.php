@@ -257,10 +257,11 @@ class Pages extends CI_Controller {
 	{
 		$config		= $this->config->item('pages');
 		$disallowed	= $config['disallowed_urls'];
+		$url		= str_replace(base_url(), '', $url);
 
 		foreach ($disallowed as $item)
 		{
-			$regex = '/^\/?'.$item.'(\/(.*?)|$)/';
+			$regex	= '/^\/?'.$item.'(\/(.*?)|$)/';
 
 			if (preg_match($regex, $url))
 			{

@@ -8,7 +8,9 @@
 */
 $config['expressions']['functions'] = array(
 	'url'		=> '$CI->uri->segment($value, "")',
+	'page'		=> 'PER_PAGE * (intval($CI->uri->segment($value, 1)) - 1)',
 	'hub'		=> 'isset($data->$value) ? $data->$value : ""',
+	'count'		=> '$CI->hub->count_all($value)',
 	'get'		=> '$CI->input->get($value)',
 	'post'		=> '$CI->input->post($value)',
 	'cookie'	=> '$CI->input->cookie($value)',
