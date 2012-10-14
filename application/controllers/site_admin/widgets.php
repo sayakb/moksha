@@ -274,7 +274,7 @@ class Widgets extends CI_Controller {
 
 		if ($hub_name != HUB_NONE)
 		{
-			if ($this->hub->parse_filters($hub_name, $filters) !== FALSE)
+			if ($this->hub->parse_filters($hub_name, $filters, TRUE) !== FALSE)
 			{
 				return TRUE;
 			}

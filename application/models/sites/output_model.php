@@ -29,30 +29,24 @@ class Output_model extends CI_Model {
 	 */
 	public function fetch_page()
 	{
-		if (current_url() == base_url())
+		$this->db->order_by('length(page_url)', 'desc');
+		$pages = $this->db->get("site_pages_{$this->bootstrap->site_id}")->result();
+
+		$base = base_url();
+		$curr = current_url();
+
+		foreach ($pages as $page)
 		{
-			$this->db->where('page_url', '{sys:homepage}');
-			$this->db->or_where('page_url', '{sys:base_url}');
-		}
-		else
-		{
-			$url = str_replace(base_url(), '', current_url());
-			$this->db->where('page_url', $url);
+			$url = base_url(expr($page->page_url));
+
+			if (($url == $base AND $url == $curr) OR ($url != $base AND strpos($curr, $url) === 0))
+			{
+				$page->page_widgets = unserialize($page->page_widgets);
+				return $page;
+			}
 		}
 
-		$query = $this->db->limit(1)->get("site_pages_{$this->bootstrap->site_id}");
-
-		if ($query->num_rows() == 1)
-		{
-			$page = $query->row();
-			$page->page_widgets = unserialize($page->page_widgets);
-
-			return $page;
-		}
-		else
-		{
-			return FALSE;
-		}
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------

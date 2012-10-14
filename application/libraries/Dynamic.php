@@ -31,9 +31,6 @@ class Dynamic {
 	{
 		$this->CI		=& get_instance();
 		$this->context	= new stdClass();
-
-		$this->context->submit_btns	= array();
-		$this->context->ctrl_keys	= array();
 	}
 
 	// --------------------------------------------------------------------
@@ -49,6 +46,10 @@ class Dynamic {
 		{
 			$this->context->page = $page;
 
+			$this->context->submit_btns = array();
+			$this->context->delete_btns = array();
+			$this->context->delete_data = array();
+
 			// Process POST data for the page
 			$this->process_post();
 
@@ -56,19 +57,33 @@ class Dynamic {
 			$widths	= explode('-', $page->page_layout);
 			$index	= 0;
 			$output	= '';
+			$empty	= TRUE;
 
 			foreach ($widths as $width)
 			{
-				$width	*= 4;
 				$data	 = $this->generate_widgets($page->page_widgets[$index++]);
+				$empty	 = ($empty AND empty($data));
+				$width	*= 4;
 
 				$output	.= "<div class='span{$width}'>{$data}</div>";
 			}
 
 			// Save submit buttons to user data
-			$this->CI->session->set_userdata($this->CI->bootstrap->session_key.'submit_btns', $this->context->submit_btns);
+			$buttons = array(
+				'submit_btns' => $this->context->submit_btns,
+				'delete_btns' => $this->context->delete_btns
+			);
 
-			return $output;
+			$this->CI->session->set_userdata($this->CI->bootstrap->session_key.'btn_data', $buttons);
+
+			if ($empty)
+			{
+				show_404();
+			}
+			else
+			{
+				return $output;
+			}
 		}
 		else
 		{
@@ -86,18 +101,39 @@ class Dynamic {
 	 */
 	private function process_post()
 	{
-		// Load the control data from session
-		$submit_btns = $this->CI->session->userdata($this->CI->bootstrap->session_key.'submit_btns');
+		// Load the button data from session
+		$btn_data		= $this->CI->session->userdata($this->CI->bootstrap->session_key.'btn_data');
+		$submit_btns	= $btn_data['submit_btns'];
+		$delete_btns	= $btn_data['delete_btns'];
 
+		// Probe for form submission
 		if (is_array($submit_btns))
 		{
-			foreach ($submit_btns as $widget_id => $btn)
+			foreach ($submit_btns as $key => $btn)
+			{
+				// Check if data was POSTed
+				if (isset($_POST[$btn[0]]))
+				{
+					$key = explode('|', $key);
+					$this->handle_postdata($btn[1], $key[0], $key[1]);
+
+					break;
+				}
+			}
+		}
+
+		// Prove for item deletion
+		if (is_array($delete_btns))
+		{
+			foreach ($delete_btns as $key => $btn)
 			{
 				// Check if data was POSTed
 				if (isset($_POST[$btn]))
 				{
-					$this->handle_postdata($widget_id);
-					redirect(current_url());
+					$key = explode('|', $key);
+					$this->handle_deletion($key[0], $key[1]);
+
+					break;
 				}
 			}
 		}
@@ -109,10 +145,12 @@ class Dynamic {
 	 * Handles data entry for a widget
 	 *
 	 * @access	private
+	 * @param	array	control names
 	 * @param	int		widget identifier
+	 * @param	int		unique identifier
 	 * @return	void
 	 */
-	private function handle_postdata($widget_id)
+	private function handle_postdata($control_names, $widget_id, $unique_id)
 	{
 		$widget = $this->CI->widget->get($widget_id);
 
@@ -124,30 +162,69 @@ class Dynamic {
 			$key_col	= array_search(DBTYPE_KEY, $schema);
 			$widget_key	= expr($widget->widget_key);
 
-			if ($key_col !== FALSE AND !empty($widget_key))
+			// Update operation
+			if ($key_col !== FALSE AND ! empty($widget_key))
 			{
 				// Try to get the matching hub row
-				$row = $this->CI->hub->get($hub_name, array($key_col => $widget_key))->row();
+				$row = $this->CI->hub->where($key_col, $widget_key)->get($hub_name)->row();
 
 				if ($row !== FALSE)
 				{
-					$data = $this->prepare_for_save($widget, $widget->widget_data->controls, $row);
+					$data = $this->prepare_for_save($widget, $control_names, $row);
 
 					if (is_array($data))
 					{
-						if ($count = $this->CI->hub->update($hub_name, $data))
+						if ($this->CI->hub->where($key_col, $widget_key)->update($hub_name, $data))
 						{
-							return;
+							$this->finish_submit('success', $this->CI->lang->line('item_saved'));
 						}
 					}
 				}
 			}
 
-			$data = $this->prepare_for_save($widget, $widget->widget_data->controls);
+			// Insert operation
+			$data = $this->prepare_for_save($widget, $control_names);
 
 			if (is_array($data))
 			{
 				$this->CI->hub->insert($hub_name, $data);
+			}
+
+			$this->finish_submit('success', $this->CI->lang->line('item_saved'));
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Handles deletion for a widget
+	 *
+	 * @access	private
+	 * @param	int		widget identifier
+	 * @param	object	data context
+	 * @return	void
+	 */
+	private function handle_deletion($widget_id, $unique_id)
+	{
+		$widget = $this->CI->widget->get($widget_id);
+
+		if ($widget !== FALSE)
+		{
+			if ($widget->widget_data->hub->attached_hub > 0)
+			{
+				// Fetch hub information
+				$hub_name	= $this->CI->hub->fetch_name($widget->widget_data->hub->attached_hub);
+				$schema		= $this->CI->hub->schema($hub_name);
+				$key_col	= array_search(DBTYPE_KEY, $schema);
+				$hub_row	= $this->CI->hub->where($key_col, $unique_id)->get($hub_name)->row();
+
+				if ($hub_row !== FALSE AND $this->restrict_access($widget->widget_roles, $hub_row))
+				{
+					if ($this->CI->hub->where($key_col, $unique_id)->delete($hub_name))
+					{
+						$this->finish_submit('success', $this->CI->lang->line('item_deleted'));
+					}
+				}
 			}
 		}
 	}
@@ -159,25 +236,23 @@ class Dynamic {
 	 *
 	 * @access	private
 	 * @param	object	widget containing the controls
-	 * @param	array	controls to be parsed
-	 * @param	array	hub schema
+	 * @param	array	controls names to be parsed
 	 * @param	object	data context for the controls
 	 * @return	mixed	data array if validation and 
 	 */
-	private function prepare_for_save($widget, $controls, $data = FALSE)
+	private function prepare_for_save($widget, $control_names, $data = FALSE)
 	{
-		$index = 0;
-
 		if ($this->restrict_access($widget->widget_roles, $data))
 		{
 			// Process POST data for controls
-			foreach ($controls as $control)
+			foreach ($widget->widget_data->controls as $key => $control)
 			{
-				if ( ! empty($control->set_path))
+				if ( ! empty($control->set_path) AND isset($control_names[$key]))
 				{
-					$name	= 'control'.crc32($widget->widget_id.$index++);
+					$name	= $control_names[$key];
 					$label	= $name;
 
+					// Determine a readable name for the control
 					if ( ! empty($control->disp_src) AND substr($control->disp_src, 0, 1) != '-')
 					{
 						$label = expr($control->disp_src, $data);
@@ -199,7 +274,7 @@ class Dynamic {
 						$this->CI->form_validation->set_rules($name, $label, $control->validation);
 
 						// Prepare the data array
-						$data[$control->set_path] = $this->input->post($name);
+						$ctrl_data[$control->set_path] = $this->CI->input->post($name);
 					}
 				}
 			}
@@ -207,16 +282,38 @@ class Dynamic {
 			// Validate the form
 			if ($this->CI->form_validation->run())
 			{
-				$this->context->success_msgs = $this->CI->lang->line('data_saved');
-				return $data;
+				return $ctrl_data;
 			}
 			else
 			{
-				$this->context->error_msgs = validation_errors();
+				$this->finish_submit('error', validation_errors());
 			}
 		}
 
 		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Completes submission activities
+	 *
+	 * @access	private
+	 * @param	string	status of the submission
+	 * @return	void
+	 */
+	private function finish_submit($status, $message)
+	{
+		// Set the notice message
+		$this->CI->session->set_flashdata("{$this->CI->bootstrap->session_key}notice_{$status}", $message);
+
+		// Redirect if set
+		$url = "page_{$status}_url";
+
+		if ( ! empty($this->context->page->$url))
+		{
+			redirect(expr($this->context->page->$url));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -239,49 +336,48 @@ class Dynamic {
 
 		foreach ($widget_ids as $widget_id)
 		{
-			$key = "widgetdata_{$this->CI->bootstrap->site_id}_{$widget_id}_".user_data('user_name');
+			$widget			= $this->CI->widget->get($widget_id);
+			$widget_key		= expr($widget->widget_key);
+			$widget_data	= '';
 
-			if ( ! $widget_data = $this->CI->cache->get($key))
+			if ($widget !== FALSE)
 			{
-				$widget			= $this->CI->widget->get($widget_id);
-				$widget_data	= '';
-
-				if ($widget !== FALSE)
+				// Check if we have a hub attached, if not - use default data
+				if ($widget->widget_data->hub->attached_hub > 0)
 				{
-					// Check if we have a hub attached, if not - use default data
-					if ($widget->widget_data->hub->attached_hub > 0)
-					{
-						$hub_data = $this->fetch_hub($widget->widget_data->hub);
-					}
-					else
-					{
-						$hub_data = array();
-					}
+					$hub_name	= $this->CI->hub->fetch_name($widget->widget_data->hub->attached_hub);
+					$schema		= $this->CI->hub->schema($hub_name);
+					$key_col	= array_search(DBTYPE_KEY, $schema);
 
-					// Store the widget and returned row count in context
-					$this->context->widget	= $widget;
-					$this->context->rows	= count($hub_data);
+					$hub_data	= $this->fetch_hub($widget->widget_data->hub);
+				}
+				else
+				{
+					$hub_data	= array();
+				}
 
-					// If hard bound, repeat each control N times for N hub rows
-					if (count($hub_data) > 0)
+				// Store the widget and returned row count in context
+				$this->context->widget	= $widget;
+				$this->context->rows	= count($hub_data);
+
+				// If hard bound, repeat each control N times for N hub rows
+				if (count($hub_data) > 0)
+				{
+					foreach($hub_data as $data)
 					{
-						foreach($hub_data as $data)
+						if ($this->restrict_access($widget->widget_roles, $data))
 						{
-							if ($this->restrict_access($widget->widget_roles, $data))
-							{
-								$widget_data .= $this->generate_widget($widget, $data);
-							}
+							$unique_id		 = isset($data->$key_col) ? $data->$key_col : FALSE;
+							$widget_data	.= $this->generate_widget($widget, $data, $unique_id);
 						}
-					}
-
-					// For soft binding, produce at least 1 instance of the widget
-					else if ($widget->widget_data->hub->binding != 'hard')
-					{
-						$widget_data = $this->generate_widget($widget);
 					}
 				}
 
-				$this->CI->cache->write($widget_data, $key);
+				// For soft binding, produce at least 1 instance of the widget
+				else if ($widget->widget_data->hub->binding != 'hard')
+				{
+					$widget_data = $this->generate_widget($widget);
+				}
 			}
 			
 			$output .= $widget_data;
@@ -297,34 +393,43 @@ class Dynamic {
 	 *
 	 * @access	private
 	 * @param	object	widget to be rendered
-	 * @param	array	hub row data context
+	 * @param	array	hub schema
+	 * @param	int		row unique identifier
 	 * @param	string	rendered content
 	 */
-	private function generate_widget($widget, $data = FALSE)
+	private function generate_widget($widget, $data = FALSE, $unique_id = FALSE)
 	{
-		$key		= strtolower(url_title($widget->widget_name));
 		$controls	= $widget->widget_data->controls;
+		$names		= array();
 		$index		= 0;
 		$output		= '';
 
 		// Generate control data
-		foreach ($controls as $control)
+		foreach ($controls as $key => $control)
 		{
 			if ($this->restrict_access($control->roles, $data) AND function_exists("control_{$control->key}"))
 			{
-				$name	 = 'control'.crc32($widget->widget_id.$index++);
-				$output	.= eval("return control_{$control->key}(\$name, \$control, \$data);");
+				$name = 'control'.crc32($widget->widget_id.$unique_id.$index++);
+				$names[$key] = $name;
 
-				// Save control name to context
 				if ($control->key == $this->context->config['submit'])
 				{
-					$this->context->submit_btns[$widget->widget_id] = $name;
+					$this->context->submit_btns["{$widget->widget_id}|{$unique_id}"][] = $name;
 				}
-				else
+
+				if ($control->key == $this->context->config['delete'])
 				{
-					$this->context->ctrl_keys[$widget->widget_id] = $name;
+					$this->context->delete_btns["{$widget->widget_id}|{$unique_id}"] = $name;
 				}
+
+				$output	.= eval("return control_{$control->key}(\$name, \$control, \$data);");
 			}
+		}
+
+		// Save control names to the submit button metadata
+		if (isset($this->context->submit_btns["{$widget->widget_id}|{$unique_id}"]))
+		{
+			$this->context->submit_btns["{$widget->widget_id}|{$unique_id}"][] = $names;
 		}
 
 		// Check if this is a notice widget
@@ -335,7 +440,8 @@ class Dynamic {
 		}
 		else
 		{
-			return form_open_multipart(current_url(), array('class' => "well widget-{$key}")).$output.form_close();
+			$name = strtolower(url_title($widget->widget_name));
+			return form_open_multipart(current_url(), array('class' => "well widget-{$name}")).$output.form_close();
 		}
 	}
 
@@ -355,27 +461,7 @@ class Dynamic {
 		$order_by		= $this->CI->hub->parse_orderby($hub_name, $config->order_by);
 		$max_records	= $this->CI->hub->parse_limit($config->max_records);
 
-		// Add the WHERE claus
-		if ($data_filters !== FALSE)
-		{
-			$this->CI->hub->where($data_filters);
-		}
-
-		// Add ORDER BY claus
-		if ($order_by !== FALSE)
-		{
-			$this->CI->hub->order_by($order_by);
-		}
-
-		// Add LIMIT
-		if ($max_records !== FALSE)
-		{
-			$this->CI->hub->limit($max_records[0], $max_records[1]);
-		}
-
-		// Filter by where if set as such
-
-		return $this->CI->hub->get($hub_name)->result();
+		return $this->CI->hub->get($hub_name, $data_filters, $order_by, $max_records)->result();
 	}
 
 	// --------------------------------------------------------------------

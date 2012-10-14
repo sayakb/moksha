@@ -522,7 +522,6 @@
 	// Initialize the WYSIWYG editor for display source
 	$('[name=control_disp_src]').wysihtml5();
 
-
 	// Add/remove controls from the widget
 	function addControl(control) {
 		var controlHTML = control.html();

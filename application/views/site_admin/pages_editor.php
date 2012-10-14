@@ -71,6 +71,10 @@
 			</li>
 
 			<li>
+				<a href="#advanced-options" data-toggle="tab"><?= $this->lang->line('advanced_options') ?></a>
+			</li>
+
+			<li>
 				<a href="#access-control" data-toggle="tab"><?= $this->lang->line('access_control') ?></a>
 			</li>
 		</ul>
@@ -122,7 +126,35 @@
 				<?= form_hidden('pg_column2', $pg_column2) ?>
 				<?= form_hidden('pg_column3', $pg_column3) ?>
 			</div>
-			
+
+			<div id="advanced-options" class="tab-pane fade">
+				<div class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('success_url') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_input('pg_success_url', $pg_success_url) ?>
+							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
+							<span class="help-block"><?= $this->lang->line('success_url_exp') ?></span>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label">
+							<?= $this->lang->line('error_url') ?>
+						</label>
+
+						<div class="controls">
+							<?= form_input('pg_error_url', $pg_error_url) ?>
+							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
+							<span class="help-block"><?= $this->lang->line('error_url_exp') ?></span>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div id="access-control" class="tab-pane fade">
 				<div class="form-horizontal">
 					<div class="control-group page-roles">
@@ -224,6 +256,13 @@
 			});
 		}
 
+		// Go to the saved tab, if it is set
+		var lastTab = localStorage.getItem('moksha_last_tab');
+
+		if (lastTab) {
+			$('a[href=' + lastTab + ']').tab('show');
+		}
+
 		// Add widget names to local storage
 		$('.widget').each(function() {
 			var key = $(this).attr('data-widget-id');
@@ -313,6 +352,11 @@
 		});
 
 		$('[name=pg_roles]').val(page_roles.join('|'));
+	});
+
+	// Save the current table to local storage
+	$('a[data-toggle="tab"]').on('shown', function (e) {
+		localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
 	});
 	
 	// Set page layout

@@ -211,6 +211,18 @@ $config['schema']['site_pages'] = array(
 			'null'				=> FALSE
 		),
 
+		'page_success_url' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255,
+			'null'				=> FALSE
+		),
+
+		'page_error_url' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255,
+			'null'				=> FALSE
+		),
+
 		'page_roles' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE

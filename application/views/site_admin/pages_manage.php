@@ -57,3 +57,8 @@
 		<?= $this->lang->line('no_pages') ?>
 	</div>
 <?php endif ?>
+
+<script type="text/javascript">
+	// Clear localStorage to reset tabs, if we were in edit mode
+	localStorage.removeItem('moksha_last_tab');
+</script>

@@ -67,20 +67,7 @@ function user_data($key)
 	$CI		=& get_instance();
 	$data	= $CI->session->userdata($CI->bootstrap->session_key.'user');
 
-	if ($data !== FALSE)
-	{
-		// Unserialize the user roles array
-		if ( ! is_array($data->user_roles))
-		{
-			$data->user_roles = explode('|', $data->user_roles);
-		}
-
-		if (isset($data->$key))
-		{
-			return $data->$key;
-		}
-	}
-	else
+	if ($data === FALSE)
 	{
 		$data = new stdClass();
 
@@ -88,10 +75,21 @@ function user_data($key)
 		$data->user_name		= 'anonymous';
 		$data->user_password	= NULL;
 		$data->user_email		= NULL;
-		$data->user_roles		= NULL;
+		$data->user_roles		= array();
 		$data->user_founder		= 0;
+	}
+	else
+	{
+		// Unserialize the user roles array
+		if ( ! is_array($data->user_roles))
+		{
+			$data->user_roles = explode('|', $data->user_roles);
+		}
+	}
 
-		return $data;
+	if (isset($data->$key))
+	{
+		return $data->$key;
 	}
 }
 

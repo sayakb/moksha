@@ -165,11 +165,14 @@ class Pages_model extends CI_Model {
 	public function add_page()
 	{
 		$data = array(
-			'page_title'	=> $this->input->post('pg_title'),
-			'page_url'		=> $this->input->post('pg_url'),
-			'page_layout'	=> $this->input->post('pg_layout'),
-			'page_roles'	=> $this->input->post('pg_roles'),
-			'page_widgets'	=> serialize($this->populate_widgets())
+			'page_title'		=> $this->input->post('pg_title'),
+			'page_url'			=> $this->input->post('pg_url'),
+			'page_layout'		=> $this->input->post('pg_layout'),
+			'page_roles'		=> $this->input->post('pg_roles'),
+			'page_url'			=> $this->input->post('pg_url'),
+			'page_success_url'	=> $this->input->post('pg_success_url'),
+			'page_error_url'	=> $this->input->post('pg_error_url'),
+			'page_widgets'		=> serialize($this->populate_widgets())
 		);
 
 		return $this->db->insert("site_pages_{$this->bootstrap->site_id}", $data);
@@ -187,11 +190,14 @@ class Pages_model extends CI_Model {
 	public function update_page($page_id)
 	{
 		$data = array(
-			'page_title'	=> $this->input->post('pg_title'),
-			'page_url'		=> $this->input->post('pg_url'),
-			'page_layout'	=> $this->input->post('pg_layout'),
-			'page_roles'	=> $this->input->post('pg_roles'),
-			'page_widgets'	=> serialize($this->populate_widgets())
+			'page_title'		=> $this->input->post('pg_title'),
+			'page_url'			=> $this->input->post('pg_url'),
+			'page_layout'		=> $this->input->post('pg_layout'),
+			'page_roles'		=> $this->input->post('pg_roles'),
+			'page_url'			=> $this->input->post('pg_url'),
+			'page_success_url'	=> $this->input->post('pg_success_url'),
+			'page_error_url'	=> $this->input->post('pg_error_url'),
+			'page_widgets'		=> serialize($this->populate_widgets())
 		);
 
 		return $this->db->update("site_pages_{$this->bootstrap->site_id}", $data, array('page_id' => $page_id));

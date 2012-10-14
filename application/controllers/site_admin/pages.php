@@ -81,17 +81,19 @@ class Pages extends CI_Controller {
 
 		// Assign view data
 		$data = array(
-			'page_title'	=> $this->lang->line('site_adm'),
-			'page_desc'		=> $this->lang->line('manage_pages_exp'),
-			'roles'			=> $this->pages_model->fetch_roles(),
-			'widgets'		=> $this->pages_model->fetch_widgets(),
-			'pg_column1'	=> $this->pages_model->populate_widgets(1),
-			'pg_column2'	=> $this->pages_model->populate_widgets(2),
-			'pg_column3'	=> $this->pages_model->populate_widgets(3),
-			'pg_title'		=> set_value('pg_title'),
-			'pg_url'		=> set_value('pg_url'),
-			'pg_layout'		=> set_value('pg_layout', '1-1-1'),
-			'pg_roles'		=> set_value('pg_roles'),
+			'page_title'		=> $this->lang->line('site_adm'),
+			'page_desc'			=> $this->lang->line('manage_pages_exp'),
+			'roles'				=> $this->pages_model->fetch_roles(),
+			'widgets'			=> $this->pages_model->fetch_widgets(),
+			'pg_column1'		=> $this->pages_model->populate_widgets(1),
+			'pg_column2'		=> $this->pages_model->populate_widgets(2),
+			'pg_column3'		=> $this->pages_model->populate_widgets(3),
+			'pg_title'			=> set_value('pg_title'),
+			'pg_url'			=> set_value('pg_url'),
+			'pg_success_url'	=> set_value('pg_success_url'),
+			'pg_error_url'		=> set_value('pg_error_url'),
+			'pg_layout'			=> set_value('pg_layout', '1-1-1'),
+			'pg_roles'			=> set_value('pg_roles'),
 		);
 
 		// Load the view
@@ -131,17 +133,19 @@ class Pages extends CI_Controller {
 
 		// Assign view data
 		$data = array(
-			'page_title'	=> $this->lang->line('site_adm'),
-			'page_desc'		=> $this->lang->line('manage_pages_exp'),
-			'roles'			=> $this->pages_model->fetch_roles(),
-			'widgets'		=> $this->pages_model->fetch_widgets(),
-			'pg_column1'	=> $this->pages_model->populate_widgets(1, $page->page_widgets),
-			'pg_column2'	=> $this->pages_model->populate_widgets(2, $page->page_widgets),
-			'pg_column3'	=> $this->pages_model->populate_widgets(3, $page->page_widgets),
-			'pg_title'		=> set_value('pg_title', $page->page_title),
-			'pg_url'		=> set_value('pg_url', $page->page_url),
-			'pg_layout'		=> set_value('pg_layout', $page->page_layout),
-			'pg_roles'		=> set_value('pg_roles', $page->page_roles),
+			'page_title'		=> $this->lang->line('site_adm'),
+			'page_desc'			=> $this->lang->line('manage_pages_exp'),
+			'roles'				=> $this->pages_model->fetch_roles(),
+			'widgets'			=> $this->pages_model->fetch_widgets(),
+			'pg_column1'		=> $this->pages_model->populate_widgets(1, $page->page_widgets),
+			'pg_column2'		=> $this->pages_model->populate_widgets(2, $page->page_widgets),
+			'pg_column3'		=> $this->pages_model->populate_widgets(3, $page->page_widgets),
+			'pg_title'			=> set_value('pg_title', $page->page_title),
+			'pg_url'			=> set_value('pg_url', $page->page_url),
+			'pg_success_url'	=> set_value('pg_success_url', $page->page_success_url),
+			'pg_error_url'		=> set_value('pg_error_url', $page->page_error_url),
+			'pg_layout'			=> set_value('pg_layout', $page->page_layout),
+			'pg_roles'			=> set_value('pg_roles', $page->page_roles),
 		);
 
 		// Load the view

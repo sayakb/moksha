@@ -10,7 +10,9 @@ $config['pages']['disallowed_urls'] = array(
 	'admin',
 	'login',
 	'logout',
-	'register'
+	'register',
+	'default_controller',
+	'404_override'
 );
 
 

@@ -400,10 +400,22 @@ $config = array(
 			'field'	=>	'pg_url',
 			'label'	=>	'lang:page_url',
 			'rules'	=>	'required|'.
-						'max_length[255]|'.
 						'trim|'.
+						'max_length[255]|'.
 						'is_unique[site_pages.page_url]|'.
 						'callback_check_url'
+		),
+		array(
+			'field'	=>	'pg_success_url',
+			'label'	=>	'lang:success_url',
+			'rules'	=>	'trim|'.
+						'max_length[255]'
+		),
+		array(
+			'field'	=>	'pg_error_url',
+			'label'	=>	'lang:error_url',
+			'rules'	=>	'trim|'.
+						'max_length[255]'
 		),
 		array(
 			'field'	=>	'pg_layout',

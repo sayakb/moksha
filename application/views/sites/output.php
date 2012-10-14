@@ -14,15 +14,7 @@
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-lib.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-editor.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/prettify.js') ?>"></script>
-	<script type="text/javascript" src="<?= base_url('assets/js/utils.js') ?>"></script>
-
-	<script type="text/javascript">
-		$(function() {
-			// Set up WYSIWYG editors and code boxes
-			$('.wysiwyg').wysihtml5();
-			prettyPrint();
-		});
-	</script>
+	<script type="text/javascript" src="<?= base_url('assets/js/moksha.js') ?>"></script>
 </head>
 <body class="page <?= $page_class ?>">
 	<div class="container">
@@ -30,6 +22,30 @@
 			<?= $page_content ?>
 		</div>
 	</div>
-</pre>
+
+	<div id="modal-delete" class="modal modal-small hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3><?= $this->lang->line('confirm') ?></h3>
+		</div>
+
+		<div class="modal-body">
+			<p><?= $this->lang->line('confirm_delete') ?></p>
+		</div>
+
+		<div class="modal-footer">
+			<a id="modal-yes" href="#" class="btn btn-danger">
+				<?= $this->lang->line('yes') ?>
+			</a>
+
+			<a id="modal-no" href="#" class="btn" data-dismiss="modal">
+				<?= $this->lang->line('no') ?>
+			</a>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(initPage);
+	</script>
 </body>
 </html>

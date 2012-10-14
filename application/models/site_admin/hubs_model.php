@@ -175,7 +175,7 @@ class Hubs_model extends CI_Model {
 		}
 		else if ($hub_type == HUB_DATABASE)
 		{
-			$hub_name = $this->session->userdata('hub_name');
+			$hub_name = $this->session->userdata($this->bootstrap->session_key.'hub_name');
 
 			if ($hub_name !== FALSE)
 			{

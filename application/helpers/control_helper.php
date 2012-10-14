@@ -91,7 +91,7 @@ function control_hyperlink($name, $options, $data = FALSE)
 	$url	= expr($options->get_path, $data, $options->format);
 	$text	= expr($options->disp_src, $data);
 
-	return "<p><a href='{$url}' class='{$options->classes}'>{$text}</a></p>";
+	return "<a href='{$url}' class='{$options->classes}'>{$text}</a>";
 }
 
 // ------------------------------------------------------------------------
@@ -163,11 +163,12 @@ function control_unordered_list($name, $options, $data = FALSE)
  */
 function control_pagination($name, $options, $data = FALSE)
 {
-	$page = $this->CI->dynamic->context->page;
-	$rows = $this->CI->dynamic->context->rows;
+	$CI		=& get_instance();
+	$page	= $CI->dynamic->context->page;
+	$rows	= $CI->dynamic->context->rows;
 
-	$this->CI->pagination->initialize(
-		array_merge($this->CI->config->item('pagination'), array(
+	$CI->pagination->initialize(
+		array_merge($CI->config->item('pagination'), array(
 			'full_tag_open'	=> "<ul class='{$options->classes}'>",
 			'base_url'		=> base_url(expr($page->page_url)),
 			'total_rows'	=> $rows,
@@ -175,7 +176,7 @@ function control_pagination($name, $options, $data = FALSE)
 		))
 	);
 
-	return $this->CI->pagination->create_links();
+	return $CI->pagination->create_links();
 }
 
 // ------------------------------------------------------------------------
@@ -231,7 +232,7 @@ function control_password($name, $options, $data = FALSE)
  * @param	object	data context for expressions
  * @return	string	control markup
  */
-function context_textarea($name, $options, $data = FALSE)
+function control_textarea($name, $options, $data = FALSE)
 {
 	$value	= set_value($name, expr($options->get_path, $data, $options->format));
 
@@ -254,20 +255,19 @@ function context_textarea($name, $options, $data = FALSE)
  */
 function control_notice($name, $options, $data = FALSE)
 {
-	$notice = '';
+	$CI			=& get_instance();
+	$success	= $CI->session->flashdata("{$CI->bootstrap->session_key}notice_success");
+	$error		= $CI->session->flashdata("{$CI->bootstrap->session_key}notice_error");
+	$notice		= '';
 
-	if (isset($this->CI->dynamic->context->success_msgs))
+	if ($success !== FALSE)
 	{
-		$notice .=	"<div class='alert alert-success'>".
-						$this->CI->dynamic->context->success_msgs.
-					"</div>";
+		$notice .=	"<div class='alert alert-success'>{$success}</div>";
 	}
 
-	if (isset($this->CI->dynamic->context->error_msgs))
+	if ($error !== FALSE)
 	{
-		$notice .=	"<div class='alert alert-error'>".
-						$this->CI->dynamic->context->error_msgs.
-					"</div>";
+		$notice .=	"<div class='alert alert-error'>{$error}</div>";
 	}
 
 	return $notice;
@@ -284,7 +284,7 @@ function control_notice($name, $options, $data = FALSE)
  * @param	object	data context for expressions
  * @return	string	control markup
  */
-function context_wysiwyg($name, $options, $data = FALSE)
+function control_wysiwyg($name, $options, $data = FALSE)
 {
 	$value	= set_value($name, expr($options->get_path, $data, $options->format));
 
@@ -542,6 +542,23 @@ function control_submit_button($name, $options, $data = FALSE)
 {
 	$text = expr($options->disp_src, $data);
 	return "<input name='{$name}' type='submit' value='{$text}' class='btn {$options->classes}' />";
+}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Creates a delete link control
+ *
+ * @access	public
+ * @param	string	name of the control
+ * @param	object	control options
+ * @param	object	data context for expressions
+ * @return	string	control markup
+ */
+function control_delete_link($name, $options, $data = FALSE)
+{
+	$text = expr($options->disp_src, $data);
+	return "<input name='{$name}' type='submit' value='{$text}' class='btn btn-link btn-delete {$options->classes}' />";
 }
 
 // ------------------------------------------------------------------------

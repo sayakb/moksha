@@ -145,7 +145,7 @@ class Hubs extends CI_Controller {
 		}
 		else if ($category == 'columns')
 		{
-			$hub_name = $this->session->userdata('hub_name');
+			$hub_name = $this->session->userdata($this->bootstrap->session_key.'hub_name');
 
 			if ($hub_name !== FALSE)
 			{

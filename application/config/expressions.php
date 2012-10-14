@@ -7,12 +7,12 @@
 |
 */
 $config['expressions']['functions'] = array(
-	'url'		=> '$this->CI->uri->segment($value, "")',
+	'url'		=> '$CI->uri->segment($value, "")',
 	'hub'		=> 'isset($data->$value) ? $data->$value : ""',
-	'get'		=> '$this->CI->input->get($value)',
-	'post'		=> '$this->CI->input->post($value)',
-	'cookie'	=> '$this->CI->input->cookie($value)',
-	'server'	=> '$this->CI->input->server(strtoupper($value))',
+	'get'		=> '$CI->input->get($value)',
+	'post'		=> '$CI->input->post($value)',
+	'cookie'	=> '$CI->input->cookie($value)',
+	'server'	=> '$CI->input->server(strtoupper($value))',
 	'user'		=> 'user_data($value)',
 	'calc'		=> 'eval("return $value;")',
 	'sys'		=> 'in_array($value, $config["sys_functions"]) ? $value() : ""'

@@ -236,7 +236,7 @@
 				var activeButton = $(this).hasClass("wysihtml5-command-active");
 
 				if (!activeButton) {
-					insertImageModal.modal({ backdrop: false, show: true });
+					insertImageModal.modal('show');
 					insertImageModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function (e) {
 						e.stopPropagation();
 					});
@@ -287,7 +287,7 @@
 				var activeButton = $(this).hasClass("wysihtml5-command-active");
 
 				if (!activeButton) {
-					insertLinkModal.modal({ backdrop: false, show: true });
+					insertLinkModal.modal('show');
 					insertLinkModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function (e) {
 						e.stopPropagation();
 					});

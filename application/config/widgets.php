@@ -103,6 +103,10 @@ $config['widgets']['controls'] = array(
 	'reset_button' => (object)array(
 		'icon'	=> 'button',
 		'label'	=> 'field_reset_button'
+	),
+	'delete_link' => (object)array(
+		'icon'	=> 'delete',
+		'label'	=> 'field_delete_link'
 	)
 );
 
@@ -117,12 +121,22 @@ $config['widgets']['submit'] = 'submit_button';
 
 /*
 | -------------------------------------------------------------------------
+| Delete link control
+| -------------------------------------------------------------------------
+| Defines the key for the delete link control
+|
+ */
+$config['widgets']['delete'] = 'delete_link';
+
+/*
+| -------------------------------------------------------------------------
 | Notice control
 | -------------------------------------------------------------------------
 | Defines the key for the page notice control
 |
  */
 $config['widgets']['notice'] = 'notice';
+
 
 /*
 | -------------------------------------------------------------------------

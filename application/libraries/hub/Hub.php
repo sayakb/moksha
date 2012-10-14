@@ -561,9 +561,10 @@ class Hub {
 	 * @access	public
 	 * @param	string	hub name that is being linked
 	 * @param	string	data filter to be parsed
+	 * @param	bool	indicates whether to ignore empty values
 	 * @return	mixed	array if filter is parsed, false on error
 	 */
-	public function parse_filters($hub_name, $filters)
+	public function parse_filters($hub_name, $filters, $ignore_values = FALSE)
 	{
 		$hub_columns	= $this->column_list($hub_name);
 		$operators		= $this->operators();
@@ -619,9 +620,12 @@ class Hub {
 				if (in_array($column, $hub_columns))
 				{
 					$key = trim("{$column} {$operator}");
-					$value = substr($filter, $offset);
+					$value = expr(trim(substr($filter, $pos + $offset)));
 
-					$parsed[$condition][$key] = $value;
+					if ( ! empty($value) OR $ignore_values)
+					{
+						$parsed[$condition][$key] = $value;
+					}
 				}
 				else
 				{

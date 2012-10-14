@@ -13,6 +13,7 @@ $lang['cancel']				= 'Cancel';
 $lang['yes']				= 'Yes';
 $lang['no']					= 'No';
 $lang['confirm_action']		= 'Are you sure you want to carry out this operation?';
+$lang['confirm_delete']		= 'Are you sure you want to delete this item?';
 $lang['invalid_site']		= 'The site you are trying to access is not set up yet.';
 $lang['username']			= 'Username';
 $lang['password']			= 'Password';
@@ -23,7 +24,8 @@ $lang['email_address']		= 'Email address';
 $lang['administrator']		= 'Administrator';
 $lang['author']				= 'Author';
 $lang['logged_in']			= 'Logged in';
-$lang['data_saved']			= 'Data has been saved successfully';
+$lang['item_saved']			= 'Item has been saved successfully';
+$lang['item_deleted']		= 'Item has been deleted successfully';
 
 
 /* End of file global_lang.php */
