@@ -12,6 +12,19 @@
 class Auth_model extends CI_Model {
 
 	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->load->helper('captcha');
+		$this->config->load('captcha');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Validates the user credentials
 	 *
 	 * @access	public
@@ -27,7 +40,6 @@ class Auth_model extends CI_Model {
 		// Choose the database based on whether we are in central or not
 		//  - Central DB uses the users table
 		//  - If we are connecting to sites DB - use the users_siteId table
-
 		if ($in_central)
 		{
 			$table = 'central_users';
@@ -64,6 +76,83 @@ class Auth_model extends CI_Model {
 		{
 			return FALSE;
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Creates a new CAPTCHA for the session
+	 *
+	 * @access	public
+	 * @return	string	captcha image tag
+	 */
+	public function create_captcha()
+	{
+		// Load the configuration
+		$config = $this->config->item('captcha');
+		$config['img_url'] = base_url($config['img_url']).'/';
+
+		// Generate the captcha
+		$captcha = create_captcha($config);
+
+		// Insert the captcha info to the DB
+		$data = array(
+			'captcha_time'	=> $captcha['time'],
+			'word'	 		=> $captcha['word'],
+			'ip_address'	=> $this->input->ip_address()
+		);
+
+		$this->db->insert("site_captcha_{$this->bootstrap->site_id}", $data);
+
+		// Return the captcha image
+		return $captcha['image'];
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates a user submitted captcha
+	 *
+	 * @access	public
+	 * @return	bool	true if captcha value is valid
+	 */
+	public function validate_captcha()
+	{
+		$config = $this->config->item('captcha');
+
+		// Delete expired captchas
+		$expiration = time() - $config['expiration'];
+		$this->db->delete("site_captcha_{$this->bootstrap->site_id}", array("captcha_time <" => $expiration));
+
+		// Now we fetch the captcha for the user
+		$this->db->where('word', $this->input->post('captcha'));
+		$this->db->where('ip_address', $this->input->ip_address());
+		$this->db->where('captcha_time >', $expiration);
+
+		$query = $this->db->get("site_captcha_{$this->bootstrap->site_id}");
+
+		// Return true if we got some data
+		return $query->num_rows() === 1;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Registers a new user for the site
+	 *
+	 * @access	public
+	 * @return	bool	true if successful
+	 */
+	public function register_user()
+	{
+		// Add user data
+		$data = array(
+			'user_name'		=> $this->input->post('username'),
+			'user_password'	=> password_hash($this->input->post('password')),
+			'user_email'	=> $this->input->post('email')
+		);
+
+		return $this->db->insert("site_users_{$this->bootstrap->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------

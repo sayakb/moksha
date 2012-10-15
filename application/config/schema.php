@@ -6,8 +6,8 @@
 | This file lets you define the schemas for the tables that will be auto
 | generated for each site
 |
-|  - For fields, use CI style schema
-|  - For keys, use column => flag schema, where flag indicates a primary key
+|  - For fields,use CI style schema
+|  - For keys,use column => flag schema,where flag indicates a primary key
 |    Multi-column keys should be separated by a comma: column1,column2 => flag
 |
 */
@@ -16,27 +16,27 @@ $config['schema']['site_sessions'] = array(
 	'fields' => array(
 		'session_id' => array(
 			'type'			=> 'VARCHAR',
-			'constraint'	=> 40, 
+			'constraint'	=> 40,
 			'null'			=> FALSE,
 			'default'		=> '0'
 		),
 
 		'ip_address' => array(
 			'type'			=> 'VARCHAR',
-			'constraint'	=> 45, 
+			'constraint'	=> 45,
 			'null'			=> FALSE,
 			'default'		=> '0'
 		),
 
 		'user_agent' => array(
 			'type'			=> 'VARCHAR',
-			'constraint'	=> 120, 
+			'constraint'	=> 120,
 			'null'			=> FALSE
 		),
 
 		'last_activity' => array(
 			'type'			=> 'INT',
-			'constraint'	=> 10, 
+			'constraint'	=> 10,
 			'unsigned'		=> TRUE,
 			'null'			=> FALSE,
 			'default'		=> '0'
@@ -58,20 +58,20 @@ $config['schema']['site_hubs'] = array(
 	'fields' => array(
 		'hub_id' => array(
 			'type'				=> 'BIGINT',
-			'constraint'		=> 20, 
+			'constraint'		=> 20,
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
 
 		'hub_name' => array(
 			'type'				=> 'VARCHAR',
-			'constraint'		=> 100, 
+			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
 
 		'hub_driver' => array(
 			'type'				=> 'CHAR',
-			'constraint'		=> 5, 
+			'constraint'		=> 5,
 			'null'				=> FALSE
 		),
 
@@ -91,26 +91,26 @@ $config['schema']['site_users'] = array(
 	'fields' => array(
 		'user_id' => array(
 			'type'					=> 'BIGINT',
-			'constraint'			=> 20, 
+			'constraint'			=> 20,
 			'null'					=> FALSE,
 			'auto_increment'		=> TRUE
 		),
 
 		'user_name' => array(
 			'type'					=> 'VARCHAR',
-			'constraint'			=> 100, 
+			'constraint'			=> 100,
 			'null'					=> FALSE
 		),
 
 		'user_password' => array(
 			'type'					=> 'VARCHAR',
-			'constraint'			=> 128, 
+			'constraint'			=> 128,
 			'null'					=> FALSE
 		),
 
 		'user_email' => array(
 			'type'					=> 'VARCHAR',
-			'constraint'			=> 225, 
+			'constraint'			=> 225,
 			'null'					=> FALSE
 		),
 
@@ -121,7 +121,7 @@ $config['schema']['site_users'] = array(
 
 		'user_founder' => array(
 			'type'					=> 'TINYINT',
-			'constraint'			=> 1, 
+			'constraint'			=> 1,
 			'null'					=> FALSE
 		)
 	),
@@ -129,6 +129,42 @@ $config['schema']['site_users'] = array(
 	'keys' => array(
 		'user_id'					=> TRUE,
 		'user_name,user_password'	=> FALSE
+	)
+);
+
+$config['schema']['site_captcha'] = array(
+	'fields' => array(
+		'captcha_id' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
+		),
+
+		'captcha_time' => array(
+			'type'				=> 'INT',
+			'constraint'		=> 10,
+			'unsigned'			=> TRUE,
+			'null'				=> FALSE
+		),
+
+		'ip_address' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 16,
+			'null'				=> FALSE,
+			'default'			=> '0'
+		),
+
+		'word' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 20,
+			'null'				=> FALSE
+		)
+	),
+
+	'keys' => array(
+		'captcha_id'			=> TRUE,
+		'word'					=> FALSE
 	)
 );
 

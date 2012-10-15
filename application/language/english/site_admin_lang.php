@@ -204,6 +204,7 @@ $lang['user_update_error']		= 'An error occurred while updating the user';
 $lang['user_deleted']			= 'User has been deleted successfully';
 $lang['user_del_error']			= 'An error occurred while deleting the user';
 $lang['cannot_del_founder']		= 'You cannot delete the founder user';
+$lang['cannot_edit_anonymous']	= 'You cannot edit/delete the anonymous user';
 $lang['user_del_confirm']		= 'Are you sure you want to delete this user?';
 $lang['filter_by_username']		= 'Filter by username';
 $lang['back_user_mgmt']			= 'Back to user management';

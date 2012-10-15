@@ -38,27 +38,34 @@ class Output_model extends CI_Model {
 			$this->cache->write($pages, "pageidx_{$this->bootstrap->site_id}");
 		}
 
-		// If we have only one numeric segment, it means we are on the homepage
-		if ($this->uri->total_segments() == 1 AND ctype_digit($this->uri->segment(1)))
+		if (count($pages) > 0)
 		{
-			$base = base_url();
-			$curr = base_url();
+			// If we have only one numeric segment, it means we are on the homepage
+			if ($this->uri->total_segments() == 1 AND ctype_digit($this->uri->segment(1)))
+			{
+				$base = base_url();
+				$curr = base_url();
+			}
+			else
+			{
+				$base = base_url();
+				$curr = current_url();
+			}
+
+			foreach ($pages as $page)
+			{
+				$url = base_url(expr($page->page_url));
+
+				if (($url == $base AND $url == $curr) OR ($url != $base AND strpos($curr, $url) === 0))
+				{
+					$page->page_widgets = unserialize($page->page_widgets);
+					return $page;
+				}
+			}
 		}
 		else
 		{
-			$base = base_url();
-			$curr = current_url();
-		}
-
-		foreach ($pages as $page)
-		{
-			$url = base_url(expr($page->page_url));
-
-			if (($url == $base AND $url == $curr) OR ($url != $base AND strpos($curr, $url) === 0))
-			{
-				$page->page_widgets = unserialize($page->page_widgets);
-				return $page;
-			}
+			show_error($this->lang->line('site_no_pages'));
 		}
 
 		return FALSE;

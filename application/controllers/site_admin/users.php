@@ -108,39 +108,47 @@ class Users extends CI_Controller {
 		// Get user and role data
 		$user	= $this->users_model->fetch_user($user_id);
 
-		// Set exempts for email and name fields
-		$this->form_validation->unique_exempts = array(
-			'user_name'		=> $user->user_name,
-			'user_email'	=> $user->user_email
-		);
-
-		// Process the request
-		if ($this->form_validation->run('site_admin/users/edit'))
+		// Cannot edit the anonymous user
+		if ($user_id != 1)
 		{
-			if ($this->users_model->update_user($user_id, $user->user_founder == 1))
+			// Set exempts for email and name fields
+			$this->form_validation->unique_exempts = array(
+				'user_name'		=> $user->user_name,
+				'user_email'	=> $user->user_email
+			);
+
+			// Process the request
+			if ($this->form_validation->run('site_admin/users/edit'))
 			{
-				$this->session->set_flashdata('success_msg', $this->lang->line('user_updated'));
-				redirect(base_url('admin/users/manage'));
+				if ($this->users_model->update_user($user_id, $user->user_founder == 1))
+				{
+					$this->session->set_flashdata('success_msg', $this->lang->line('user_updated'));
+					redirect(base_url('admin/users/manage'));
+				}
+				else
+				{
+					$this->template->error_msgs = $this->lang->line('user_update_error');
+				}
 			}
-			else
-			{
-				$this->template->error_msgs = $this->lang->line('user_update_error');
-			}
+
+			// Assign view data
+			$data = array(
+				'page_title'	=> $this->lang->line('site_adm'),
+				'page_desc'		=> $this->lang->line('manage_users_exp'),
+				'roles'			=> $this->users_model->fetch_roles(),
+				'username'		=> set_value('username', $user->user_name),
+				'email'			=> set_value('email', $user->user_email),
+				'user_roles'	=> set_value('user_roles', $user->user_roles),
+				'adm_disabled'	=> $user->user_founder == 1
+			);
+
+			// Load the view
+			$this->template->load('site_admin/users_editor', $data);
 		}
-
-		// Assign view data
-		$data = array(
-			'page_title'	=> $this->lang->line('site_adm'),
-			'page_desc'		=> $this->lang->line('manage_users_exp'),
-			'roles'			=> $this->users_model->fetch_roles(),
-			'username'		=> set_value('username', $user->user_name),
-			'email'			=> set_value('email', $user->user_email),
-			'user_roles'	=> set_value('user_roles', $user->user_roles),
-			'adm_disabled'	=> $user->user_founder == 1
-		);
-
-		// Load the view
-		$this->template->load('site_admin/users_editor', $data);
+		else
+		{
+			show_error($this->lang->line('cannot_edit_anonymous'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -157,6 +165,12 @@ class Users extends CI_Controller {
 		if ($this->users_model->check_founder($user_id))
 		{
 			$this->session->set_flashdata('error_msg', $this->lang->line('cannot_del_founder'));
+		}
+
+		// Anonymous user cannot be deleted
+		else if ($user_id == 1)
+		{
+			$this->session->set_flashdata('error_msg', $this->lang->line('cannot_edit_anonymous'));
 		}
 
 		// Process the request

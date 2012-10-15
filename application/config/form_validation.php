@@ -23,6 +23,44 @@ $config = array(
 		)
 	),
 
+	// User registration
+	'user/auth/register' => array(
+		array(
+			'field'	=>	'username',
+			'label'	=>	'lang:username',
+			'rules'	=>	'required|'.
+						'min_length[3]|'.
+						'max_length[100]|'.
+						'trim|'.
+						'is_unique[site_users.user_name]|'.
+						'alpha_dash'
+		),
+		array(
+			'field'	=>	'password',
+			'label'	=>	'lang:password',
+			'rules'	=>	'required|'.
+						'matches[confirm_password]'
+		),
+		array(
+			'field'	=>	'confirm_password',
+			'label'	=>	'lang:confirm_password',
+			'rules'	=>	'required'
+		),
+		array(
+			'field'	=>	'email',
+			'label'	=>	'lang:email_address',
+			'rules'	=>	'required|'.
+						'trim|'.
+						'valid_email|'.
+						'is_unique[site_users.user_email]'
+		),
+		array(
+			'field'	=>	'captcha',
+			'label'	=>	'lang:visual_verif',
+			'rules'	=>	'callback_check_captcha'
+		)
+	),
+
 	// Central: add/edit site
 	'central_admin/sites' => array(
 		array(

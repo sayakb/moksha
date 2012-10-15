@@ -54,7 +54,11 @@ class Users_model extends CI_Model {
 			$this->db->like('user_name', $filter);
 		}
 
-		$query = $this->db->limit($config['per_page'], $offset)->order_by('user_name')->get("site_users_{$this->bootstrap->site_id}");
+		$this->db->where('user_id >', 1);
+		$this->db->limit($config['per_page'], $offset);
+		$this->db->order_by('user_name');
+
+		$query = $this->db->get("site_users_{$this->bootstrap->site_id}");
 		return $query->result();
 	}
 

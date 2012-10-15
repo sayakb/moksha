@@ -49,6 +49,10 @@ $route['admin/(:any)'] = 'site_admin/$1';
 $route['admin'] = 'site_admin/welcome';
 
 // Site pages - this is also the default route
+$route['register/(:any)'] = 'user/auth/register/$1';
+$route['register'] = 'user/auth/register';
+$route['login'] = 'user/auth/login/';
+$route['logout'] = 'user/auth/logout/';
 $route['(:any)'] = 'sites/output';
 $route['default_controller'] = 'sites/output';
 
