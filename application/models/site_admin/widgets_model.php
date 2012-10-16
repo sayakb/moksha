@@ -258,21 +258,23 @@ class Widgets_model extends CI_Model {
 			{
 				// Fetch icon and label metadata for posted controls
 				$control_meta = elements($control_keys, $this->fetch_controls());
-			
-				// Populate classes, disp_paths, value_paths and formats data
-				for($idx = 0; $idx < count($control_keys); $idx++)
-				{
-					$key		= $control_keys[$idx];
-					$controls[] = $control_meta[$key];
 
-					$controls[$idx]->key			= $key;
-					$controls[$idx]->classes		= $control_classes[$idx];
-					$controls[$idx]->disp_src		= $control_disp_srcs[$idx];
-					$controls[$idx]->get_path		= $control_get_paths[$idx];
-					$controls[$idx]->set_path		= $control_set_paths[$idx];
-					$controls[$idx]->format			= $control_formats[$idx];
-					$controls[$idx]->validations	= $control_validations[$idx];
-					$controls[$idx]->roles			= $control_roles[$idx];
+				// Populate classes, disp_paths, value_paths and formats data
+				for ($idx = 0; $idx < count($control_keys); $idx++)
+				{
+					$control_key			= $control_keys[$idx];
+					$control				= clone($control_meta[$control_key]);
+
+					$control->key			= $control_key;
+					$control->classes		= $control_classes[$idx];
+					$control->disp_src		= $control_disp_srcs[$idx];
+					$control->get_path		= $control_get_paths[$idx];
+					$control->set_path		= $control_set_paths[$idx];
+					$control->format		= $control_formats[$idx];
+					$control->validations	= $control_validations[$idx];
+					$control->roles			= $control_roles[$idx];
+
+					$controls[] = $control;
 				}
 
 				return $controls;

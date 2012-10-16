@@ -15,6 +15,8 @@
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-editor.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/prettify.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/moksha.js') ?>"></script>
+
+	<?= $page_header ?>
 </head>
 <body class="page <?= $page_class ?>">
 	<div class="container">

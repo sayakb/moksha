@@ -332,8 +332,8 @@ class Widgets extends CI_Controller {
 	 */
 	public function check_controls()
 	{
-		$widget_config		= $this->config->item('widget');
-		$submit_button		= $widget_config['submit_button'];
+		$widget_config		= $this->config->item('widgets');
+		$submit_button		= $widget_config['submit'];
 
 		$control_keys		= $this->input->post('control_keys');
 		$control_set_paths	= $this->input->post('control_set_paths');
@@ -369,17 +369,42 @@ class Widgets extends CI_Controller {
 			return FALSE;
 		}
 
-		// Unique identifier cannot be used as a set path
+		// Validate the control set paths
 		if ($hub_name != HUB_NONE AND is_array($control_set_paths))
 		{
-			$column = $this->hub->schema($hub_name);
-			
-			foreach($control_set_paths as $path)
+			$schema = $this->hub->schema($hub_name);
+			$compat = $widget_config['compatibility'];
+
+			// Unique identifier cannot be used as a set path
+			foreach ($control_set_paths as $path)
 			{
-				if (isset($column[$path]) AND $column[$path] == DBTYPE_KEY)
+				if (isset($schema[$path]) AND $schema[$path] == DBTYPE_KEY)
 				{
 					$this->form_validation->set_message('check_controls', $this->lang->line('key_set_path'));
 					return FALSE;
+				}
+			}
+
+			// Check set path compatibility
+			for ($idx = 0; $idx < count($control_keys); $idx++)
+			{
+				$key	= $control_keys[$idx];
+				$path	= $control_set_paths[$idx];
+				$type	= isset($schema[$path]) ? $schema[$path] : NULL;
+
+				if (isset($compat[$key]) AND $type != NULL)
+				{
+					$compat_types = $compat[$key];
+
+					if ( ! in_array($type, $compat_types))
+					{
+						$ctrl_name	= $this->lang->line("field_{$key}");
+						$data_type	= $this->lang->line("dbtype_{$type}");
+						$message	= sprintf($this->lang->line('column_incompatible'), $ctrl_name, $data_type);
+
+						$this->form_validation->set_message('check_controls', $message);
+						return FALSE;
+					}
 				}
 			}
 		}

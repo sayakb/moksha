@@ -80,7 +80,7 @@ function user_data($key)
 	}
 	else
 	{
-		// Unserialize the user roles array
+		// Convert the roles into array so that it is readily usable
 		if ( ! is_array($data->user_roles))
 		{
 			$data->user_roles = explode('|', $data->user_roles);

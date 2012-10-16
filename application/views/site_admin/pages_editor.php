@@ -90,7 +90,7 @@
 
 					<div class="widget-area widget-area-page">
 						<?php if (count($widgets) > 0): ?>
-							<?php foreach($widgets as $widget): ?>
+							<?php foreach ($widgets as $widget): ?>
 								<span class="widget" data-widget-id="<?= $widget->widget_id ?>">
 									<a href="#" title="<?= $this->lang->line('widget_remove') ?>" class="widget-remove">
 										<i class="icon-remove"></i>

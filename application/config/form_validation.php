@@ -481,6 +481,20 @@ $config = array(
 			'label'	=>	'lang:page',
 			'rules'	=>	'callback_check_widgets'
 		),
+	),
+
+	// Site admin: add files
+	'site_admin/files' => array(
+		array(
+			'field'	=>	'file',
+			'label'	=>	'lang:file',
+			'rules'	=>	'callback_check_file'
+		),
+		array(
+			'field'	=>	'file_type',
+			'label'	=>	'lang:file_type',
+			'rules'	=>	'callback_check_file_type'
+		)
 	)
 );
 

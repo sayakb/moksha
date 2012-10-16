@@ -426,7 +426,7 @@ function control_file_download($name, $options, $data = FALSE)
 	if (is_array($info))
 	{
 		$name	= $info['name'];
-		$url	= $info['url'];
+		$url	= base_url($info['url']);
 
 		$label	= expr($options->disp_src, $data);
 		$ctrl	= "<i class='icon-download-alt'></i> <a href='{$url}'>{$name}</a>";

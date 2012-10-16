@@ -42,6 +42,7 @@ class Output extends CI_Controller {
 		$data = array(
 			'page_title'	=> $page->page_title,
 			'page_content'	=> $this->dynamic->generate_page($page),
+			'page_header'	=> $this->output_model->fetch_header(),
 			'page_class'	=> 'page-'.strtolower(url_title($page->page_title))
 		);
 		

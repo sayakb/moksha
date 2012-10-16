@@ -5651,10 +5651,16 @@ a.thumbnail:hover
 		margin: 0;
 	}
 
+	.alert a
+	{
+		color: inherit;
+		text-decoration: underline;
+	}
+
 	.alert .close
 	{
 		position: relative;
-		top: 2px;
+		top: 0px;
 		right: -21px;
 		line-height: 20px;
 	}

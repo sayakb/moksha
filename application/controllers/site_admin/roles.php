@@ -30,7 +30,7 @@ class Roles extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Page management screen
+	 * Role management screen
 	 *
 	 * @access	public
 	 */

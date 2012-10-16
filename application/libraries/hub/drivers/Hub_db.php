@@ -239,6 +239,7 @@ class Hub_db {
 	 */
 	public function insert($hub_id, $data)
 	{
+		$this->format_data($hub_id, $data);
 		$this->inject_metadata($data);
 		$this->CI->db->insert("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
 
@@ -258,6 +259,7 @@ class Hub_db {
 	 */
 	public function update($hub_id, $data, $where)
 	{
+		$this->format_data($hub_id, $data);
 		$this->resolve_where($where);
 		$this->inject_metadata($data);
 		$this->CI->db->update("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
@@ -457,6 +459,39 @@ class Hub_db {
 						$this->CI->db->or_like($column, $value);
 					}
 				}
+			}
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Formats row data to their respective formats
+	 *
+	 * @access	private
+	 * @param	int		hub identifier
+	 * @param	array	data to be injected to
+	 * @return	void
+	 */
+	private function format_data($hub_id, &$data)
+	{
+		$schema = $this->schema($hub_id);
+
+		foreach ($data as $column => $value)
+		{
+			switch ($schema[$column])
+			{
+				case DBTYPE_INT:
+					$data[$column] = intval($data[$column]);
+					break;
+
+				case DBTYPE_PASSWORD:
+					$data[$column] = password_hash($data[$column]);
+					break;
+
+				case DBTYPE_DATETIME:
+					$data[$column] = date('Y-m-d H:i:s', strtotime($data[$column]));
+					break;
 			}
 		}
 	}

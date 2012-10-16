@@ -53,7 +53,7 @@
 					<h1><?= $this->lang->line('toolbox') ?></h1>
 
 					<div class="toolbox-area">
-						<?php foreach($toolbox_items as $key => $item): ?>
+						<?php foreach ($toolbox_items as $key => $item): ?>
 							<span class="control">
 								<i class="icon-control-<?= $item->icon ?>"></i>
 								<?= $this->lang->line($item->label) ?>
@@ -77,7 +77,7 @@
 					<div class="widget-area"></div>
 
 					<div class="widget-autoloaded">
-						<?php foreach($widget_items as $item): ?>
+						<?php foreach ($widget_items as $item): ?>
 							<span class="control dropped">
 								<i class="icon-control-<?= $item->icon ?>"></i>
 								<?= $this->lang->line($item->label) ?>

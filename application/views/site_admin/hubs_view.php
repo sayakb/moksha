@@ -10,7 +10,7 @@
 	<table class="table table-bordered table-striped">
 		<thead>
 			<tr>
-				<?php foreach($hub_columns as $column): ?>
+				<?php foreach ($hub_columns as $column): ?>
 					<th><?= $column ?></td>
 				<?php endforeach ?>
 			</tr>
@@ -20,7 +20,7 @@
 			<?php if (count($hub_data) > 0): ?>
 				<?php foreach ($hub_data as $data): ?>
 					<tr>
-						<?php foreach($hub_columns as $column): ?>
+						<?php foreach ($hub_columns as $column): ?>
 							<td><?= htmlspecialchars($data->$column) ?></td>
 						<?php endforeach ?>
 					</tr>

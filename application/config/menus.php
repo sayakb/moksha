@@ -40,19 +40,24 @@ $config['menus']['site_admin'] = array(
 		'label'	=> 'manage_widgets'
 	),
 
-	'pages'	=> array(
+	'pages'		=> array(
 		'url'	=> 'admin/pages/manage',
 		'label'	=> 'manage_pages'
 	),
 
-	'users'	=> array(
+	'users'		=> array(
 		'url'	=> 'admin/users/manage',
 		'label'	=> 'manage_users'
 	),
 
-	'roles'	=> array(
+	'roles'		=> array(
 		'url'	=> 'admin/roles/manage',
 		'label'	=> 'manage_roles'
+	),
+
+	'files'		=> array(
+		'url'	=> 'admin/files/manage',
+		'label'	=> 'styles_scripts'
 	),
 );
 

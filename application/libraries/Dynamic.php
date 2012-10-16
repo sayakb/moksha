@@ -220,6 +220,22 @@ class Dynamic {
 				$key_col	= array_search(DBTYPE_KEY, $schema);
 				$hub_row	= $this->CI->hub->where($key_col, $unique_id)->get($hub_name)->row();
 
+				// Delete associated files, if any
+				foreach ($schema as $column => $type)
+				{
+					if (isset($hub_row->$column))
+					{
+						$content = @unserialize($hub_row->$column);
+
+						// Files are stored in an array with name and URL data
+						if (isset($content['url']))
+						{
+							@unlink(realpath($content['url']));
+						}
+					}
+				}
+
+				// Delete the entry from the hub
 				if ($hub_row !== FALSE AND $this->restrict_access($widget->widget_roles, $hub_row))
 				{
 					if ($this->CI->hub->where($key_col, $unique_id)->delete($hub_name))
@@ -247,7 +263,8 @@ class Dynamic {
 		if (isset($_FILES[$name]) AND ! empty($_FILES[$name]['name']))
 		{
 			// Initialize the upload library
-			$config = $this->CI->config->item('upload');
+			$upload = $this->CI->config->item('upload');
+			$config = $upload['site'];
 
 			// Check for supported file types
 			$types = expr($control->get_path, $data, $control->format);
@@ -296,8 +313,9 @@ class Dynamic {
 	{
 		if ($this->restrict_access($widget->widget_roles, $data))
 		{
-			$ctrl_data	= array();
-			$uploads	= array();
+			$ctrl_data		= array();
+			$uploads		= array();
+			$validations	= FALSE;
 
 			// Process POST data for controls
 			foreach ($widget->widget_data->controls as $key => $control)
@@ -313,14 +331,10 @@ class Dynamic {
 						$label = expr($control->disp_src, $data);
 					}
 
-					// We always trim the data
-					if (empty($control->validations))
+					// Check if we have any validations
+					if ( ! empty($control->validations))
 					{
-						$control->validations = 'trim';
-					}
-					else
-					{
-						$control->validations .= '|trim';
+						$validations =  TRUE;
 					}
 
 					if ($this->restrict_access($control->roles, $data))
@@ -328,7 +342,7 @@ class Dynamic {
 						if ($control->key != $this->context->config['upload'])
 						{
 							$this->CI->form_validation->set_rules($name, $label, $control->validations);
-							$ctrl_data[$control->set_path] = $this->CI->input->post($name);
+							$ctrl_data[$control->set_path] = trim($this->CI->input->post($name));
 						}
 						else
 						{
@@ -342,7 +356,7 @@ class Dynamic {
 			}
 
 			// Validate the form
-			if ($this->CI->form_validation->run())
+			if ($this->CI->form_validation->run() OR ! $validations)
 			{
 				// As validation passed, process file uploads
 				foreach ($uploads as $upload)
@@ -443,7 +457,7 @@ class Dynamic {
 				// If hard bound, repeat each control N times for N hub rows
 				if (count($hub_data) > 0)
 				{
-					foreach($hub_data as $data)
+					foreach ($hub_data as $data)
 					{
 						if ($this->restrict_access($widget->widget_roles, $data))
 						{
@@ -522,7 +536,14 @@ class Dynamic {
 		$class = strtolower(url_title($widget->widget_name));
 		$frame = $widget->widget_frameless == 0 ? 'm-widget' : '';
 
-		return form_open_multipart(current_url(), array('class' => "{$frame} m-widget-{$class}")).$output.form_close();
+		if ( ! empty($output))
+		{
+			return form_open_multipart(current_url(), array('class' => "{$frame} m-widget-{$class}")).$output.form_close();
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 
 	// --------------------------------------------------------------------

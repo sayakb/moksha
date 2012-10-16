@@ -15,7 +15,7 @@ $lang['no']					= 'No';
 $lang['confirm_action']		= 'Are you sure you want to carry out this operation?';
 $lang['confirm_delete']		= 'Are you sure you want to delete this item?';
 $lang['invalid_site']		= 'The site you are trying to access is not set up yet';
-$lang['site_no_pages']		= 'No pages have been added to this site';
+$lang['site_no_pages']		= 'No pages have been added to this site. <a href="%s">Click here</a> to log into the site administration panel.';
 $lang['username']			= 'Username';
 $lang['password']			= 'Password';
 $lang['roles']				= 'Roles';

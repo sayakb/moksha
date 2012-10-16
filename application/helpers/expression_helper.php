@@ -79,14 +79,14 @@ function expr_format($text, $format)
 	{
 		switch($format[0])
 		{
+			case 'datetime':
 			case 'date':
 			case 'time':
-				$date = new DateTime($text);
-				$text = $date->format($format);
+				$text = date($format[1], strtotime($text));
 				break;
 
 			case 'string':
-				$text = sprintf($format, $text);
+				$text = sprintf($format[1], $text);
 				break;
 		}
 	}

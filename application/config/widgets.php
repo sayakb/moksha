@@ -152,6 +152,20 @@ $config['widgets']['validations'] = array(
 	'valid_email'
 );
 
+/*
+| -------------------------------------------------------------------------
+| Compatible controls
+| -------------------------------------------------------------------------
+| Indicates control compatibility with the linked hub columns
+|
+*/
+$config['widgets']['compatibility'] = array(
+	'password'		=> array(DBTYPE_PASSWORD),
+	'checkbox'		=> array(DBTYPE_TEXT),
+	'radio'			=> array(DBTYPE_TEXT),
+	'file_upload'	=> array(DBTYPE_TEXT)
+);
+
 
 /* End of file widgets.php */
 /* Location: ./application/config/widgets.php */

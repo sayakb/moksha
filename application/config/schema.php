@@ -20,20 +20,17 @@ $config['schema']['site_sessions'] = array(
 			'null'			=> FALSE,
 			'default'		=> '0'
 		),
-
 		'ip_address' => array(
 			'type'			=> 'VARCHAR',
 			'constraint'	=> 45,
 			'null'			=> FALSE,
 			'default'		=> '0'
 		),
-
 		'user_agent' => array(
 			'type'			=> 'VARCHAR',
 			'constraint'	=> 120,
 			'null'			=> FALSE
 		),
-
 		'last_activity' => array(
 			'type'			=> 'INT',
 			'constraint'	=> 10,
@@ -41,13 +38,11 @@ $config['schema']['site_sessions'] = array(
 			'null'			=> FALSE,
 			'default'		=> '0'
 		),
-
 		'user_data'			=> array(
 			'type'			=> 'TEXT',
 			'null'			=> FALSE
 		)
 	),
-
 	'keys' => array(
 		'session_id'		=> TRUE,
 		'last_activity'		=> FALSE
@@ -62,25 +57,21 @@ $config['schema']['site_hubs'] = array(
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
-
 		'hub_name' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
-
 		'hub_driver' => array(
 			'type'				=> 'CHAR',
 			'constraint'		=> 5,
 			'null'				=> FALSE
 		),
-
 		'hub_source' => array(
 			'type'				=> 'TEXT',
 			'null'				=> TRUE
 		)
 	),
-
 	'keys' => array(
 		'hub_id'				=> TRUE,
 		'hub_name'				=> FALSE
@@ -95,37 +86,31 @@ $config['schema']['site_users'] = array(
 			'null'					=> FALSE,
 			'auto_increment'		=> TRUE
 		),
-
 		'user_name' => array(
 			'type'					=> 'VARCHAR',
 			'constraint'			=> 100,
 			'null'					=> FALSE
 		),
-
 		'user_password' => array(
 			'type'					=> 'VARCHAR',
 			'constraint'			=> 128,
 			'null'					=> FALSE
 		),
-
 		'user_email' => array(
 			'type'					=> 'VARCHAR',
 			'constraint'			=> 225,
 			'null'					=> FALSE
 		),
-
 		'user_roles' => array(
 			'type'					=> 'TEXT',
 			'null'					=> FALSE
 		),
-
 		'user_founder' => array(
 			'type'					=> 'TINYINT',
 			'constraint'			=> 1,
 			'null'					=> FALSE
 		)
 	),
-
 	'keys' => array(
 		'user_id'					=> TRUE,
 		'user_name,user_password'	=> FALSE
@@ -140,28 +125,24 @@ $config['schema']['site_captcha'] = array(
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
-
 		'captcha_time' => array(
 			'type'				=> 'INT',
 			'constraint'		=> 10,
 			'unsigned'			=> TRUE,
 			'null'				=> FALSE
 		),
-
 		'ip_address' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 16,
 			'null'				=> FALSE,
 			'default'			=> '0'
 		),
-
 		'word' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 20,
 			'null'				=> FALSE
 		)
 	),
-
 	'keys' => array(
 		'captcha_id'			=> TRUE,
 		'word'					=> FALSE
@@ -176,14 +157,12 @@ $config['schema']['site_roles'] = array(
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
-
 		'role_name' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		)
 	),
-
 	'keys' => array(
 		'role_id'				=> TRUE
 	)
@@ -197,41 +176,34 @@ $config['schema']['site_widgets'] = array(
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
-
 		'widget_name' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
-
 		'widget_roles' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		),
-
 		'widget_key' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 100
 		),
-
 		'widget_frameless' => array(
 			'type'				=> 'TINYINT',
 			'constraint'		=> 1,
 			'null'				=> FALSE,
 			'default'			=> 0
 		),
-
 		'widget_empty' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 255
 		),
-
 		'widget_data' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		)
 	),
-
 	'keys' => array(
 		'widget_id'				=> TRUE
 	)
@@ -245,50 +217,69 @@ $config['schema']['site_pages'] = array(
 			'null'				=> FALSE,
 			'auto_increment'	=> TRUE
 		),
-
 		'page_title' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
-
 		'page_url' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 255,
 			'null'				=> FALSE
 		),
-
 		'page_success_url' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 255,
 			'null'				=> FALSE
 		),
-
 		'page_error_url' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 255,
 			'null'				=> FALSE
 		),
-
 		'page_roles' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		),
-
 		'page_layout' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 5,
 			'null'				=> FALSE
 		),
-
 		'page_widgets' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		)
 	),
-
 	'keys' => array(
 		'page_id'				=> TRUE
+	)
+);
+
+$config['schema']['site_files'] = array(
+	'fields' => array(
+		'file_id' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
+		),
+		'file_name' => array(
+			'type'				=> 'TEXT',
+			'null'				=> FALSE
+		),
+		'file_type' => array(
+			'type'				=> 'CHAR',
+			'constraint'		=> 3,
+			'null'				=> FALSE
+		),
+		'file_path' => array(
+			'type'				=> 'TEXT',
+			'null'				=> FALSE
+		)
+	),
+	'keys' => array(
+		'file_id'				=> TRUE
 	)
 );
 

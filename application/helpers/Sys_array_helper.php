@@ -20,7 +20,7 @@ function array_has_duplicates($array, $value = FALSE)
 {
 	$dupe_array = array();
 
-	foreach($array as $item)
+	foreach ($array as $item)
 	{
 		if ( ! empty($item) AND isset($dupe_array[$item]))
 		{

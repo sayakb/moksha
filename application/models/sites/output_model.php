@@ -65,10 +65,46 @@ class Output_model extends CI_Model {
 		}
 		else
 		{
-			show_error($this->lang->line('site_no_pages'));
+			$no_pages = sprintf($this->lang->line('site_no_pages'), base_url('admin'));
+			show_error($no_pages);
 		}
 
 		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Fetches stylesheets and scripts for the page
+	 *
+	 * @access	public
+	 * @return	string	markup for the page css/js
+	 */
+	public function fetch_header()
+	{
+		$header = '';
+
+		// Get the page files
+		if ( ! $files = $this->cache->get("pagefiles_{$this->bootstrap->site_id}"))
+		{
+			$files = $this->db->get("site_files_{$this->bootstrap->site_id}")->result();
+			$this->cache->write($files, "pagefiles_{$this->bootstrap->site_id}");
+		}
+
+		// Generate the header
+		foreach ($files as $file)
+		{
+			if ($file->file_type == 'css')
+			{
+				$header .= '<link href="'.base_url($file->file_path).'" rel="stylesheet" />';
+			}
+			else if ($file->file_type == 'js')
+			{
+				$header .= '<script type="text/javascript" src="'.base_url($file->file_path).'"></script>';
+			}
+		}
+
+		return $header;
 	}
 
 	// --------------------------------------------------------------------
