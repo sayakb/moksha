@@ -84,7 +84,8 @@ $autoload['helper'] = array(
 	'control',
 	'auth',
 	'array',
-	'expression'
+	'expression',
+	'site'
 );
 
 

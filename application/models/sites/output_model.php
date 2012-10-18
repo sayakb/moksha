@@ -65,8 +65,8 @@ class Output_model extends CI_Model {
 		}
 		else
 		{
-			$no_pages = sprintf($this->lang->line('site_no_pages'), base_url('admin'));
-			show_error($no_pages);
+			$no_pages = sprintf($this->lang->line('site_no_pages_exp'), base_url('admin'));
+			show_error($no_pages, 500, $this->lang->line('site_no_pages'));
 		}
 
 		return FALSE;

@@ -88,24 +88,31 @@ class Auth_model extends CI_Model {
 	 */
 	public function create_captcha()
 	{
-		// Load the configuration
-		$config = $this->config->item('captcha');
-		$config['img_url'] = base_url($config['img_url']).'/';
+		if (site_config('captcha') == ENABLED)
+		{
+			// Load the configuration
+			$config = $this->config->item('captcha');
+			$config['img_url'] = base_url($config['img_url']).'/';
 
-		// Generate the captcha
-		$captcha = create_captcha($config);
+			// Generate the captcha
+			$captcha = create_captcha($config);
 
-		// Insert the captcha info to the DB
-		$data = array(
-			'captcha_time'	=> $captcha['time'],
-			'word'	 		=> $captcha['word'],
-			'ip_address'	=> $this->input->ip_address()
-		);
+			// Insert the captcha info to the DB
+			$data = array(
+				'captcha_time'	=> $captcha['time'],
+				'word'	 		=> $captcha['word'],
+				'ip_address'	=> $this->input->ip_address()
+			);
 
-		$this->db->insert("site_captcha_{$this->bootstrap->site_id}", $data);
+			$this->db->insert("site_captcha_{$this->bootstrap->site_id}", $data);
 
-		// Return the captcha image
-		return $captcha['image'];
+			// Return the captcha image
+			return $captcha['image'];
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -118,21 +125,28 @@ class Auth_model extends CI_Model {
 	 */
 	public function validate_captcha()
 	{
-		$config = $this->config->item('captcha');
+		if (site_config('captcha') == ENABLED)
+		{
+			$config = $this->config->item('captcha');
 
-		// Delete expired captchas
-		$expiration = time() - $config['expiration'];
-		$this->db->delete("site_captcha_{$this->bootstrap->site_id}", array("captcha_time <" => $expiration));
+			// Delete expired captchas
+			$expiration = time() - $config['expiration'];
+			$this->db->delete("site_captcha_{$this->bootstrap->site_id}", array("captcha_time <" => $expiration));
 
-		// Now we fetch the captcha for the user
-		$this->db->where('word', $this->input->post('captcha'));
-		$this->db->where('ip_address', $this->input->ip_address());
-		$this->db->where('captcha_time >', $expiration);
+			// Now we fetch the captcha for the user
+			$this->db->where('word', $this->input->post('captcha'));
+			$this->db->where('ip_address', $this->input->ip_address());
+			$this->db->where('captcha_time >', $expiration);
 
-		$query = $this->db->get("site_captcha_{$this->bootstrap->site_id}");
+			$query = $this->db->get("site_captcha_{$this->bootstrap->site_id}");
 
-		// Return true if we got some data
-		return $query->num_rows() === 1;
+			// Return true if we got some data
+			return $query->num_rows() === 1;
+		}
+		else
+		{
+			return TRUE;
+		}
 	}
 
 	// --------------------------------------------------------------------

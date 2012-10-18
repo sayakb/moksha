@@ -39,43 +39,47 @@
 		</div>
 	</div>
 
-	<div class="control-group">
-		<label class="control-label">
-			<?= $this->lang->line('visual_verif') ?>
-		</label>
+	<?php if ($captcha != NULL): ?>
+		<div class="control-group">
+			<label class="control-label">
+				<?= $this->lang->line('visual_verif') ?>
+			</label>
 
-		<div class="controls">
-			<div id="captcha-image">
-				<?= $captcha ?>
+			<div class="controls">
+				<div id="captcha-image">
+					<?= $captcha ?>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="control-group">
-		<div class="controls">
-			<div class="input-append">
-				<?= form_input('captcha') ?>
+		<div class="control-group">
+			<div class="controls">
+				<div class="input-append">
+					<?= form_input('captcha') ?>
 
-				<a id="captcha-reload" href="#" class="btn" title="<?= $this->lang->line('reload_captcha') ?>">
-					<i class="icon-refresh"></i>
-				</a>
+					<a id="captcha-reload" href="#" class="btn" title="<?= $this->lang->line('reload_captcha') ?>">
+						<i class="icon-refresh"></i>
+					</a>
+				</div>
+
+				<div class="help-block"><?= $this->lang->line('visual_verif_exp') ?></div>
 			</div>
-
-			<div class="help-block"><?= $this->lang->line('visual_verif_exp') ?></div>
 		</div>
-	</div>
+	<?php endif ?>
 
 	<div class="form-actions">
 		<?= form_submit('register_submit', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>
 
-<script type="text/javascript">
-	$('#captcha-reload').click(function() {
-		$.get('<?= base_url('register/captcha') ?>', function(data) {
-			$('#captcha-image').html(data);
-		});
+<?php if ($captcha != NULL): ?>
+	<script type="text/javascript">
+		$('#captcha-reload').click(function() {
+			$.get('<?= base_url('register/captcha') ?>', function(data) {
+				$('#captcha-image').html(data);
+			});
 
-		return false;
-	});
-</script>
+			return false;
+		});
+	</script>
+<?php endif ?>

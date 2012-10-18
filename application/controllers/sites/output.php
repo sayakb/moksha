@@ -17,6 +17,13 @@ class Output extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+
+		// Check if site is online
+		if (site_config('status') == OFFLINE)
+		{
+			show_error($this->lang->line('site_offline_exp'), 500, $this->lang->line('site_offline'));
+		}
+
 		$this->load->model('sites/output_model');
 	}
 

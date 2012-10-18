@@ -35,7 +35,14 @@ function password_hash($password)
  */
 function auth_redir($redirect)
 {
-	return base_url(str_replace('+', '/', $redirect));
+	if (empty($redirect))
+	{
+		return base_url();
+	}
+	else
+	{
+		return base_url(str_replace('+', '/', $redirect));
+	}
 }
 
 // --------------------------------------------------------------------

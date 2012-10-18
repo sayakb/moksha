@@ -11,6 +11,8 @@ $lang['manage_roles']			= 'Manage user roles';
 $lang['manage_roles_exp']		= 'Manage user roles that control page access';
 $lang['manage_users']			= 'Manage users';
 $lang['manage_users_exp']		= 'Add and edit user for your site';
+$lang['site_config']			= 'Site configuration';
+$lang['site_config_exp']		= 'Manage site specific options';
 $lang['styles_scripts']			= 'Styles and scripts';
 $lang['styles_scripts_exp']		= 'Add stylesheets and javascripts to your site';
 $lang['view_hubs_exp']			= 'View data stored within a hub';
@@ -235,6 +237,17 @@ $lang['javascript']				= 'JavaScript';
 $lang['invalid_file_type']		= 'Invalid file type selected';
 $lang['select_file']			= 'Please select the file to upload';
 $lang['back_file_mgmt']			= 'Back to file management';
+$lang['site_status']			= 'Site status';
+$lang['online']					= 'Online';
+$lang['offline']				= 'Offline';
+$lang['user_login']				= 'User login';
+$lang['user_registration']		= 'User registration';
+$lang['registration_captcha']	= 'Registration CAPTCHA';
+$lang['visitor_stats']			= 'Visitor statistics';
+$lang['enabled']				= 'Enabled';
+$lang['disabled']				= 'Disabled';
+$lang['invalid_flag']			= 'The %s field has an invalid value';
+$lang['config_updated']			= 'Site configuration updated';
 
 
 /* End of file site_admin_lang.php */

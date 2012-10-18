@@ -84,6 +84,19 @@ define('ROLE_LOGGED_IN',	'-2');
  */
 define('PER_PAGE', 10);
 
+/*
+|--------------------------------------------------------------------------
+| Configuration constants
+|--------------------------------------------------------------------------
+|
+| Site config constants
+|
+ */
+define('ONLINE',	1);
+define('OFFLINE',	0);
+define('ENABLED',	1);
+define('DISABLED',	0);
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

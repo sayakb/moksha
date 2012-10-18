@@ -495,6 +495,35 @@ $config = array(
 			'label'	=>	'lang:file_type',
 			'rules'	=>	'callback_check_file_type'
 		)
+	),
+
+	// Site admin: site configuration
+	'site_admin/config' => array(
+		array(
+			'field'	=>	'status',
+			'label'	=>	'lang:site_status',
+			'rules'	=>	'callback_check_flag'
+		),
+		array(
+			'field'	=>	'login',
+			'label'	=>	'lang:user_login',
+			'rules'	=>	'callback_check_flag'
+		),
+		array(
+			'field'	=>	'registration',
+			'label'	=>	'lang:user_registration',
+			'rules'	=>	'callback_check_flag'
+		),
+		array(
+			'field'	=>	'captcha',
+			'label'	=>	'lang:registration_captcha',
+			'rules'	=>	'callback_check_flag'
+		),
+		array(
+			'field'	=>	'stats',
+			'label'	=>	'lang:visitor_stats',
+			'rules'	=>	'callback_check_flag'
+		)
 	)
 );
 

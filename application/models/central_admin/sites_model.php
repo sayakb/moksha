@@ -81,9 +81,9 @@ class Sites_model extends CI_Model {
 		$success = $this->db->insert('central_sites', array('site_url' => $this->input->post('site_url')));
 		$site_id = $this->db->insert_id();
 
-		// Generate site specific tables
 		if ($success)
 		{
+			// Generate site specific tables
 			foreach ($this->config->item('schema') as $table => $schema)
 			{
 				// Add fields to the table
@@ -105,6 +105,13 @@ class Sites_model extends CI_Model {
 
 				$this->dbforge->create_table("{$table}_{$site_id}");
 			}
+
+			// Write the site configuration
+			site_config('status',		ONLINE, $site_id);
+			site_config('login',		ENABLED, $site_id);
+			site_config('registration',	ENABLED, $site_id);
+			site_config('captcha',		ENABLED, $site_id);
+			site_config('stats',		ENABLED, $site_id);
 
 			// Create anonymous user
 			$anonymous = array(

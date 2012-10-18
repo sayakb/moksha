@@ -283,5 +283,23 @@ $config['schema']['site_files'] = array(
 	)
 );
 
+$config['schema']['site_config'] = array(
+	'fields' => array(
+		'config_key' => array(
+			'type'			=> 'VARCHAR',
+			'constraint'	=> 20,
+			'null'			=> FALSE
+		),
+		'config_value' => array(
+			'type'			=> 'TEXT',
+			'null'			=> FALSE
+		)
+	),
+	'keys' => array(
+		'config_key'		=> TRUE
+	)
+);
+
+
 /* End of file schemas.php */
 /* Location: ./application/config/schemas.php */
