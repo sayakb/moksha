@@ -58,7 +58,7 @@ class Output_model extends CI_Model {
 
 				if (($url == $base AND $url == $curr) OR ($url != $base AND strpos($curr, $url) === 0))
 				{
-					$page->page_widgets = unserialize($page->page_widgets);
+					$page->widgets = unserialize($page->widgets);
 					return $page;
 				}
 			}
@@ -96,11 +96,11 @@ class Output_model extends CI_Model {
 		{
 			if ($file->file_type == 'css')
 			{
-				$header .= '<link href="'.base_url($file->file_path).'" rel="stylesheet" />';
+				$header .= '<link href="'.base_url($file->relative_path).'" rel="stylesheet" />';
 			}
 			else if ($file->file_type == 'js')
 			{
-				$header .= '<script type="text/javascript" src="'.base_url($file->file_path).'"></script>';
+				$header .= '<script type="text/javascript" src="'.base_url($file->relative_path).'"></script>';
 			}
 		}
 

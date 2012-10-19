@@ -40,8 +40,8 @@ class Hub_db {
 
 			// First, insert into the index table
 			$data = array(
-				'hub_name'		=> $name,
-				'hub_driver'	=> HUB_DATABASE
+				'hub_name'	=> $name,
+				'driver'	=> HUB_DATABASE
 			);
 
 			if ($this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data))

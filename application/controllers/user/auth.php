@@ -119,7 +119,7 @@ class Auth extends CI_Controller {
 				'page_title'	=> $this->lang->line('moksha'),
 				'page_desc'		=> $this->lang->line('register_desc'),
 				'username'		=> set_value('username'),
-				'email'			=> set_value('email'),
+				'email_address'	=> set_value('email_address'),
 				'captcha'		=> $this->auth_model->create_captcha()
 			);
 

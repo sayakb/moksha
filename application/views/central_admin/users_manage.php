@@ -32,13 +32,13 @@
 			<?php foreach ($users as $user): ?>
 				<tr>
 					<td><?= $user->user_name ?></td>
-					<td><?= $user->user_email ?></td>
+					<td><?= $user->email_address ?></td>
 					<td>
 						<a href="<?= base_url('admin/central/users/edit/'.$user->user_id) ?>" class="btn btn-mini">
 							<?= $this->lang->line('edit') ?>
 						</a>
 
-						<?php if ($user->user_founder == 0): ?>
+						<?php if ($user->founder == 0): ?>
 							<a href="<?= base_url('admin/central/users/delete/'.$user->user_id) ?>" class="btn btn-mini">
 								<?= $this->lang->line('delete') ?>
 							</a>

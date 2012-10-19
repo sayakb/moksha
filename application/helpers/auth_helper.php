@@ -71,32 +71,37 @@ function in_central()
  */
 function user_data($key)
 {
-	$CI		=& get_instance();
-	$data	= $CI->session->userdata($CI->bootstrap->session_key.'user');
-
-	if ($data === FALSE)
+	global $user_data;
+	
+	if ( ! isset($user_data))
 	{
-		$data = new stdClass();
+		$CI		=& get_instance();
+		$user_data	= $CI->session->userdata($CI->bootstrap->session_key.'user');
 
-		$data->user_id			= 0;
-		$data->user_name		= 'anonymous';
-		$data->user_password	= NULL;
-		$data->user_email		= NULL;
-		$data->user_roles		= array();
-		$data->user_founder		= 0;
-	}
-	else
-	{
-		// Convert the roles into array so that it is readily usable
-		if ( ! is_array($data->user_roles))
+		if ($user_data === FALSE)
 		{
-			$data->user_roles = explode('|', $data->user_roles);
+			$user_data = new stdClass();
+
+			$user_data->user_id			= 0;
+			$user_data->user_name		= 'anonymous';
+			$user_data->password			= 'anonymous';
+			$user_data->email_address	= 'anonymous';
+			$user_data->roles			= array();
+			$user_data->founder			= 0;
+		}
+		else
+		{
+			// Convert the roles into array so that it is readily usable
+			if ( ! is_array($user_data->roles))
+			{
+				$user_data->roles = explode('|', $user_data->roles);
+			}
 		}
 	}
 
-	if (isset($data->$key))
+	if (isset($user_data->$key))
 	{
-		return $data->$key;
+		return $user_data->$key;
 	}
 }
 
@@ -111,7 +116,7 @@ function user_data($key)
  */
 function check_roles($roles)
 {
-	$user_roles = user_data('user_roles');
+	$roles = user_data('roles');
 
 	if ( ! is_array($roles))
 	{
@@ -119,7 +124,7 @@ function check_roles($roles)
 	}
 
 	// Admins have access to everything
-	if (in_array(ROLE_ADMIN, $user_roles))
+	if (in_array(ROLE_ADMIN, $roles))
 	{
 		return TRUE;
 	}
@@ -127,7 +132,7 @@ function check_roles($roles)
 	// Check for the specific role
 	foreach ($roles as $role)
 	{
-		if ($role !== '' AND ! in_array($role, $user_roles))
+		if ($role !== '' AND ! in_array($role, $roles))
 		{
 			return FALSE;
 		}

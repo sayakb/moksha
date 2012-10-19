@@ -47,12 +47,12 @@ $config = array(
 			'rules'	=>	'required'
 		),
 		array(
-			'field'	=>	'email',
+			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
 			'rules'	=>	'required|'.
 						'trim|'.
 						'valid_email|'.
-						'is_unique[site_users.user_email]'
+						'is_unique[site_users.email_address]'
 		),
 		array(
 			'field'	=>	'captcha',
@@ -97,12 +97,12 @@ $config = array(
 			'rules'	=>	'required'
 		),
 		array(
-			'field'	=>	'email',
+			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
 			'rules'	=>	'required|'.
 						'trim|'.
 						'valid_email|'.
-						'is_unique[central_users.user_email]'
+						'is_unique[central_users.email_address]'
 		)
 	),
 
@@ -127,11 +127,11 @@ $config = array(
 			'label'	=>	'lang:confirm_password'
 		),
 		array(
-			'field'	=>	'email',
+			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
 			'rules'	=>	'required|'.
 						'valid_email|'.
-						'is_unique[central_users.user_email]'
+						'is_unique[central_users.email_address]'
 		)
 	),
 
@@ -153,7 +153,7 @@ $config = array(
 			'rules'	=>	'required'
 		),
 		array(
-			'field'	=>	'hub_source',
+			'field'	=>	'source',
 			'label'	=>	'lang:hub_source',
 			'rules'	=>	'callback_check_source'
 		)
@@ -192,7 +192,7 @@ $config = array(
 						'is_unique[site_hubs.hub_name]'
 		),
 		array(
-			'field'	=>	'hub_source',
+			'field'	=>	'source',
 			'label'	=>	'lang:hub_source',
 			'rules'	=>	'callback_check_source'
 		)
@@ -270,23 +270,23 @@ $config = array(
 						'is_unique[site_widgets.widget_name]'
 		),
 		array(
-			'field'	=>	'widget_key',
-			'label'	=>	'lang:widget_key',
+			'field'	=>	'update_key',
+			'label'	=>	'lang:update_key',
 			'rules'	=>	'trim|'.
 						'max_length[100]'
 		),
 		array(
-			'field'	=>	'widget_roles',
+			'field'	=>	'access_roles',
 			'label'	=>	'lang:widget_accessible_by',
 			'rules'	=>	'callback_check_roles'
 		),
 		array(
-			'field'	=>	'widget_frameless',
+			'field'	=>	'frameless',
 			'label'	=>	'lang:frameless',
 			'rules'	=>	'trim'
 		),
 		array(
-			'field'	=>	'widget_empty',
+			'field'	=>	'empty_tpl',
 			'label'	=>	'lang:empty_notice',
 			'rules'	=>	'trim|'.
 						'max_length[255]'
@@ -375,15 +375,15 @@ $config = array(
 			'rules'	=>	'required'
 		),
 		array(
-			'field'	=>	'email',
+			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
 			'rules'	=>	'required|'.
 						'trim|'.
 						'valid_email|'.
-						'is_unique[site_users.user_email]'
+						'is_unique[site_users.email_address]'
 		),
 		array(
-			'field'	=>	'user_roles',
+			'field'	=>	'roles',
 			'label'	=>	'lang:roles',
 			'rules'	=>	'callback_check_roles'
 		)
@@ -410,14 +410,14 @@ $config = array(
 			'label'	=>	'lang:confirm_password'
 		),
 		array(
-			'field'	=>	'email',
+			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
 			'rules'	=>	'required|'.
 						'valid_email|'.
-						'is_unique[site_users.user_email]'
+						'is_unique[site_users.email_address]'
 		),
 		array(
-			'field'	=>	'user_roles',
+			'field'	=>	'roles',
 			'label'	=>	'lang:roles',
 			'rules'	=>	'callback_check_roles'
 		)
@@ -455,13 +455,13 @@ $config = array(
 						'callback_check_url'
 		),
 		array(
-			'field'	=>	'pg_success_url',
+			'field'	=>	'success_url',
 			'label'	=>	'lang:success_url',
 			'rules'	=>	'trim|'.
 						'max_length[255]'
 		),
 		array(
-			'field'	=>	'pg_error_url',
+			'field'	=>	'error_url',
 			'label'	=>	'lang:error_url',
 			'rules'	=>	'trim|'.
 						'max_length[255]'
@@ -472,7 +472,7 @@ $config = array(
 			'rules'	=>	'callback_check_layout'
 		),
 		array(
-			'field'	=>	'pg_roles',
+			'field'	=>	'access_roles',
 			'label'	=>	'lang:roles',
 			'rules'	=>	'callback_check_roles'
 		),

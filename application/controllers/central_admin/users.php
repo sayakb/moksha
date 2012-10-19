@@ -84,7 +84,7 @@ class Users extends CI_Controller {
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
 			'username'		=> set_value('username'),
-			'email'			=> set_value('email'),
+			'email_address'	=> set_value('email_address'),
 		);
 
 		// Load the view
@@ -107,7 +107,7 @@ class Users extends CI_Controller {
 		// Set exempts for email and name fields
 		$this->form_validation->unique_exempts = array(
 			'user_name'		=> $user->user_name,
-			'user_email'	=> $user->user_email
+			'email_address'	=> $user->email_address
 		);
 
 		// Process the request
@@ -129,7 +129,7 @@ class Users extends CI_Controller {
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
 			'username'		=> set_value('username', $user->user_name),
-			'email'			=> set_value('email', $user->user_email),
+			'email_address'	=> set_value('email_address', $user->email_address),
 		);
 
 		// Load the view

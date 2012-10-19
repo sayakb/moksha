@@ -62,12 +62,12 @@ $config['schema']['site_hubs'] = array(
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
-		'hub_driver' => array(
+		'driver' => array(
 			'type'				=> 'CHAR',
 			'constraint'		=> 5,
 			'null'				=> FALSE
 		),
-		'hub_source' => array(
+		'source' => array(
 			'type'				=> 'TEXT',
 			'null'				=> TRUE
 		)
@@ -81,39 +81,39 @@ $config['schema']['site_hubs'] = array(
 $config['schema']['site_users'] = array(
 	'fields' => array(
 		'user_id' => array(
-			'type'					=> 'BIGINT',
-			'constraint'			=> 20,
-			'null'					=> FALSE,
-			'auto_increment'		=> TRUE
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
 		),
 		'user_name' => array(
-			'type'					=> 'VARCHAR',
-			'constraint'			=> 100,
-			'null'					=> FALSE
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 100,
+			'null'				=> FALSE
 		),
-		'user_password' => array(
-			'type'					=> 'VARCHAR',
-			'constraint'			=> 128,
-			'null'					=> FALSE
+		'password' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 128,
+			'null'				=> FALSE
 		),
-		'user_email' => array(
-			'type'					=> 'VARCHAR',
-			'constraint'			=> 225,
-			'null'					=> FALSE
+		'email_address' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 225,
+			'null'				=> FALSE
 		),
-		'user_roles' => array(
-			'type'					=> 'TEXT',
-			'null'					=> FALSE
+		'roles' => array(
+			'type'				=> 'TEXT'
 		),
-		'user_founder' => array(
-			'type'					=> 'TINYINT',
-			'constraint'			=> 1,
-			'null'					=> FALSE
+		'founder' => array(
+			'type'				=> 'TINYINT',
+			'constraint'		=> 1,
+			'null'				=> FALSE,
+			'default'			=> 0
 		)
 	),
 	'keys' => array(
-		'user_id'					=> TRUE,
-		'user_name,user_password'	=> FALSE
+		'user_id'				=> TRUE,
+		'user_name,password'	=> FALSE
 	)
 );
 
@@ -181,21 +181,21 @@ $config['schema']['site_widgets'] = array(
 			'constraint'		=> 100,
 			'null'				=> FALSE
 		),
-		'widget_roles' => array(
+		'access_roles' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		),
-		'widget_key' => array(
-			'type'				=> 'VARCHAR',
-			'constraint'		=> 100
-		),
-		'widget_frameless' => array(
+		'frameless' => array(
 			'type'				=> 'TINYINT',
 			'constraint'		=> 1,
 			'null'				=> FALSE,
 			'default'			=> 0
 		),
-		'widget_empty' => array(
+		'update_key' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 100
+		),
+		'empty_tpl' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 255
 		),
@@ -227,26 +227,26 @@ $config['schema']['site_pages'] = array(
 			'constraint'		=> 255,
 			'null'				=> FALSE
 		),
-		'page_success_url' => array(
-			'type'				=> 'VARCHAR',
-			'constraint'		=> 255,
-			'null'				=> FALSE
-		),
-		'page_error_url' => array(
-			'type'				=> 'VARCHAR',
-			'constraint'		=> 255,
-			'null'				=> FALSE
-		),
-		'page_roles' => array(
-			'type'				=> 'TEXT',
-			'null'				=> FALSE
-		),
 		'page_layout' => array(
 			'type'				=> 'VARCHAR',
 			'constraint'		=> 5,
 			'null'				=> FALSE
 		),
-		'page_widgets' => array(
+		'success_url' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255,
+			'null'				=> FALSE
+		),
+		'error_url' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255,
+			'null'				=> FALSE
+		),
+		'access_roles' => array(
+			'type'				=> 'TEXT',
+			'null'				=> FALSE
+		),
+		'widgets' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		)
@@ -273,7 +273,7 @@ $config['schema']['site_files'] = array(
 			'constraint'		=> 3,
 			'null'				=> FALSE
 		),
-		'file_path' => array(
+		'relative_path' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		)
@@ -285,18 +285,48 @@ $config['schema']['site_files'] = array(
 
 $config['schema']['site_config'] = array(
 	'fields' => array(
-		'config_key' => array(
+		'key' => array(
 			'type'			=> 'VARCHAR',
 			'constraint'	=> 20,
 			'null'			=> FALSE
 		),
-		'config_value' => array(
+		'value' => array(
 			'type'			=> 'TEXT',
 			'null'			=> FALSE
 		)
 	),
 	'keys' => array(
-		'config_key'		=> TRUE
+		'key'				=> TRUE
+	)
+);
+
+$config['schema']['site_stats'] = array(
+	'fields' => array(
+		'session_id' => array(
+			'type'			=> 'VARCHAR',
+			'constraint'	=> 40,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		),
+		'ip_address' => array(
+			'type'			=> 'VARCHAR',
+			'constraint'	=> 45,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		),
+		'sess_create_time' => array(
+			'type'			=> 'INT',
+			'constraint'	=> 10,
+			'unsigned'		=> TRUE,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		),
+		'page_visits' => array(
+			'type'			=> 'TEXT'
+		)
+	),
+	'keys' => array(
+		'session_id'		=> TRUE
 	)
 );
 

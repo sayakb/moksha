@@ -193,7 +193,7 @@ class Hubs extends CI_Controller {
 		$hub = $this->hubs_model->fetch_hub($hub_id);
 
 		// DB hub operations
-		if ($hub->hub_driver == HUB_DATABASE)
+		if ($hub->driver == HUB_DATABASE)
 		{
 			// Rename hub operation
 			if (isset($_POST['rename_hub']))
@@ -269,7 +269,7 @@ class Hubs extends CI_Controller {
 		}
 
 		// RSS hub operations
-		if ($hub->hub_driver == HUB_RSS)
+		if ($hub->driver == HUB_RSS)
 		{
 			$this->form_validation->unique_exempts = array('hub_name' => $hub->hub_name);
 

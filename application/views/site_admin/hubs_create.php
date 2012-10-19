@@ -33,7 +33,7 @@
 		</label>
 
 		<div class="controls">
-			<?= form_input('hub_source', set_value('hub_source')) ?>
+			<?= form_input('source', set_value('source')) ?>
 			<span class="help-block"><?= $this->lang->line('hub_source_exp') ?></span>
 		</div>
 	</div>

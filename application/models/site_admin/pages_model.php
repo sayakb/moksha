@@ -50,7 +50,7 @@ class Pages_model extends CI_Model {
 		$this->db->where('page_id', $page_id);
 
 		$page = $this->db->get("site_pages_{$this->bootstrap->site_id}")->row();
-		$page->page_widgets = unserialize($page->page_widgets);
+		$page->widgets = unserialize($page->widgets);
 
 		return $page;
 	}
@@ -165,14 +165,14 @@ class Pages_model extends CI_Model {
 	public function add_page()
 	{
 		$data = array(
-			'page_title'		=> $this->input->post('pg_title'),
-			'page_url'			=> $this->input->post('pg_url'),
-			'page_layout'		=> $this->input->post('pg_layout'),
-			'page_roles'		=> $this->input->post('pg_roles'),
-			'page_success_url'	=> $this->input->post('pg_success_url'),
-			'page_error_url'	=> $this->input->post('pg_error_url'),
-			'page_url'			=> str_replace(base_url(), '', $this->input->post('pg_url')),
-			'page_widgets'		=> serialize($this->populate_widgets())
+			'page_title'	=> $this->input->post('pg_title'),
+			'page_url'		=> $this->input->post('pg_url'),
+			'page_layout'	=> $this->input->post('pg_layout'),
+			'access_roles'	=> $this->input->post('access_roles'),
+			'success_url'	=> $this->input->post('success_url'),
+			'error_url'		=> $this->input->post('error_url'),
+			'page_url'		=> str_replace(base_url(), '', $this->input->post('pg_url')),
+			'widgets'		=> serialize($this->populate_widgets())
 		);
 
 		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
@@ -191,14 +191,14 @@ class Pages_model extends CI_Model {
 	public function update_page($page_id)
 	{
 		$data = array(
-			'page_title'		=> $this->input->post('pg_title'),
-			'page_url'			=> $this->input->post('pg_url'),
-			'page_layout'		=> $this->input->post('pg_layout'),
-			'page_roles'		=> $this->input->post('pg_roles'),
-			'page_success_url'	=> $this->input->post('pg_success_url'),
-			'page_error_url'	=> $this->input->post('pg_error_url'),
-			'page_url'			=> str_replace(base_url(), '', $this->input->post('pg_url')),
-			'page_widgets'		=> serialize($this->populate_widgets())
+			'page_title'	=> $this->input->post('pg_title'),
+			'page_url'		=> $this->input->post('pg_url'),
+			'page_layout'	=> $this->input->post('pg_layout'),
+			'access_roles'	=> $this->input->post('access_roles'),
+			'success_url'	=> $this->input->post('success_url'),
+			'error_url'		=> $this->input->post('error_url'),
+			'page_url'		=> str_replace(base_url(), '', $this->input->post('pg_url')),
+			'widgets'		=> serialize($this->populate_widgets())
 		);
 
 		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");

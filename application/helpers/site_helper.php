@@ -20,6 +20,8 @@
  */
 function site_config($key, $value = FALSE, $site_id = FALSE)
 {
+	global $site_config;
+
 	$CI =& get_instance();
 
 	// Get the current site ID, if not passed
@@ -29,20 +31,20 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 	}
 
 	// Get the site configuration data
-	if ( ! $config = $CI->cache->get("siteconfig_{$site_id}"))
+	if ( ! isset($site_config) AND ! $site_config = $CI->cache->get("siteconfig_{$site_id}"))
 	{
-		$config = $CI->db->get("site_config_{$site_id}")->result();
-		$CI->cache->write($config, "siteconfig_{$site_id}");
+		$site_config = $CI->db->get("site_config_{$site_id}")->result();
+		$CI->cache->write($site_config, "siteconfig_{$site_id}");
 	}
 
 	// If no value is passed, we are fetching the config data
 	if ($value === FALSE)
 	{
-		foreach ($config as $item)
+		foreach ($site_config as $item)
 		{
-			if ($item->config_key == $key)
+			if ($item->key == $key)
 			{
-				return $item->config_value;
+				return $item->value;
 			}
 		}
 	}
@@ -54,14 +56,14 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 		$CI->cache->delete("siteconfig_{$site_id}");
 
 		// Prepare the date to save
-		$config_data = array(
-			'config_key'	=> $key,
-			'config_value'	=> $value
+		$site_config_data = array(
+			'key'	=> $key,
+			'value'	=> $value
 		);
 
 		// Update the configuration item value
-		$CI->db->delete("site_config_{$site_id}", array('config_key' => $key));
-		$CI->db->insert("site_config_{$site_id}", $config_data);
+		$CI->db->delete("site_config_{$site_id}", array('key' => $key));
+		$CI->db->insert("site_config_{$site_id}", $site_config_data);
 
 		return TRUE;
 	}

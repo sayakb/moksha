@@ -23,7 +23,7 @@
 		</label>
 
 		<div class="controls">
-			<?= form_input('email', $email) ?>
+			<?= form_input('email_address', $email_address) ?>
 		</div>
 	</div>
 
@@ -63,7 +63,7 @@
 	</div>
 
 	<div class="form-actions">
-		<?= form_hidden('user_roles', $user_roles) ?>
+		<?= form_hidden('roles', $roles) ?>
 		<?= form_submit('user_submit', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>
@@ -71,7 +71,7 @@
 <script type="text/javascript">
 	// Load user roles to checkbox, if set
 	$(function() {
-		var roles = $('[name=user_roles]').val();
+		var roles = $('[name=roles]').val();
 
 		if (roles != '') {
 			var roles_ary = roles.split('|');
@@ -92,7 +92,7 @@
 			}
 		});
 
-		$('[name=user_roles]').val(roles.join('|'));
+		$('[name=roles]').val(roles.join('|'));
 	});
 
 	// Disable the admin checkbox

@@ -128,7 +128,7 @@ class Users_model extends CI_Model {
 
 		if ($query->num_rows() == 1)
 		{
-			return $query->row()->user_founder == 1;
+			return $query->row()->founder == 1;
 		}
 		else
 		{
@@ -149,9 +149,9 @@ class Users_model extends CI_Model {
 		// Add user data
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
-			'user_password'	=> password_hash($this->input->post('password')),
-			'user_email'	=> $this->input->post('email'),
-			'user_roles'	=> $this->input->post('user_roles')
+			'password'		=> password_hash($this->input->post('password')),
+			'email_address'	=> $this->input->post('email_address'),
+			'roles'			=> $this->input->post('roles')
 		);
 
 		return $this->db->insert("site_users_{$this->bootstrap->site_id}", $data);
@@ -167,7 +167,7 @@ class Users_model extends CI_Model {
 	 */
 	public function update_user($user_id, $is_founder)
 	{
-		$roles		= $this->input->post('user_roles');
+		$roles		= $this->input->post('roles');
 		$roles_ary	= explode('|', $roles);
 
 		// Admin role must be there for a founder user
@@ -179,13 +179,13 @@ class Users_model extends CI_Model {
 		// Add user data
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
-			'user_email'	=> $this->input->post('email'),
-			'user_roles'	=> implode('|', $roles_ary)
+			'email_address'	=> $this->input->post('email_address'),
+			'roles'			=> implode('|', $roles_ary)
 		);
 
 		if (!empty($password))
 		{
-			$data['user_password'] = password_hash($this->input->post('password'));
+			$data['password'] = password_hash($this->input->post('password'));
 		}
 
 		return $this->db->update("site_users_{$this->bootstrap->site_id}", $data, array('user_id' => $user_id));

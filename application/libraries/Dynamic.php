@@ -42,7 +42,7 @@ class Dynamic {
 	 */
 	public function generate_page($page)
 	{
-		if (check_roles($page->page_roles))
+		if (check_roles($page->access_roles))
 		{
 			$this->context->page = $page;
 
@@ -68,7 +68,7 @@ class Dynamic {
 
 			foreach ($widths as $width)
 			{
-				$data	 = $this->generate_widgets($page->page_widgets[$index++]);
+				$data	 = $this->generate_widgets($page->widgets[$index++]);
 				$empty	 = ($empty AND empty($data));
 				$width	*= 4;
 
@@ -167,19 +167,19 @@ class Dynamic {
 			$hub_name	= $this->CI->hub->fetch_name($widget->widget_data->hub->attached_hub);
 			$schema		= $this->CI->hub->schema($hub_name);
 			$key_col	= array_search(DBTYPE_KEY, $schema);
-			$widget_key	= expr($widget->widget_key);
+			$update_key	= expr($widget->update_key);
 
 			// Update operation
-			if ($key_col !== FALSE AND ! empty($widget_key))
+			if ($key_col !== FALSE AND ! empty($update_key))
 			{
 				// Try to get the matching hub row
-				$row = $this->CI->hub->where($key_col, $widget_key)->get($hub_name)->row();
+				$row = $this->CI->hub->where($key_col, $update_key)->get($hub_name)->row();
 
 				if ($row !== FALSE)
 				{
 					$data = $this->prepare_for_save($widget, $control_names, $row);
 
-					if (is_array($data) AND $this->CI->hub->where($key_col, $widget_key)->update($hub_name, $data))
+					if (is_array($data) AND $this->CI->hub->where($key_col, $update_key)->update($hub_name, $data))
 					{
 						$this->finish_submit('success', $this->CI->lang->line('item_saved'));
 					}
@@ -236,7 +236,7 @@ class Dynamic {
 				}
 
 				// Delete the entry from the hub
-				if ($hub_row !== FALSE AND $this->restrict_access($widget->widget_roles, $hub_row))
+				if ($hub_row !== FALSE AND $this->restrict_access($widget->access_roles, $hub_row))
 				{
 					if ($this->CI->hub->where($key_col, $unique_id)->delete($hub_name))
 					{
@@ -311,7 +311,7 @@ class Dynamic {
 	 */
 	private function prepare_for_save($widget, $control_names, $data = FALSE)
 	{
-		if ($this->restrict_access($widget->widget_roles, $data))
+		if ($this->restrict_access($widget->access_roles, $data))
 		{
 			$ctrl_data		= array();
 			$uploads		= array();
@@ -431,7 +431,7 @@ class Dynamic {
 		foreach ($widget_ids as $widget_id)
 		{
 			$widget			= $this->CI->widget->get($widget_id);
-			$widget_key		= expr($widget->widget_key);
+			$update_key		= expr($widget->update_key);
 			$widget_data	= '';
 
 			if ($widget !== FALSE)
@@ -459,7 +459,7 @@ class Dynamic {
 				{
 					foreach ($hub_data as $data)
 					{
-						if ($this->restrict_access($widget->widget_roles, $data))
+						if ($this->restrict_access($widget->access_roles, $data))
 						{
 							$unique_id		 = isset($data->$key_col) ? $data->$key_col : FALSE;
 							$widget_data	.= $this->generate_widget($widget, $data, $unique_id);
@@ -474,9 +474,9 @@ class Dynamic {
 				}
 
 				// For hard binding, render the empty notice if set
-				else if ($widget->widget_data->hub->binding == 'hard' AND ! empty($widget->widget_empty))
+				else if ($widget->widget_data->hub->binding == 'hard' AND ! empty($widget->empty_tpl))
 				{
-					$widget_data = "<div class='alert alert-info'>{$widget->widget_empty}</div>";
+					$widget_data = "<div class='alert alert-info'>{$widget->empty_tpl}</div>";
 				}
 			}
 			
@@ -534,7 +534,7 @@ class Dynamic {
 
 		// Get the frame and unique widget class name
 		$class = strtolower(url_title($widget->widget_name));
-		$frame = $widget->widget_frameless == 0 ? 'm-widget' : '';
+		$frame = $widget->frameless == 0 ? 'm-widget' : '';
 
 		if ( ! empty($output))
 		{
@@ -582,7 +582,7 @@ class Dynamic {
 		$author_key		= array_search(ROLE_AUTHOR, $roles_ary);
 
 		// Admins have access to everything
-		if (in_array(ROLE_ADMIN, user_data('user_roles')))
+		if (in_array(ROLE_ADMIN, user_data('roles')))
 		{
 			return TRUE;
 		}

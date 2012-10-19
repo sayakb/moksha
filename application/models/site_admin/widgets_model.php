@@ -161,10 +161,10 @@ class Widgets_model extends CI_Model {
 		$widget_name	= $this->input->post('widget_name');
 
 		$widget_options	= array(
-			'widget_key'		=> $this->input->post('widget_key'),
-			'widget_roles'		=> $this->input->post('widget_roles'),
-			'widget_frameless'	=> $this->input->post('widget_frameless') ? 1 : 0,
-			'widget_empty'		=> $this->input->post('widget_empty')
+			'update_key'	=> $this->input->post('update_key'),
+			'access_roles'	=> $this->input->post('access_roles'),
+			'frameless'		=> $this->input->post('frameless') ? 1 : 0,
+			'empty_tpl'		=> $this->input->post('empty_tpl')
 		);
 
 		$widget_data	= (object)array(
@@ -195,10 +195,10 @@ class Widgets_model extends CI_Model {
 		$widget_name	= $this->input->post('widget_name');
 
 		$widget_options	= array(
-			'widget_key'		=> $this->input->post('widget_key'),
-			'widget_roles'		=> $this->input->post('widget_roles'),
-			'widget_frameless'	=> $this->input->post('widget_frameless') ? 1 : 0,
-			'widget_empty'		=> $this->input->post('widget_empty')
+			'update_key'	=> $this->input->post('update_key'),
+			'access_roles'	=> $this->input->post('access_roles'),
+			'frameless'		=> $this->input->post('frameless') ? 1 : 0,
+			'empty_tpl'		=> $this->input->post('empty_tpl')
 		);
 
 		$widget_data	= (object)array(

@@ -170,13 +170,13 @@
 				<div class="form-horizontal">
 					<div class="control-group">
 						<label class="control-label">
-							<?= $this->lang->line('widget_key') ?>
+							<?= $this->lang->line('update_key') ?>
 						</label>
 
 						<div class="controls">
-							<?= form_input('widget_key', $widget_key) ?>
+							<?= form_input('update_key', $update_key) ?>
 							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
-							<div class="help-block"><?= $this->lang->line('widget_key_exp') ?></div>
+							<div class="help-block"><?= $this->lang->line('update_key_exp') ?></div>
 						</div>
 					</div>
 
@@ -186,7 +186,7 @@
 						</label>
 
 						<div class="controls">
-							<?= form_input('widget_empty', $widget_empty) ?>
+							<?= form_input('empty_tpl', $empty_tpl) ?>
 							<div class="help-block"><?= $this->lang->line('empty_notice_exp') ?></div>
 						</div>
 					</div>
@@ -198,12 +198,12 @@
 
 						<div class="controls">
 							<label class="radio">
-								<?= form_radio('widget_frameless', 0, $frame_box) ?>
+								<?= form_radio('frameless', 0, $frame_box) ?>
 								<?= $this->lang->line('box') ?>
 							</label>
 
 							<label class="radio">
-								<?= form_radio('widget_frameless', 1, $frame_none) ?>
+								<?= form_radio('frameless', 1, $frame_none) ?>
 								<?= $this->lang->line('frameless') ?>
 							</label>
 						</div>
@@ -226,7 +226,7 @@
 								</label>
 							<?php endforeach ?>
 							
-							<?= form_hidden('widget_roles', $widget_roles) ?>
+							<?= form_hidden('access_roles', $access_roles) ?>
 						</div>
 					</div>
 				</div>
@@ -388,10 +388,10 @@
 		});
 
 		// Load widget roles
-		var widget_roles = $('[name=widget_roles]').val();
+		var access_roles = $('[name=access_roles]').val();
 
-		if (widget_roles != '') {
-			$.each(widget_roles.split('|'), function(idx, val) {
+		if (access_roles != '') {
+			$.each(access_roles.split('|'), function(idx, val) {
 				$('.widget-roles input[value=' + val + ']').attr('checked', 'checked');
 			});
 		}
@@ -511,15 +511,15 @@
 
 	// Update the widget roles checkbox data to the hidden field
 	$('.widget-roles input[type=checkbox]').click(function() {
-		var widget_roles = new Array();
+		var access_roles = new Array();
 
 		$('.widget-roles input[type=checkbox]').each(function() {
 			if ($(this).is(':checked')) {
-				widget_roles.push($(this).val());
+				access_roles.push($(this).val());
 			}
 		});
 
-		$('[name=widget_roles]').val(widget_roles.join('|'));
+		$('[name=access_roles]').val(access_roles.join('|'));
 	});
 
 	// Save the current table to local storage

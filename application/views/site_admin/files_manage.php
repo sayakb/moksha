@@ -24,7 +24,7 @@
 			<?php foreach ($files as $file): ?>
 				<tr>
 					<td>
-						<a href="<?= base_url($file->file_path) ?>">
+						<a href="<?= base_url($file->relative_path) ?>">
 							<?= $file->file_name ?>
 						</a>
 					</td>

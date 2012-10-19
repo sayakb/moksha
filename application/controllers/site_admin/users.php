@@ -86,8 +86,8 @@ class Users extends CI_Controller {
 			'page_desc'		=> $this->lang->line('manage_users_exp'),
 			'roles'			=> $this->users_model->fetch_roles(),
 			'username'		=> set_value('username'),
-			'email'			=> set_value('email'),
-			'user_roles'	=> set_value('user_roles'),
+			'email_address'	=> set_value('email_address'),
+			'roles'			=> set_value('roles'),
 			'adm_disabled'	=> NULL
 		);
 
@@ -114,13 +114,13 @@ class Users extends CI_Controller {
 			// Set exempts for email and name fields
 			$this->form_validation->unique_exempts = array(
 				'user_name'		=> $user->user_name,
-				'user_email'	=> $user->user_email
+				'email_address'	=> $user->email_address
 			);
 
 			// Process the request
 			if ($this->form_validation->run('site_admin/users/edit'))
 			{
-				if ($this->users_model->update_user($user_id, $user->user_founder == 1))
+				if ($this->users_model->update_user($user_id, $user->founder == 1))
 				{
 					$this->session->set_flashdata('success_msg', $this->lang->line('user_updated'));
 					redirect(base_url('admin/users/manage'));
@@ -137,9 +137,9 @@ class Users extends CI_Controller {
 				'page_desc'		=> $this->lang->line('manage_users_exp'),
 				'roles'			=> $this->users_model->fetch_roles(),
 				'username'		=> set_value('username', $user->user_name),
-				'email'			=> set_value('email', $user->user_email),
-				'user_roles'	=> set_value('user_roles', $user->user_roles),
-				'adm_disabled'	=> $user->user_founder == 1
+				'email_address'	=> set_value('email_address', $user->email_address),
+				'roles'			=> set_value('roles', $user->roles),
+				'adm_disabled'	=> $user->founder == 1
 			);
 
 			// Load the view

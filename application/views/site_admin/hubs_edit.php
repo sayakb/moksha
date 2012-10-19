@@ -1,4 +1,4 @@
-<?php if ($hub->hub_driver == HUB_DATABASE): ?>
+<?php if ($hub->driver == HUB_DATABASE): ?>
 	<div class="tabbable">
 		<ul class="nav nav-tabs">
 			<li class="active">
@@ -48,7 +48,7 @@
 
 					<div class="form-actions">
 						<?= form_hidden('hub_name_existing', $hub->hub_name) ?>
-						<?= form_hidden('hub_driver', $hub->hub_driver) ?>
+						<?= form_hidden('driver', $hub->driver) ?>
 						<?= form_submit('rename_hub', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 					</div>
 				<?= form_close() ?>
@@ -149,7 +149,7 @@
 			localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
 		});
 	</script>
-<?php elseif ($hub->hub_driver == HUB_RSS): ?>
+<?php elseif ($hub->driver == HUB_RSS): ?>
 	<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 		<legend>
 			<?= $this->lang->line('modify_hub') ?>
@@ -171,17 +171,17 @@
 
 		<div class="control-group">
 			<label class="control-label">
-				<?= $this->lang->line('hub_source') ?>
+				<?= $this->lang->line('source') ?>
 			</label>
 
 			<div class="controls">
-				<?= form_input('hub_source', set_value('hub_source', $hub->hub_source)) ?>
+				<?= form_input('source', set_value('source', $hub->source)) ?>
 			</div>
 		</div>
 
 		<div class="form-actions">
 			<?= form_hidden('hub_name_existing', $hub->hub_name) ?>
-			<?= form_hidden('hub_driver', $hub->hub_driver) ?>
+			<?= form_hidden('driver', $hub->driver) ?>
 			<?= form_submit('modify_hub', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 		</div>
 	<?= form_close() ?>

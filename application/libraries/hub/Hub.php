@@ -739,7 +739,7 @@ class Hub {
 	 */
 	public function is_writable($hub_name)
 	{
-		return in_array($this->details($hub_name)->hub_driver, $this->_writable_hubs);
+		return in_array($this->details($hub_name)->driver, $this->_writable_hubs);
 	}
 
 	// --------------------------------------------------------------------
@@ -797,7 +797,7 @@ class Hub {
 	 */
 	private function obj_by_hub($hub_name)
 	{
-		return $this->obj_by_driver($this->details($hub_name)->hub_driver);
+		return $this->obj_by_driver($this->details($hub_name)->driver);
 	}
 
 	// --------------------------------------------------------------------

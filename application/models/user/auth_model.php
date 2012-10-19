@@ -37,6 +37,12 @@ class Auth_model extends CI_Model {
 		$hash		= password_hash($password);
 		$in_central	= in_central();
 
+		// Cannot log in as anonymous user
+		if (trim(strtolower($username)) == 'anonymous')
+		{
+			return FALSE;
+		}
+
 		// Choose the database based on whether we are in central or not
 		//  - Central DB uses the users table
 		//  - If we are connecting to sites DB - use the users_siteId table
@@ -50,8 +56,8 @@ class Auth_model extends CI_Model {
 		}
 
 		$filter = array(
-			'user_name'		=> $username,
-			'user_password'	=> $hash
+			'user_name'	=> $username,
+			'password'	=> $hash
 		);
 
 		$query = $this->db->where($filter)->get($table);
@@ -63,11 +69,11 @@ class Auth_model extends CI_Model {
 			// Set the admin role for central, as there is no role data in the DB
 			if ($in_central)
 			{
-				$user->user_roles = ROLE_ADMIN;
+				$user->roles = ROLE_ADMIN;
 			}
 
 			// Add additional roles
-			$user->user_roles .= '|'.ROLE_LOGGED_IN;
+			$user->roles .= '|'.ROLE_LOGGED_IN;
 
 			$this->session->set_userdata($this->bootstrap->session_key.'user', $user);
 			return TRUE;
@@ -162,8 +168,8 @@ class Auth_model extends CI_Model {
 		// Add user data
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
-			'user_password'	=> password_hash($this->input->post('password')),
-			'user_email'	=> $this->input->post('email')
+			'password'		=> password_hash($this->input->post('password')),
+			'email_address'	=> $this->input->post('email_address')
 		);
 
 		return $this->db->insert("site_users_{$this->bootstrap->site_id}", $data);

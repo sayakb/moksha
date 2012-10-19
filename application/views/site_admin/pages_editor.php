@@ -99,7 +99,7 @@
 									<i class="icon-control-widget"></i>
 									<span class="widget-name"><?= $widget->widget_name ?></span>
 
-									<?= form_hidden('widget_key', $widget->widget_id) ?>
+									<?= form_hidden('update_key', $widget->widget_id) ?>
 								</span>
 							<?php endforeach ?>
 						<?php else: ?>
@@ -135,7 +135,7 @@
 						</label>
 
 						<div class="controls">
-							<?= form_input('pg_success_url', $pg_success_url) ?>
+							<?= form_input('success_url', $success_url) ?>
 							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
 							<span class="help-block"><?= $this->lang->line('success_url_exp') ?></span>
 						</div>
@@ -147,7 +147,7 @@
 						</label>
 
 						<div class="controls">
-							<?= form_input('pg_error_url', $pg_error_url) ?>
+							<?= form_input('error_url', $error_url) ?>
 							<i class="icon-refresh icon-style-embed" title="<?= $this->lang->line('supports_expr') ?>"></i>
 							<span class="help-block"><?= $this->lang->line('error_url_exp') ?></span>
 						</div>
@@ -170,7 +170,7 @@
 								</label>
 							<?php endforeach ?>
 							
-							<?= form_hidden('pg_roles', $pg_roles) ?>
+							<?= form_hidden('access_roles', $access_roles) ?>
 						</div>
 					</div>
 				</div>
@@ -248,10 +248,10 @@
 		}
 
 		// Load page roles
-		var page_roles = $('[name=pg_roles]').val();
+		var access_roles = $('[name=access_roles]').val();
 
-		if (page_roles != '') {
-			$.each(page_roles.split('|'), function(idx, val) {
+		if (access_roles != '') {
+			$.each(access_roles.split('|'), function(idx, val) {
 				$('.page-roles input[value=' + val + ']').attr('checked', 'checked');
 			});
 		}
@@ -343,15 +343,15 @@
 	
 	// Update the page roles checkbox data to the hidden field
 	$('.page-roles input[type=checkbox]').click(function() {
-		var page_roles = new Array();
+		var access_roles = new Array();
 
 		$('.page-roles input[type=checkbox]').each(function() {
 			if ($(this).is(':checked')) {
-				page_roles.push($(this).val());
+				access_roles.push($(this).val());
 			}
 		});
 
-		$('[name=pg_roles]').val(page_roles.join('|'));
+		$('[name=access_roles]').val(access_roles.join('|'));
 	});
 
 	// Save the current table to local storage
@@ -403,17 +403,17 @@
 		var column3 = new Array();
 
 		$('.column1 .widget').each(function() {
-			var id = $(this).children('[name=widget_key]').val();
+			var id = $(this).children('[name=update_key]').val();
 			column1.push(id);
 		});
 
 		$('.column2 .widget').each(function() {
-			var id = $(this).children('[name=widget_key]').val();
+			var id = $(this).children('[name=update_key]').val();
 			column2.push(id);
 		});
 
 		$('.column3 .widget').each(function() {
-			var id = $(this).children('[name=widget_key]').val();
+			var id = $(this).children('[name=update_key]').val();
 			column3.push(id);
 		});
 

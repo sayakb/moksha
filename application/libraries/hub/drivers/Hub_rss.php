@@ -40,9 +40,9 @@ class Hub_rss {
 		{
 			// First, insert into the index table
 			$data = array(
-				'hub_name'		=> $name,
-				'hub_driver'	=> HUB_RSS,
-				'hub_source'	=> $source
+				'hub_name'	=> $name,
+				'driver'	=> HUB_RSS,
+				'source'	=> $source
 			);
 
 			$this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data);
@@ -269,7 +269,7 @@ class Hub_rss {
 			
 			if ($query->num_rows() === 1)
 			{
-				$raw_feed = @file_get_contents($query->row()->hub_source);
+				$raw_feed = @file_get_contents($query->row()->source);
 				$this->CI->cache->write($raw_feed, "hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}");
 			}
 		}

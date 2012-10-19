@@ -23,7 +23,7 @@
 		</label>
 
 		<div class="controls">
-			<?= form_input('email', $email) ?>
+			<?= form_input('email_address', $email_address) ?>
 		</div>
 	</div>
 

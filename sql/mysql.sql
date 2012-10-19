@@ -32,20 +32,20 @@ CREATE TABLE `central_sites` (
 CREATE TABLE `central_users` (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(100) NOT NULL,
-  `user_password` varchar(128) NOT NULL,
-  `user_email` varchar(225) NOT NULL,
-  `user_founder` tinyint(1) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `email_address` varchar(225) NOT NULL,
+  `founder` tinyint(1) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `users_name_idx` (`user_name`),
-  KEY `users_auth_idx` (`user_name`,`user_password`)
+  KEY `users_auth_idx` (`user_name`,`password`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Insert admin user (username: admin / password: admin)
 INSERT INTO `central_users` (
   `user_name`, 
-  `user_password`, 
-  `user_email`, 
-  `user_founder`
+  `password`, 
+  `email_address`, 
+  `founder`
 )
 VALUES (
   'admin', 

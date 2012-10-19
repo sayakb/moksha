@@ -167,11 +167,11 @@ class Hubs_model extends CI_Model {
 	public function add_hub($hub_type)
 	{
 		$hub_name	= $this->input->post('hub_name');
-		$hub_source	= $this->input->post('hub_source');
+		$source		= $this->input->post('source');
 
 		if ($hub_type == HUB_RSS)
 		{
-			return $this->hub->create($hub_name, HUB_RSS, $hub_source);
+			return $this->hub->create($hub_name, HUB_RSS, $source);
 		}
 		else if ($hub_type == HUB_DATABASE)
 		{
@@ -222,13 +222,13 @@ class Hubs_model extends CI_Model {
 	public function update_hub()
 	{
 		$hub_name	= $this->input->post('hub_name_existing');
-		$hub_driver	= $this->input->post('hub_driver');
+		$driver		= $this->input->post('driver');
 		$new_data	= array('hub_name' => $this->input->post('hub_name'));
 
 		// For RSS hub, we update the source as well
-		if ($hub_driver == HUB_RSS)
+		if ($driver == HUB_RSS)
 		{
-			$new_data['hub_source'] = $this->input->post('hub_source');
+			$new_data['source'] = $this->input->post('source');
 		}
 
 		$this->hub->modify($hub_name, $new_data);

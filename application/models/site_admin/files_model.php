@@ -93,9 +93,9 @@ class Files_model extends CI_Model {
 		{
 			$file = $this->upload->data();
 			$data = array(
-				'file_name' => $file['orig_name'],
-				'file_type' => $file_type,
-				'file_path' => $config['upload_path'].'/'.$file['file_name']
+				'file_name'		=> $file['orig_name'],
+				'file_type'		=> $file_type,
+				'relative_path'	=> $config['upload_path'].'/'.$file['file_name']
 			);
 
 			if ($this->db->insert("site_files_{$this->bootstrap->site_id}", $data))
@@ -124,7 +124,7 @@ class Files_model extends CI_Model {
 		if ($file !== FALSE)
 		{
 			// Delete the actual file
-			@unlink(realpath($file->file_path));
+			@unlink(realpath($file->relative_path));
 
 			// Delete the entry from the DB
 			if ($this->db->delete("site_files_{$this->bootstrap->site_id}", array('file_id' => $file_id)))

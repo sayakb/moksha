@@ -32,7 +32,7 @@
 					</td>
 
 					<td>
-						<?= $this->lang->line('hub_type_'.$hub->hub_driver) ?>
+						<?= $this->lang->line('hub_type_'.$hub->driver) ?>
 					</td>
 
 					<td>

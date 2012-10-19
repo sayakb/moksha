@@ -86,7 +86,7 @@ class Users_model extends CI_Model {
 
 		if ($query->num_rows() == 1)
 		{
-			return $query->row()->user_founder == 1;
+			return $query->row()->founder == 1;
 		}
 		else
 		{
@@ -106,8 +106,8 @@ class Users_model extends CI_Model {
 	{
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
-			'user_password'	=> password_hash($this->input->post('password')),
-			'user_email'	=> $this->input->post('email')
+			'password'		=> password_hash($this->input->post('password')),
+			'email_address'	=> $this->input->post('email_address')
 		);
 
 		return $this->db->insert('central_users', $data);
@@ -125,12 +125,12 @@ class Users_model extends CI_Model {
 	{
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
-			'user_email'	=> $this->input->post('email')
+			'email_address'	=> $this->input->post('email_address')
 		);
 
 		if (!empty($password))
 		{
-			$data['user_password'] = password_hash($this->input->post('password'));
+			$data['password'] = password_hash($this->input->post('password'));
 		}
 
 		return $this->db->update('central_users', $data, array('user_id' => $user_id));
