@@ -835,11 +835,6 @@ dd
 	line-height: 20px;
 }
 
-dt
-{
-	font-weight: bold;
-}
-
 dd
 {
 	margin-left: 10px;
@@ -878,6 +873,17 @@ dd
 	{
 		margin-left: 180px;
 	}
+
+.dl-system dt
+{
+	line-height: 25px;
+}
+
+.dl-system dd
+{
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+	line-height: 25px;
+}
 
 hr
 {
@@ -6822,6 +6828,14 @@ to
 		border-color: #ddd;
 		border-color: rgba(0, 0, 0, 0.15);
 	}
+
+	.well h1
+	{
+		font-size: 18px;
+		line-height: 18px;
+		color: #555;
+	}
+
 
 .well-large
 {

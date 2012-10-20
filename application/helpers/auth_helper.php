@@ -67,7 +67,7 @@ function in_central()
  *
  * @access	public
  * @param	string	session key
- * @return	mixed	user data
+ * @return	mixed	user data, false if not found
  */
 function user_data($key)
 {
@@ -75,16 +75,19 @@ function user_data($key)
 	
 	if ( ! isset($user_data))
 	{
-		$CI		=& get_instance();
-		$user_data	= $CI->session->userdata($CI->bootstrap->session_key.'user');
+		$CI =& get_instance();
 
+		// Fetch the user data from session
+		$user_data = $CI->session->userdata('user');
+
+		// No data was found
 		if ($user_data === FALSE)
 		{
 			$user_data = new stdClass();
 
 			$user_data->user_id			= 0;
 			$user_data->user_name		= 'anonymous';
-			$user_data->password			= 'anonymous';
+			$user_data->password		= 'anonymous';
 			$user_data->email_address	= 'anonymous';
 			$user_data->roles			= array();
 			$user_data->founder			= 0;
@@ -99,10 +102,17 @@ function user_data($key)
 		}
 	}
 
-	if (isset($user_data->$key))
+	// Return the session ID directly, if asked for
+	if ($key == 'session_id')
+	{
+		return $CI->session->userdata('session_id');
+	}
+	else if (isset($user_data->$key))
 	{
 		return $user_data->$key;
 	}
+
+	return FALSE;
 }
 
 // --------------------------------------------------------------------

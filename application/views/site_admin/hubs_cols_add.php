@@ -35,27 +35,37 @@
 	</table>
 
 	<div class="form-actions">
-		<?= form_hidden('column_count', set_value('column_count', 5)) ?>
 		<?= form_hidden('validation_key', $this->config->item('encryption_key')) ?>
 		<?= form_submit('submit', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>
 
 <script type="text/javascript">
-	// Show boxes based on column count
-	setInterval(function() {
-		var count = $('[name=column_count]').val();
+	// Restore column count on load
+	$(function() {
+		var count = parseInt(localStorage.getItem('moksha_hub_cols'));
 
-		for (idx = 1; idx <= count; idx++) {
-			$('#col-' + idx).show();
+		if (isNaN(count)) {
+			localStorage.setItem('moksha_hub_cols', 5);
+			count = 5;
 		}
-	}, 200);
+
+		showColumns(count);
+	});
 
 	// Increment column count
 	$('#add-col').click(function() {
-		var new_count = parseInt($('[name=column_count]').val()) + 1;
-		$('[name=column_count]').val(new_count);
+		var new_count = parseInt(localStorage.getItem('moksha_hub_cols')) + 1;
+		localStorage.setItem('moksha_hub_cols', new_count);
 
+		showColumns(new_count);
 		return false;
 	});
+
+	// Show boxes based on column count
+	function showColumns(count) {
+		for (idx = 1; idx <= count; idx++) {
+			$('#col-' + idx).show();
+		}
+	}
 </script>

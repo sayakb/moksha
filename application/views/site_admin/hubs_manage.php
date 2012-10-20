@@ -59,6 +59,7 @@
 <?php endif ?>
 
 <script type="text/javascript">
-	// Clear localStorage to reset tabs, if we were in edit mode
+	// Clear localStorage to reset tabs and column data
 	localStorage.removeItem('moksha_last_tab');
+	localStorage.removeItem('moksha_hub_cols');
 </script>

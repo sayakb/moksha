@@ -170,7 +170,9 @@ class Sites_model extends CI_Model {
 		if ($success)
 		{
 			// Drop all hubs
-			foreach ($this->hub->fetch_list() as $hub)
+			$hubs = $this->db->get("site_hubs_{$site_id}")->result();
+
+			foreach ($hubs as $hub)
 			{
 				$table = "site_hub_{$hub->hub_id}_{$site_id}";
 

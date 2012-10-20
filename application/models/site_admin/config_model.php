@@ -53,6 +53,12 @@ class Config_model extends CI_Model {
 		site_config('registration',	$this->input->post('registration'));
 		site_config('captcha',		$this->input->post('captcha'));
 		site_config('stats',		$this->input->post('stats'));
+
+		// Clear the stats table if it was disabled
+		if (site_config('stats') == DISABLED)
+		{
+			$this->db->delete("site_stats_{$this->CI->bootstrap->site_id}");
+		}
 	}
 
 	// --------------------------------------------------------------------

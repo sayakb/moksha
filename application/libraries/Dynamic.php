@@ -51,8 +51,8 @@ class Dynamic {
 			$this->context->delete_data	= array();
 
 			// Load page notices
-			$this->context->success_msgs	= $this->CI->session->flashdata($this->CI->bootstrap->session_key.'success_msgs');
-			$this->context->error_msgs		= $this->CI->session->flashdata($this->CI->bootstrap->session_key.'error_msgs');
+			$this->context->success_msgs	= $this->CI->session->flashdata('success_msgs');
+			$this->context->error_msgs		= $this->CI->session->flashdata('error_msgs');
 
 			// Load the widget configuration to context
 			$this->context->config = $this->CI->config->item('widgets');
@@ -81,7 +81,7 @@ class Dynamic {
 				'delete_btns' => $this->context->delete_btns
 			);
 
-			$this->CI->session->set_userdata($this->CI->bootstrap->session_key.'btn_data', $buttons);
+			$this->CI->session->set_userdata('btn_data', $buttons);
 
 			if ($empty)
 			{
@@ -109,7 +109,7 @@ class Dynamic {
 	private function process_post()
 	{
 		// Load the button data from session
-		$btn_data		= $this->CI->session->userdata($this->CI->bootstrap->session_key.'btn_data');
+		$btn_data		= $this->CI->session->userdata('btn_data');
 		$submit_btns	= $btn_data['submit_btns'];
 		$delete_btns	= $btn_data['delete_btns'];
 
@@ -402,7 +402,7 @@ class Dynamic {
 		$notice = "{$status}_msgs";
 
 		$this->context->$notice = $message;
-		$this->CI->session->set_flashdata($this->CI->bootstrap->session_key.$notice, $message);
+		$this->CI->session->set_flashdata($notice, $message);
 
 		// Redirect if set
 		$url = "page_{$status}_url";

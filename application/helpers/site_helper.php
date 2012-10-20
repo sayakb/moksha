@@ -27,7 +27,14 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 	// Get the current site ID, if not passed
 	if ($site_id === FALSE)
 	{
-		$site_id = $CI->bootstrap->site_id;
+		if ($CI->bootstrap->site_id > 0)
+		{
+			$site_id = $CI->bootstrap->site_id;
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
 	// Get the site configuration data

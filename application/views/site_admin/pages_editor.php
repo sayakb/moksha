@@ -211,6 +211,7 @@
 						}
 
 						syncWidgets();
+						prepDroppedWidgets();
 					}
 				})
 				.sortable({
@@ -271,76 +272,15 @@
 			localStorage.setItem('moksha_widths_' + key, name.width());
 			localStorage.setItem('moksha_names_' + key, name.html());
 		});
+
+		// Prepare events
+		prepDroppedWidgets();
+		prepResponsiveActions();
 	});
 
-	setInterval(function() {
-		// Remove widget
-		$('.page-box .widget-remove')
-			.off()
-			.on('click', function() {
-				$(this).parent().remove();
-				syncWidgets();
+	// Perform responsive events on window resize
+	$(window).resize(prepResponsiveActions);
 
-				return false;
-			});
-
-		// Limit widget name on screen to 10 characters
-		$('.widget').each(function() {
-			if (!$(this).hasClass('ui-draggable-dragging') && !$(this).hasClass('ui-sortable-helper')) {
-				var key = $(this).attr('data-widget-id');
-				var name = $(this).children('.widget-name');
-
-				var widgetWidth = $(this).width();
-				var nameWidth = parseInt(localStorage.getItem('moksha_widths_' + key));
-				var nameText = localStorage.getItem('moksha_names_' + key);
-
-				if ((nameWidth + 30) > widgetWidth) {
-					nameText = nameText.substr(0, 8) + '&hellip;';
-				}
-
-				name.html(nameText);
-			}
-		});
-
-		// Toggle widget box height if box is bigger than 125px
-		// If not, disable the toggle button
-		if (!hasScrollBar($('.widget-area')) && $('.widget-area').height() <= 90) {
-			$('#widget-box-toggle')
-				.addClass('disabled')
-				.removeClass('in')
-				.off()
-				.on('click', function() {
-					return false;
-				});
-
-			$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
-			$('.widget-area').css('maxHeight', 90);
-		} else {
-			$('#widget-box-toggle')
-				.removeClass('disabled')
-				.off()
-				.on('click', function() {
-					if ($(this).hasClass('in')) {
-						$('.widget-area').animate({
-							maxHeight: 90
-						}, 'slow', function() {
-							$('#widget-box-toggle').removeClass('in');
-							$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
-						});
-					} else {
-						$('.widget-area').animate({
-							maxHeight: 500
-						}, 'slow', function() {
-							$('#widget-box-toggle').addClass('in');
-							$('#widget-box-toggle i').attr('class', 'icon-chevron-up');
-						});
-					}
-
-					return false;
-				});
-		}
-	}, 500);
-	
 	// Update the page roles checkbox data to the hidden field
 	$('.page-roles input[type=checkbox]').click(function() {
 		var access_roles = new Array();
@@ -394,6 +334,76 @@
 
 		// Sync it up!
 		syncWidgets();
+	}
+
+	// Set-up events for dropped events
+	function prepDroppedWidgets() {
+		// Remove widget
+		$('.page-box .widget-remove')
+			.off()
+			.on('click', function() {
+				$(this).parent().remove();
+				syncWidgets();
+
+				return false;
+			});
+	}
+
+	// Set-up responsive events
+	function prepResponsiveActions() {
+		// Limit widget name on screen to 10 characters
+		$('.widget').each(function() {
+			var key = $(this).attr('data-widget-id');
+			var name = $(this).children('.widget-name');
+
+			var widgetWidth = $(this).width();
+			var nameWidth = parseInt(localStorage.getItem('moksha_widths_' + key));
+			var nameText = localStorage.getItem('moksha_names_' + key);
+
+			if (!isNaN(nameWidth) && (nameWidth + 30) > widgetWidth) {
+				nameText = nameText.substr(0, 8) + '&hellip;';
+			}
+
+			name.html(nameText);
+		});
+
+		// Toggle widget box height if box is bigger than 125px
+		// If not, disable the toggle button
+		if (!hasScrollBar($('.widget-area')) && $('.widget-area').height() <= 90) {
+			$('#widget-box-toggle')
+				.addClass('disabled')
+				.removeClass('in')
+				.off()
+				.on('click', function() {
+					return false;
+				});
+
+			$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
+			$('.widget-area').css('maxHeight', 90);
+		} else {
+			$('#widget-box-toggle')
+				.removeClass('disabled')
+				.off()
+				.on('click', function() {
+					if ($(this).hasClass('in')) {
+						$('.widget-area').animate({
+							maxHeight: 90
+						}, 'slow', function() {
+							$('#widget-box-toggle').removeClass('in');
+							$('#widget-box-toggle i').attr('class', 'icon-chevron-down');
+						});
+					} else {
+						$('.widget-area').animate({
+							maxHeight: 500
+						}, 'slow', function() {
+							$('#widget-box-toggle').addClass('in');
+							$('#widget-box-toggle i').attr('class', 'icon-chevron-up');
+						});
+					}
+
+					return false;
+				});
+		}
 	}
 
 	// Sync added widgets to hidden fields

@@ -29,7 +29,7 @@ class Output_model extends CI_Model {
 	 */
 	public function fetch_page()
 	{
-		// Get the page news
+		// Get the page list
 		if ( ! $pages = $this->cache->get("pageidx_{$this->bootstrap->site_id}"))
 		{
 			$this->db->order_by('length(page_url)', 'desc');
@@ -58,6 +58,10 @@ class Output_model extends CI_Model {
 
 				if (($url == $base AND $url == $curr) OR ($url != $base AND strpos($curr, $url) === 0))
 				{
+					// Collect stats
+					$this->add_stats($page->page_id);
+
+					// Return the page data
 					$page->widgets = unserialize($page->widgets);
 					return $page;
 				}
@@ -105,6 +109,42 @@ class Output_model extends CI_Model {
 		}
 
 		return $header;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Saves statistics for a specific page
+	 *
+	 * @access	public
+	 * @param	int		page identifier
+	 * @return	void
+	 */
+	public function add_stats($page_id)
+	{
+		if (site_config('stats') == ENABLED)
+		{
+			$session_id = user_data('session_id');
+
+			// Get the stats data for the user
+			$this->db->where('session_id', $session_id);
+			$query = $this->db->get("site_stats_{$this->bootstrap->site_id}");
+
+			if ($query->num_rows() == 1)
+			{
+				$stats_data		= $query->row();
+				$page_visits	= explode('|', $stats_data->page_visits);
+
+				// Update the page visit to the stats table
+				if (is_array($page_visits) AND ! in_array($page_id, $page_visits))
+				{
+					$page_visits[] = $page_id;
+					$updated_stats = array('page_visits' => implode('|', $page_visits));
+
+					$this->db->update("site_stats_{$this->bootstrap->site_id}", $updated_stats, array('session_id' => $session_id));
+				}
+			}
+		}
 	}
 
 	// --------------------------------------------------------------------

@@ -26,16 +26,6 @@ class Bootstrap {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Site specific session key
-	 *
-	 * @access public
-	 * @var string
-	 */
-	var $session_key;
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Constructor
 	 */
 	function __construct()
@@ -95,16 +85,6 @@ class Bootstrap {
 		{
 			// Show error if site isn't found
 			show_error($this->CI->lang->line('invalid_site'));
-		}
-
-		// Make changes to environment variables based on the central flag
-		if (in_central())
-		{
-			$this->session_key = 'session_0';
-		}
-		else
-		{
-			$this->session_key = "session_{$this->site_id}";
 		}
 	}
 

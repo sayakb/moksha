@@ -75,7 +75,7 @@ class Auth_model extends CI_Model {
 			// Add additional roles
 			$user->roles .= '|'.ROLE_LOGGED_IN;
 
-			$this->session->set_userdata($this->bootstrap->session_key.'user', $user);
+			$this->session->set_userdata('user', $user);
 			return TRUE;
 		}
 		else
@@ -185,7 +185,7 @@ class Auth_model extends CI_Model {
 	 */
 	public function clear_session()
 	{
-		$this->session->unset_userdata($this->bootstrap->session_key.'user');
+		$this->session->unset_userdata('user');
 	}
 
 	// --------------------------------------------------------------------

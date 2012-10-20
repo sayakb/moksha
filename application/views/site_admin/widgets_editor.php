@@ -368,6 +368,7 @@
 				accept: ':not(.dropped)',
 				drop: function(event, ui) {
 					addControl(ui.draggable);
+					prepDroppedControl();
 				}
 			})
 			.sortable({
@@ -406,68 +407,10 @@
 		// Prepare auto-load
 		$('.widget-area').html($('.widget-autoloaded').html());
 		$('.widget-autoloaded').remove();
+
+		// Prepare events
+		prepDroppedControl();
 	});
-
-	setInterval(function() {
-		// Control configuration
-		$('.widget-box .control-configure')
-			.off()
-			.on('click', function() {
-				var $parent		= $(this).parent();
-				var ctrl_hash	= hash();
-
-				// Save the hash for future reference
-				$parent.attr('id', ctrl_hash);
-				localStorage.setItem('moksha_current_control', ctrl_hash);
-
-				// Populate data from hidden fields
-				var classes		= $parent.children('[name="control_classes[]"]').first().val();
-				var disp_src	= $parent.children('[name="control_disp_srcs[]"]').first().val();
-				var get_path	= $parent.children('[name="control_get_paths[]"]').first().val();
-				var set_path	= $parent.children('[name="control_set_paths[]"]').first().val();
-				var format		= $parent.children('[name="control_formats[]"]').first().val();
-				var validations	= $parent.children('[name="control_validations[]"]').first().val();
-				var roles		= $parent.children('[name="control_roles[]"]').first().val();
-
-				$('[name=control_class]').val(classes);
-				$('[name=control_disp_src]').val(disp_src);
-				$('[name=control_get_path]').val(get_path);
-				$('[name=control_set_path]').val(set_path);
-				$('[name=control_format]').val(format);
-
-				// Reset validation checkboxes
-				$('.control-validations input[type=checkbox]').removeAttr('checked');
-
-				// Populate validations
-				$.each(validations.split('|'), function(idx, val) {
-					$('.control-validations input[value=' + val + ']').attr('checked', 'checked');
-				});
-
-				// Reset control role checkboxes
-				$('.control-roles input[type=checkbox]').removeAttr('checked');
-
-				// Populate control roles
-				$.each(roles.split('|'), function(idx, val) {
-					$('.control-roles input[value=' + val + ']').attr('checked', 'checked');
-				});
-
-				// Set the WYSIWYG editor text - yea, we need to do it separately
-				$('.wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(disp_src);
-
-				// Show the modal config window
-				$('#modal-properties').modal('show');
-
-				return false;
-			});
-
-		// Remove control
-		$('.widget-box .control-remove')
-			.off()
-			.on('click', function() {
-				$(this).parent().remove();
-				return false;
-			});
-	}, 500);
 
 	// Write data to hidden fields when closing
 	$('#modal-submit').click(function() {
@@ -573,5 +516,67 @@
 			.addClass('dropped')
 			.html(controlHTML)
 			.appendTo('.widget-area');
+	}
+
+	// Set up events for a dropped control
+	function prepDroppedControl() {
+		// Control configuration
+		$('.widget-box .control-configure')
+			.off()
+			.on('click', function() {
+				var $parent		= $(this).parent();
+				var ctrl_hash	= hash();
+
+				// Save the hash for future reference
+				$parent.attr('id', ctrl_hash);
+				localStorage.setItem('moksha_current_control', ctrl_hash);
+
+				// Populate data from hidden fields
+				var classes		= $parent.children('[name="control_classes[]"]').first().val();
+				var disp_src	= $parent.children('[name="control_disp_srcs[]"]').first().val();
+				var get_path	= $parent.children('[name="control_get_paths[]"]').first().val();
+				var set_path	= $parent.children('[name="control_set_paths[]"]').first().val();
+				var format		= $parent.children('[name="control_formats[]"]').first().val();
+				var validations	= $parent.children('[name="control_validations[]"]').first().val();
+				var roles		= $parent.children('[name="control_roles[]"]').first().val();
+
+				$('[name=control_class]').val(classes);
+				$('[name=control_disp_src]').val(disp_src);
+				$('[name=control_get_path]').val(get_path);
+				$('[name=control_set_path]').val(set_path);
+				$('[name=control_format]').val(format);
+
+				// Reset validation checkboxes
+				$('.control-validations input[type=checkbox]').removeAttr('checked');
+
+				// Populate validations
+				$.each(validations.split('|'), function(idx, val) {
+					$('.control-validations input[value=' + val + ']').attr('checked', 'checked');
+				});
+
+				// Reset control role checkboxes
+				$('.control-roles input[type=checkbox]').removeAttr('checked');
+
+				// Populate control roles
+				$.each(roles.split('|'), function(idx, val) {
+					$('.control-roles input[value=' + val + ']').attr('checked', 'checked');
+				});
+
+				// Set the WYSIWYG editor text - yea, we need to do it separately
+				$('.wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(disp_src);
+
+				// Show the modal config window
+				$('#modal-properties').modal('show');
+
+				return false;
+			});
+
+		// Remove control
+		$('.widget-box .control-remove')
+			.off()
+			.on('click', function() {
+				$(this).parent().remove();
+				return false;
+			});
 	}
 </script>

@@ -1,6 +1,7 @@
 <?php
 
 $lang['site_adm']				= 'Moksha Administration';
+$lang['site_adm_welcome']		= 'Welcome to Moksha site administration panel';
 $lang['manage_hubs']			= 'Manage hubs';
 $lang['manage_hubs_exp']		= 'Add and edit hubs associated with this site';
 $lang['manage_widgets']			= 'Manage widgets';
@@ -13,6 +14,15 @@ $lang['manage_users']			= 'Manage users';
 $lang['manage_users_exp']		= 'Add and edit user for your site';
 $lang['site_config']			= 'Site configuration';
 $lang['site_config_exp']		= 'Manage site specific options';
+$lang['site_information']		= 'Site information';
+$lang['site_id']				= 'Site unique ID';
+$lang['site_tables']			= 'Site tables';
+$lang['db_size']				= 'Database size';
+$lang['total_users']			= 'Total users';
+$lang['total_widgets']			= 'Total widgets';
+$lang['total_pages']			= 'Total pages';
+$lang['stylesheets']			= 'Style sheets';
+$lang['js_files']				= 'JavaScript files';
 $lang['styles_scripts']			= 'Styles and scripts';
 $lang['styles_scripts_exp']		= 'Add stylesheets and javascripts to your site';
 $lang['view_hubs_exp']			= 'View data stored within a hub';

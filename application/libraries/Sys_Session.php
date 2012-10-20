@@ -15,7 +15,8 @@ class Sys_Session extends CI_Session {
 	 */
 	public function __construct($params = array())
 	{
-		$this->CI		=& get_instance();
+		$this->CI =& get_instance();
+
 		$cookie_name	= $this->CI->config->item('sess_cookie_name');
 		$table_name		= $this->CI->config->item('sess_table_name');
 
@@ -33,6 +34,56 @@ class Sys_Session extends CI_Session {
 		}
 
 		parent::__construct($params);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Create a new session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	function sess_create()
+	{
+		$sessid = '';
+
+		while (strlen($sessid) < 32)
+		{
+			$sessid .= mt_rand(0, mt_getrandmax());
+		}
+
+		// To make the session ID even more secure we'll combine it with the user's IP
+		$sessid .= $this->CI->input->ip_address();
+
+		$this->userdata = array(
+			'session_id'	=> md5(uniqid($sessid, TRUE)),
+			'ip_address'	=> $this->CI->input->ip_address(),
+			'user_agent'	=> substr($this->CI->input->user_agent(), 0, 120),
+			'last_activity'	=> $this->now,
+			'user_data'		=> ''
+		);
+
+		// Save the data to the DB if needed
+		if ($this->sess_use_database === TRUE)
+		{
+			$this->CI->db->insert($this->sess_table_name, $this->userdata);
+		}
+
+		// Perform reporting activities
+		if (site_config('stats') == ENABLED)
+		{
+			$stats_data = array(
+				'session_id'		=> $this->userdata['session_id'],
+				'ip_address'		=> $this->CI->input->ip_address(),
+				'sess_create_time'	=> $this->now
+			);
+
+			$this->CI->db->insert("site_stats_{$this->CI->bootstrap->site_id}", $stats_data);
+		}
+
+		// Write the cookie
+		$this->_set_cookie();
 	}
 
 	// --------------------------------------------------------------------
