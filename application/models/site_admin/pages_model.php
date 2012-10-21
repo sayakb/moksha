@@ -98,11 +98,15 @@ class Pages_model extends CI_Model {
 	{
 		$roles = $this->db->get("site_roles_{$this->bootstrap->site_id}")->result();
 
-		// Add author and logged-in roles
+		// Add admin and logged-in roles
 		$roles = array_merge(array(
 			(object)array(
 				'role_id'	=> ROLE_LOGGED_IN,
 				'role_name'	=> $this->lang->line('logged_in')
+			),
+			(object)array(
+				'role_id'	=> ROLE_ADMIN,
+				'role_name'	=> $this->lang->line('administrator')
 			)
 		), $roles);
 

@@ -132,8 +132,16 @@ class Output_model extends CI_Model {
 
 			if ($query->num_rows() == 1)
 			{
-				$stats_data		= $query->row();
-				$page_visits	= explode('|', $stats_data->page_visits);
+				$stats_data = $query->row();
+
+				if ( ! empty($stats_data->page_visits))
+				{
+					$page_visits = explode('|', $stats_data->page_visits);
+				}
+				else
+				{
+					$page_visits = array();
+				}
 
 				// Update the page visit to the stats table
 				if (is_array($page_visits) AND ! in_array($page_id, $page_visits))

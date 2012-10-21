@@ -59,8 +59,9 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 	// We are setting a config value
 	else
 	{
-		// Delete the cached site configuration data
+		// Delete the local and cached site configuration data
 		$CI->cache->delete("siteconfig_{$site_id}");
+		$site_config = NULL;
 
 		// Prepare the date to save
 		$site_config_data = array(

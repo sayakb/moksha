@@ -63,7 +63,7 @@
 	</div>
 
 	<div class="form-actions">
-		<?= form_hidden('roles', $roles) ?>
+		<?= form_hidden('user_roles', $user_roles) ?>
 		<?= form_submit('user_submit', $this->lang->line('submit'), 'class="btn btn-primary"') ?>
 	</div>
 <?= form_close() ?>
@@ -71,13 +71,13 @@
 <script type="text/javascript">
 	// Load user roles to checkbox, if set
 	$(function() {
-		var roles = $('[name=roles]').val();
+		var roles = $('[name=user_roles]').val();
 
 		if (roles != '') {
 			var roles_ary = roles.split('|');
 
 			$.each(roles_ary, function(idx, val) {
-				$('.user-roles input[value=' + val + ']').attr('checked', 'checked');
+				$('#user-roles input[value=' + val + ']').attr('checked', 'checked');
 			});
 		}
 	});

@@ -126,7 +126,7 @@ function user_data($key)
  */
 function check_roles($roles)
 {
-	$roles = user_data('roles');
+	$user_roles = user_data('roles');
 
 	if ( ! is_array($roles))
 	{
@@ -134,7 +134,7 @@ function check_roles($roles)
 	}
 
 	// Admins have access to everything
-	if (in_array(ROLE_ADMIN, $roles))
+	if (in_array(ROLE_ADMIN, $user_roles))
 	{
 		return TRUE;
 	}
@@ -142,7 +142,7 @@ function check_roles($roles)
 	// Check for the specific role
 	foreach ($roles as $role)
 	{
-		if ($role !== '' AND ! in_array($role, $roles))
+		if ($role !== '' AND ! in_array($role, $user_roles))
 		{
 			return FALSE;
 		}

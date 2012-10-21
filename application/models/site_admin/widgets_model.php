@@ -115,6 +115,10 @@ class Widgets_model extends CI_Model {
 			(object)array(
 				'role_id'	=> ROLE_LOGGED_IN,
 				'role_name'	=> $this->lang->line('logged_in')
+			),
+			(object)array(
+				'role_id'	=> ROLE_ADMIN,
+				'role_name'	=> $this->lang->line('administrator')
 			)
 		), $roles);
 

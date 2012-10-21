@@ -431,11 +431,12 @@ class Dynamic {
 		foreach ($widget_ids as $widget_id)
 		{
 			$widget			= $this->CI->widget->get($widget_id);
-			$update_key		= expr($widget->update_key);
 			$widget_data	= '';
 
 			if ($widget !== FALSE)
 			{
+				$update_key = expr($widget->update_key);
+
 				// Check if we have a hub attached, if not - use default data
 				if ($widget->widget_data->hub->attached_hub > 0)
 				{

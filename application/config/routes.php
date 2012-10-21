@@ -45,6 +45,7 @@ $route['admin/central/(:any)'] = 'central_admin/$1';
 $route['admin/central'] = 'central_admin/welcome';
 $route['admin/login'] = 'user/auth/login/admin';
 $route['admin/logout'] = 'user/auth/logout/admin+login';
+$route['admin/stats/(:num)'] = 'site_admin/welcome/stats/$1';
 $route['admin/(:any)'] = 'site_admin/$1';
 $route['admin'] = 'site_admin/welcome';
 

@@ -824,6 +824,18 @@ ol.unstyled
 	list-style: none;
 }
 
+ol.ol-padded
+{
+	margin-top: 5px;
+	margin-left: 40px;
+}
+
+ol.ol-padded li
+{
+	line-height: 25px;
+}
+
+
 dl
 {
 	margin-bottom: 20px;
@@ -873,17 +885,6 @@ dd
 	{
 		margin-left: 180px;
 	}
-
-.dl-system dt
-{
-	line-height: 25px;
-}
-
-.dl-system dd
-{
-	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
-	line-height: 25px;
-}
 
 hr
 {
@@ -1523,6 +1524,11 @@ table [class*=span],
 .table-hover tbody tr.info:hover td
 {
 	background-color: #c4e3f3;
+}
+
+.spacer
+{
+	height: 10px;
 }
 
 form
@@ -5967,6 +5973,12 @@ to
 	background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
+.progress-condensed
+{
+	margin: 0;
+	height: 12px;
+}
+
 .hero-unit
 {
 	padding: 60px;
@@ -6836,6 +6848,18 @@ to
 		color: #555;
 	}
 
+	.well table,
+	.well h5
+	{
+		margin: 0;
+	}
+
+	.well hr
+	{
+		margin: 10px 0;
+		border: 0;
+		border-top: 1px solid #dddddd;
+	}
 
 .well-large
 {

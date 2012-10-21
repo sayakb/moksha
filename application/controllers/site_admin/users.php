@@ -87,7 +87,7 @@ class Users extends CI_Controller {
 			'roles'			=> $this->users_model->fetch_roles(),
 			'username'		=> set_value('username'),
 			'email_address'	=> set_value('email_address'),
-			'roles'			=> set_value('roles'),
+			'user_roles'	=> set_value('user_roles'),
 			'adm_disabled'	=> NULL
 		);
 
@@ -106,10 +106,22 @@ class Users extends CI_Controller {
 	public function edit($user_id)
 	{
 		// Get user and role data
-		$user	= $this->users_model->fetch_user($user_id);
+		$user = $this->users_model->fetch_user($user_id);
+
+		// Founder cannot be edit by a non-founder
+		if ($this->users_model->check_founder($user_id) AND ! user_data('founder'))
+		{
+			show_error($this->lang->line('cannot_edit_founder'));
+		}
 
 		// Cannot edit the anonymous user
-		if ($user_id != 1)
+		else if ($user_id == 1)
+		{
+			show_error($this->lang->line('cannot_edit_anonymous'));
+		}
+
+		// All ok, serve the edit page
+		else
 		{
 			// Set exempts for email and name fields
 			$this->form_validation->unique_exempts = array(
@@ -138,16 +150,12 @@ class Users extends CI_Controller {
 				'roles'			=> $this->users_model->fetch_roles(),
 				'username'		=> set_value('username', $user->user_name),
 				'email_address'	=> set_value('email_address', $user->email_address),
-				'roles'			=> set_value('roles', $user->roles),
+				'user_roles'	=> set_value('user_roles', $user->roles),
 				'adm_disabled'	=> $user->founder == 1
 			);
 
 			// Load the view
 			$this->template->load('site_admin/users_editor', $data);
-		}
-		else
-		{
-			show_error($this->lang->line('cannot_edit_anonymous'));
 		}
 	}
 

@@ -34,11 +34,13 @@
 					<td><?= $user->user_name ?></td>
 					<td><?= $user->email_address ?></td>
 					<td>
-						<a href="<?= base_url('admin/users/edit/'.$user->user_id) ?>" class="btn btn-mini">
-							<?= $this->lang->line('edit') ?>
-						</a>
+						<?php if ( ! $user->founder OR user_data('founder')): ?>
+							<a href="<?= base_url('admin/users/edit/'.$user->user_id) ?>" class="btn btn-mini">
+								<?= $this->lang->line('edit') ?>
+							</a>
+						<?php endif ?>
 
-						<?php if ($user->founder == 0): ?>
+						<?php if ( ! $user->founder): ?>
 							<a href="<?= base_url('admin/users/delete/'.$user->user_id) ?>" class="btn btn-mini">
 								<?= $this->lang->line('delete') ?>
 							</a>

@@ -22,6 +22,7 @@ class Welcome extends CI_Controller {
 		}
 
 		$this->lang->load('central_admin');
+		$this->load->model('central_admin/welcome_model');
 	}
 
 	// --------------------------------------------------------------------
@@ -36,7 +37,8 @@ class Welcome extends CI_Controller {
 		// Set the template data
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
-			'page_desc'		=> $this->lang->line('welcome_central'),
+			'page_desc'		=> $this->lang->line('central_adm_exp'),
+			'central_info'	=> $this->welcome_model->fetch_central_info()
 		);
 
 		// Process the template

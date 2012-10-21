@@ -1,11 +1,11 @@
 <?php
 
 $lang['central_adm']		= 'Moksha Central';
+$lang['central_adm_exp']	= 'Welcome to Moksha central administration panel';
 $lang['manage_sites']		= 'Manage sites';
 $lang['manage_sites_exp']	= 'Manage your websites';
 $lang['manage_users']		= 'Manage users';
 $lang['manage_users_exp']	= 'Manage administrators for central admin';
-$lang['welcome_central']	= 'Welcome to Moksha central';
 $lang['add_new_site']		= 'Add new site';
 $lang['add_site']			= 'Add site';
 $lang['site_url']			= 'Site URL';

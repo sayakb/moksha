@@ -120,8 +120,8 @@ if (defined('ENVIRONMENT'))
  * Un-comment the $assign_to_config array below to use this feature
  *
  */
-	// $assign_to_config['name_of_config_item'] = 'value of config item';
-
+	$assign_to_config['moksha_version'] = '0.1-alpha';
+	$assign_to_config['moksha_version_nbr'] = '10000';
 
 
 // --------------------------------------------------------------------

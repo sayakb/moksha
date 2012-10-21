@@ -1,54 +1,151 @@
 <div class="well well-small">
 	<h1><?= $this->lang->line('site_information') ?></h1>
 
-	<div class="row">
-		<div class="span4">
-			<dl class="dl-horizontal dl-system">
-				<dt><?= $this->lang->line('site_id') ?></dt>
-				<dd>SITE<?= $site_info->site_id ?></dd>
+	<table class="table">
+		<colgroup>
+			<col width="25%" />
+			<col width="25%" />
+			<col width="25%" />
+			<col width="25%" />
+		</colgroup>
 
-				<dt><?= $this->lang->line('site_tables') ?></dt>
-				<dd><?= $site_info->tables ?></dd>
+		<tbody>
+			<tr>
+				<td><?= $this->lang->line('site_id') ?></td>
+				<td>SITE<?= $site_info->site_id ?></td>
 
-				<dt><?= $this->lang->line('db_size') ?></dt>
-				<dd><?= $site_info->db_size ?></dd>
+				<td><?= $this->lang->line('total_widgets') ?></td>
+				<td><?= $site_info->widget_count ?></td>
+			</tr>
 
-				<dt><?= $this->lang->line('total_users') ?></dt>
-				<dd><?= $site_info->user_count ?></dd>
-			</dl>
-		</div>
+			<tr>
+				<td><?= $this->lang->line('site_tables') ?></td>
+				<td><?= $site_info->tables ?></td>
 
-		<div class="span4">
-			<dl class="dl-horizontal dl-system">
-				<dt><?= $this->lang->line('total_widgets') ?></dt>
-				<dd><?= $site_info->widget_count ?></dd>
+				<td><?= $this->lang->line('total_pages') ?></td>
+				<td><?= $site_info->pages_count ?></td>
+			</tr>
 
-				<dt><?= $this->lang->line('total_pages') ?></dt>
-				<dd><?= $site_info->pages_count ?></dd>
+			<tr>
+				<td><?= $this->lang->line('db_size') ?></td>
+				<td><?= $site_info->db_size ?></td>
 
-				<dt><?= $this->lang->line('stylesheets') ?></dt>
-				<dd><?= $site_info->stylesheets ?></dd>
+				<td><?= $this->lang->line('stylesheets') ?></td>
+				<td><?= $site_info->stylesheets ?></td>
+			</tr>
 
-				<dt><?= $this->lang->line('js_files') ?></dt>
-				<dd><?= $site_info->scripts ?></dd>
-			</dl>
-		</div>
-	</div>
+			<tr>
+				<td><?= $this->lang->line('total_users') ?></td>
+				<td><?= $site_info->user_count ?></td>
+
+				<td><?= $this->lang->line('js_files') ?></td>
+				<td><?= $site_info->scripts ?></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
 
-<!--$lang['site_id']				= 'Site unique ID';
-$lang['site_tables']			= 'Site tables';
-$lang['db_size']				= 'Database size';
-$lang['total_users']			= 'Total users';
-$lang['total_widgets']			= 'Total widgets';
-$lang['total_pages']			= 'Total pages';
-$lang['stylesheets']			= 'Style sheets';-->
+<div class="well well-small">
+	<h1><?= $this->lang->line('site_stats') ?></h1>
 
-		<!--$info->site_id		= $this->bootstrap->site_id;
-		$info->tables		= count($this->config->item('schema'));
-		$info->db_size		= $this->fetch_size();
-		$info->user_count	= $this->fetch_count('users') - 1;
-		$info->widget_count	= $this->fetch_count('widgets');
-		$info->pages_count	= $this->fetch_count('pages');
-		$info->stylesheets	= $this->fetch_count('files', array('file_type' => 'css'));
-		$info->scripts		= $this->fetch_count('files', array('file_type' => 'js'));-->
+	<?php if ($site_stats != NULL): ?>
+		<hr />
+		<div class="row-fluid">
+			<div class="span5">
+				<h5><?= $this->lang->line('top_10_pages') ?></h5>
+
+				<?php if (count($site_stats->top_pages) > 0): ?>
+					<ol class="ol-padded">
+						<?php foreach ($site_stats->top_pages as $page): ?>
+							<li>
+								<a href="<?= base_url(expr($page->url)) ?>">
+									<?= $page->title ?>
+								</a>
+
+								<?php if ($page->hits != 1): ?>
+									(<?= sprintf($this->lang->line('n_hits'), $page->hits) ?>)
+								<?php else: ?>
+									(<?= sprintf($this->lang->line('n_hit'), $page->hits) ?>)
+								<?php endif ?>
+							</li>
+						<?php endforeach ?>
+					</ol>
+				<?php else: ?>
+					<div class="alert alert-well">
+						<?= $this->lang->line('no_top_pages') ?>
+					</div>
+				<?php endif ?>
+			</div>
+
+			<div class="span7">
+				<?= form_dropdown('year', $years, date('Y'), 'class="input-small pull-right"') ?>
+				<h5><?= $this->lang->line('visitors') ?></h5>
+
+				<table id="visitor-stats" width="100%">
+					<colgroup>
+						<col width="30" />
+						<col />
+						<col width="5" />
+					</colgroup>
+
+					<tbody>
+						<?php foreach ($months as $index => $month): ?>
+							<tr>
+								<td><?= $this->lang->line('cal_'.$month) ?></td>
+
+								<td>
+									<div class="progress progress-striped progress-condensed">
+										<div id="graph-<?= $index ?>" class="bar"></div>
+									</div>
+								</td>
+
+								<td id="count-<?= $index ?>">0</td>
+							</li>
+						<?php endforeach ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	<?php else: ?>
+		<div class="alert alert-well">
+			<?= $this->lang->line('stats_not_available') ?>
+		</div>
+	<?php endif ?>
+</div>
+
+<script type="text/javascript">
+	// Trigger visitor stats on startup
+	$(function() {
+		showVisitors('<?= $site_stats->visitors ?>');
+	});
+
+	// Show visitor graph
+	function showVisitors(data) {
+		var data = data.split('|');
+		var max = data.max();
+
+		// Show the graph and counts
+		if (max > 0) {
+			for (idx in data) {
+				$('#graph-' + idx).width((data[idx] / max * 100) + '%');
+				$('#count-' + idx).text(data[idx]);
+			}
+		} else {
+			for (idx in data) {
+				$('#graph-' + idx).width('0%');
+				$('#count-' + idx).text('0');
+			}
+		}
+	}
+
+	// Update stats using AJAX requests
+	$('[name=year]').change(function() {
+		$('#visitor-stats').animate({ opacity: 0.5 });
+
+		$.get('<?= base_url('admin') ?>' + '/stats/' + $(this).val(), function(data) {
+			$('#visitor-stats').animate({ opacity: 1 }, function() {
+				showVisitors(data);
+			});
+		});
+	});
+</script>
