@@ -217,7 +217,10 @@ class Welcome_model extends CI_Model {
 		}
 
 		// Fetch user statistics
-		$stats = $this->db->select('sess_create_time')->get("site_stats_{$this->bootstrap->site_id}")->result();
+		$this->db->select('sess_create_time');
+		$this->db->where('page_visits !=', '');
+
+		$stats = $this->db->get("site_stats_{$this->bootstrap->site_id}")->result();
 
 		// Build count for each month
 		$date		= date_create("01/01/{$year}");

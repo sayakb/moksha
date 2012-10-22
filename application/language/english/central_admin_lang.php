@@ -34,6 +34,17 @@ $lang['user_del_confirm']	= 'Are you sure you want to delete this user?';
 $lang['filter_by_username']	= 'Filter by username';
 $lang['back_user_mgmt']		= 'Back to user management';
 $lang['no_users']			= 'No users found matching the username filter';
+$lang['days_abbr']			= 'd';
+$lang['hours_abbr']			= 'h';
+$lang['mins_abbr']			= 'm';
+$lang['secs_abbr']			= 's';
+$lang['php_version']			= 'PHP version';
+$lang['mysql_version']			= 'MySQL version';
+$lang['moksha_version']			= 'Moksha version';
+$lang['db_size']				= 'Database size';
+$lang['server_load']			= 'Server load';
+$lang['server_uptime']			= 'Server uptime';
+$lang['system_information']		= 'System information';
 
 
 /* End of file central_admin_lang.php */
