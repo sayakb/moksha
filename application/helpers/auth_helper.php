@@ -48,21 +48,6 @@ function auth_redir($redirect)
 // --------------------------------------------------------------------
 
 /**
- * Checks if we are in central admin
- *
- * @access	public
- * @param	string	auth URL scheme to process
- * @return	bool	true if we are in central
- */
-function in_central()
-{
-	$CI =& get_instance();
-	return $CI->uri->segment(1) == 'admin' AND $CI->uri->segment(2) == 'central';
-}
-
-// --------------------------------------------------------------------
-
-/**
  * Fetches user data from session
  *
  * @access	public

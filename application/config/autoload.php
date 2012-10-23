@@ -56,7 +56,6 @@ $autoload['packages'] = array();
 
 $autoload['libraries'] = array(
 	'bootstrap',
-	'database',
 	'cache',
 	'template',
 	'session',

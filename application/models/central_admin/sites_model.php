@@ -86,24 +86,33 @@ class Sites_model extends CI_Model {
 			// Generate site specific tables
 			foreach ($this->config->item('schema') as $table => $schema)
 			{
-				// Add fields to the table
-				$this->dbforge->add_field($schema['fields']);
-
-				// Add keys if any are set
-				if (isset($schema['keys']) AND is_array($schema['keys']))
+				if (substr($table, 0, 5) == 'site_')
 				{
-					foreach ($schema['keys'] as $columns => $is_primary)
+					// Add fields to the table
+					$this->dbforge->add_field($schema['fields']);
+
+					// Add keys if any are set
+					if (isset($schema['keys']) AND is_array($schema['keys']))
 					{
-						if (strpos($columns, ',') !== FALSE)
+						foreach ($schema['keys'] as $columns => $is_primary)
 						{
-							$columns = explode(',', $columns);
+							if (strpos($columns, ',') !== FALSE)
+							{
+								$columns = explode(',', $columns);
+							}
+
+							$this->dbforge->add_key($columns, $is_primary);
 						}
-
-						$this->dbforge->add_key($columns, $is_primary);
 					}
-				}
 
-				$this->dbforge->create_table("{$table}_{$site_id}");
+					// Drop table if it exists
+					if ($this->db->table_exists("{$table}_{$site_id}"))
+					{
+						$this->dbforge->drop_table("{$table}_{$site_id}");
+					}
+
+					$this->dbforge->create_table("{$table}_{$site_id}");
+				}
 			}
 
 			// Write the site configuration
@@ -185,7 +194,10 @@ class Sites_model extends CI_Model {
 			// Drop all site tables
 			foreach ($this->config->item('schema') as $table => $schema)
 			{
-				$this->dbforge->drop_table("{$table}_{$site_id}");
+				if (substr($table, 0, 5) == 'site_')
+				{
+					$this->dbforge->drop_table("{$table}_{$site_id}");
+				}
 			}
 		}
 

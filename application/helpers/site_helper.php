@@ -81,6 +81,34 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 
 // --------------------------------------------------------------------
 
+/**
+ * Checks if we are in central admin
+ *
+ * @access	public
+ * @return	bool	true if we are in central
+ */
+function in_central()
+{
+	$CI =& get_instance();
+	return $CI->uri->segment(1) == 'admin' AND $CI->uri->segment(2) == 'central';
+}
+
+// --------------------------------------------------------------------
+
+/**
+ * Checks if we are in install mode
+ *
+ * @access	public
+ * @return	bool	true if we are in install mode
+ */
+function in_install()
+{
+	$CI =& get_instance();
+	return $CI->uri->segment(1) == 'install';
+}
+
+// --------------------------------------------------------------------
+
 
 /* End of file site_helper.php */
 /* Location: ./application/helpers/site_helper.php */

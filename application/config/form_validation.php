@@ -8,6 +8,35 @@
 */
 
 $config = array(
+	// Installer
+	'system/install' => array(
+		array(
+			'field'	=>	'hostname',
+			'label'	=>	'lang:hostname',
+			'rules'	=>	'required'
+		),
+		array(
+			'field'	=>	'port',
+			'label'	=>	'lang:port',
+			'rules'	=>	'numeric'
+		),
+		array(
+			'field'	=>	'username',
+			'label'	=>	'lang:username',
+			'rules'	=>	'trim'
+		),
+		array(
+			'field'	=>	'db_name',
+			'label'	=>	'lang:db_name',
+			'rules'	=>	'required'
+		),
+		array(
+			'field'	=>	'key',
+			'label'	=>	'lang:install',
+			'rules'	=>	'callback_check_config'
+		)
+	),
+
 	// Login pages
 	'user/auth/login' => array(
 		array(

@@ -3,14 +3,109 @@
 | -------------------------------------------------------------------------
 | Schemas
 | -------------------------------------------------------------------------
-| This file lets you define the schemas for the tables that will be auto
-| generated for each site
+| This file lets you define the schemas for all Moksha tables.
+|
+| The central tables are created only once by the installer, while
+| the site tables are auto-generated whenever a new site is created
 |
 |  - For fields,use CI style schema
-|  - For keys,use column => flag schema,where flag indicates a primary key
-|    Multi-column keys should be separated by a comma: column1,column2 => flag
+|  - For keys,use column => flag (TRUE for a primary key) pattern
+|  - Multi-column keys should be separated by a comma: column1,column2 => flag
 |
 */
+
+$config['schema']['central_sessions'] = array(
+	'fields' => array(
+		'session_id' => array(
+			'type'			=> 'VARCHAR',
+			'constraint'	=> 40,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		),
+		'ip_address' => array(
+			'type'			=> 'VARCHAR',
+			'constraint'	=> 45,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		),
+		'user_agent' => array(
+			'type'			=> 'VARCHAR',
+			'constraint'	=> 120,
+			'null'			=> FALSE
+		),
+		'last_activity' => array(
+			'type'			=> 'INT',
+			'constraint'	=> 10,
+			'unsigned'		=> TRUE,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		),
+		'user_data'			=> array(
+			'type'			=> 'TEXT',
+			'null'			=> FALSE
+		)
+	),
+	'keys' => array(
+		'session_id'		=> TRUE,
+		'last_activity'		=> FALSE
+	)
+);
+
+$config['schema']['central_sites'] = array(
+	'fields' => array(
+		'site_id' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
+		),
+		'site_url' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 255,
+			'null'				=> FALSE
+		)
+	),
+	'keys' => array(
+		'site_id'				=> TRUE,
+		'site_url'				=> FALSE
+	)
+);
+
+$config['schema']['central_users'] = array(
+	'fields' => array(
+		'user_id' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 20,
+			'null'				=> FALSE,
+			'auto_increment'	=> TRUE
+		),
+		'user_name' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 100,
+			'null'				=> FALSE
+		),
+		'password' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 128,
+			'null'				=> FALSE
+		),
+		'email_address' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 225,
+			'null'				=> FALSE
+		),
+		'founder' => array(
+			'type'				=> 'TINYINT',
+			'constraint'		=> 1,
+			'null'				=> FALSE,
+			'default'			=> 0
+		)
+	),
+	'keys' => array(
+		'user_id'				=> TRUE,
+		'user_name,password'	=> FALSE
+	)
+);
 
 $config['schema']['site_sessions'] = array(
 	'fields' => array(

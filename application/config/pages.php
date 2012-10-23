@@ -8,6 +8,7 @@
 */
 $config['pages']['disallowed_urls'] = array(
 	'admin',
+	'install',
 	'login',
 	'logout',
 	'register',

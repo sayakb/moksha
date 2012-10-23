@@ -105,7 +105,7 @@ class Template {
 			'caption'		=> $caption,
 		);
 
-		exit($this->load('system/confirm_box', $data, TRUE));
+		exit($this->load('common/confirm_box', $data, TRUE));
 	}
 
 	// --------------------------------------------------------------------
@@ -174,21 +174,21 @@ class Template {
 		}
 
 		// We assume that output is being returned
-		$parsed .= $this->CI->load->view("layout/header", $data, $output);
+		$parsed .= $this->CI->load->view("common/header", $data, $output);
 
 		if ($subdir == 'central_admin/' OR $subdir == 'site_admin/')
 		{
-			$parsed .= $this->CI->load->view("layout/header_admin", $data, $output);
+			$parsed .= $this->CI->load->view("common/header_admin", $data, $output);
 		}
 
 		$parsed .= $this->CI->load->view($view, $data, $output);
 
 		if ($subdir == 'central_admin/' OR $subdir == 'site_admin/')
 		{
-			$parsed .= $this->CI->load->view("layout/footer_admin", $data, $output);
+			$parsed .= $this->CI->load->view("common/footer_admin", $data, $output);
 		}
 
-		$parsed .= $this->CI->load->view("layout/footer", $data, $output);
+		$parsed .= $this->CI->load->view("common/footer", $data, $output);
 
 		return $parsed;
 	}

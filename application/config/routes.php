@@ -38,6 +38,9 @@
 |
 */
 
+// Installer override
+$route['install'] = 'system/install';
+
 // Administration pages
 $route['admin/central/login'] = 'user/auth/login/admin+central';
 $route['admin/central/logout'] = 'user/auth/logout/admin+central+login';
