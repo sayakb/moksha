@@ -38,6 +38,7 @@ class Welcome extends CI_Controller {
 		$data = array(
 			'page_title'	=> $this->lang->line('central_adm'),
 			'page_desc'		=> $this->lang->line('central_adm_exp'),
+			'conf_writable'	=> is_really_writable(APPPATH.'config/database.php'),
 			'central_info'	=> $this->welcome_model->fetch_central_info()
 		);
 

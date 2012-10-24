@@ -154,10 +154,10 @@ class Welcome_model extends CI_Model {
 			{
 				$uptime	= shell_exec("cut -d. -f1 /proc/uptime");
 
-				$days	= str_pad(floor($uptime / 60 / 60 / 24), 2, '0', STR_PAD_LEFT);
-				$hours	= str_pad($uptime / 60 / 60 % 24, 2, '0', STR_PAD_LEFT);
-				$mins	= str_pad($uptime / 60 % 60, 2, '0', STR_PAD_LEFT);
-				$secs	= str_pad($uptime % 60, 2, '0', STR_PAD_LEFT);
+				$days	= floor($uptime / 60 / 60 / 24);
+				$hours	= $uptime / 60 / 60 % 24;
+				$mins	= $uptime / 60 % 60;
+				$secs	= $uptime % 60;
 
 				return "{$days}{$d} {$hours}{$h} {$mins}{$m} {$secs}{$s}";
 			}
@@ -182,7 +182,7 @@ class Welcome_model extends CI_Model {
 				foreach (array('days', 'hours', 'mins', 'secs') as $key => $val)
 				{
 					$parts[$key] = explode(' ', trim($parts[$key]));
-					$$val = $key ? str_pad(array_shift($parts[$key]), 2, '0', STR_PAD_LEFT) : array_shift($parts[$key]);
+					$$val = array_shift($parts[$key]);
 				}
 
 				return "{$days}{$d} {$hours}{$h} {$mins}{$m} {$secs}{$s}";

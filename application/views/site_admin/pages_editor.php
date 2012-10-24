@@ -39,22 +39,18 @@
 				<div id="page-layout" class="btn-group" data-toggle="buttons-radio">
 					<button type="button" class="btn active" data-toggle="button" data-layout="1-1-1">
 						<i class="icon-layout-1-1-1"></i>
-						<?= form_radio('pg_layouts[]', '1-1-1') ?>
 					</button>
 
 					<button type="button" class="btn" data-toggle="button" data-layout="2-1">
 						<i class="icon-layout-2-1"></i>
-						<?= form_radio('pg_layouts[]', '2-1') ?>
 					</button>
 
 					<button type="button" class="btn" data-toggle="button" data-layout="1-2">
 						<i class="icon-layout-1-2"></i>
-						<?= form_radio('pg_layouts[]', '1-2') ?>
 					</button>
 
 					<button type="button" class="btn" data-toggle="button" data-layout="3">
 						<i class="icon-layout-3"></i>
-						<?= form_radio('pg_layouts[]', '3') ?>
 					</button>
 				</div>
 
@@ -245,7 +241,7 @@
 				.addClass('active')
 				.children('input[type=radio]').attr('checked', 'checked');
 
-			changeLayout();
+			changeLayout(layout);
 		}
 
 		// Load page roles
@@ -303,9 +299,12 @@
 	$('#page-layout button').click(changeLayout);
 	
 	// Change page layout
-	function changeLayout() {
-		var layout = $('#page-layout input[type=radio]:checked').val();
-		$('[name=pg_layout]').val(layout);
+	function changeLayout(layout) {
+		// Layout was not passed
+		if (typeof(layout) != 'string') {
+			var layout = $(this).attr('data-layout');
+			$('[name=pg_layout]').val(layout);
+		}
 
 		// Adjust the view based on layout
 		switch(layout)

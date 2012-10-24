@@ -123,17 +123,32 @@ class Users_model extends CI_Model {
 	 */
 	public function update_user($user_id)
 	{
+		// Update the user data
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
 			'email_address'	=> $this->input->post('email_address')
 		);
 
-		if (!empty($password))
+		// Update the password, if specified
+		$password = $this->input->post('password');
+
+		if ( ! empty($password))
 		{
-			$data['password'] = password_hash($this->input->post('password'));
+			$data['password'] = password_hash($password);
 		}
 
-		return $this->db->update('central_users', $data, array('user_id' => $user_id));
+		$status = $this->db->update('central_users', $data, array('user_id' => $user_id));
+
+		// Update session data if updating self
+		if (user_data('user_id') == $user_id)
+		{
+			$user_data = $this->db->get_where('central_users', $data, array('user_id' => $user_id))->row();
+			$user_data->roles = ROLE_ADMIN.'|'.ROLE_LOGGED_IN;
+			
+			$this->session->set_userdata('user', $user_data);
+		}
+
+		return $status;
 	}
 
 	// --------------------------------------------------------------------

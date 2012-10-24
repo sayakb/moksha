@@ -183,12 +183,26 @@ class Users_model extends CI_Model {
 			'roles'			=> implode('|', $roles_ary)
 		);
 
-		if (!empty($password))
+		// Update the password, if specified
+		$password = $this->input->post('password');
+
+		if ( ! empty($password))
 		{
-			$data['password'] = password_hash($this->input->post('password'));
+			$data['password'] = password_hash($password);
 		}
 
-		return $this->db->update("site_users_{$this->bootstrap->site_id}", $data, array('user_id' => $user_id));
+		$status = $this->db->update("site_users_{$this->bootstrap->site_id}", $data, array('user_id' => $user_id));
+
+		// Update session data if updating self
+		if (user_data('user_id') == $user_id)
+		{
+			$user_data = $this->db->get_where("site_users_{$this->bootstrap->site_id}", $data, array('user_id' => $user_id))->row();
+			$user_data->roles .= '|'.ROLE_LOGGED_IN;
+
+			$this->session->set_userdata('user', $user_data);
+		}
+
+		return $status;
 	}
 
 	// --------------------------------------------------------------------

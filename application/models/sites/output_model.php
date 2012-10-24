@@ -58,8 +58,25 @@ class Output_model extends CI_Model {
 
 				if (($url == $base AND $url == $curr) OR ($url != $base AND strpos($curr, $url) === 0))
 				{
-					// Collect stats
-					$this->add_stats($page->page_id);
+					// Update the hit counter
+					if (site_config('stats') == ENABLED)
+					{
+						$page_visits = $this->session->userdata('page_visits');
+
+						if ( ! is_array($page_visits))
+						{
+							$page_visits = array();
+						}
+
+						if ( ! in_array($page->page_id, $page_visits))
+						{
+							$this->db->where('page_id', $page->page_id);
+							$this->db->update("site_pages_{$this->bootstrap->site_id}", array('access_count' => $page->access_count + 1));
+
+							$page_visits[] = $page->page_id;
+							$this->session->set_userdata('page_visits', $page_visits);
+						}
+					}
 
 					// Return the page data
 					$page->widgets = unserialize($page->widgets);
@@ -109,50 +126,6 @@ class Output_model extends CI_Model {
 		}
 
 		return $header;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Saves statistics for a specific page
-	 *
-	 * @access	public
-	 * @param	int		page identifier
-	 * @return	void
-	 */
-	public function add_stats($page_id)
-	{
-		if (site_config('stats') == ENABLED)
-		{
-			$session_id = user_data('session_id');
-
-			// Get the stats data for the user
-			$this->db->where('session_id', $session_id);
-			$query = $this->db->get("site_stats_{$this->bootstrap->site_id}");
-
-			if ($query->num_rows() == 1)
-			{
-				$stats_data = $query->row();
-
-				if ( ! empty($stats_data->page_visits))
-				{
-					$page_visits = explode('|', $stats_data->page_visits);
-				}
-				else
-				{
-					$page_visits = array();
-				}
-
-				// Update the page visit to the stats table
-				if (is_array($page_visits) AND ! in_array($page_id, $page_visits))
-				{
-					$page_visits[] = $page_id;
-					$updated_stats = array('page_visits' => implode('|', $page_visits));
-
-					$this->db->update("site_stats_{$this->bootstrap->site_id}", $updated_stats, array('session_id' => $session_id));
-				}
-			}
-		}
 	}
 
 	// --------------------------------------------------------------------

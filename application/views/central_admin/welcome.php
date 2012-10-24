@@ -1,3 +1,9 @@
+<?php if ($conf_writable): ?>
+	<div class="alert alert-error">
+		<?= $this->lang->line('config_writable') ?>
+	</div>
+<?php endif ?>
+
 <div class="well well-small">
 	<h1><?= $this->lang->line('system_information') ?></h1>
 

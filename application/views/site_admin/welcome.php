@@ -58,14 +58,12 @@
 					<ol class="ol-padded">
 						<?php foreach ($site_stats->top_pages as $page): ?>
 							<li>
-								<a href="<?= base_url(expr($page->url)) ?>">
-									<?= $page->title ?>
-								</a>
+								<a href="<?= base_url(expr($page->page_url)) ?>"><?= $page->page_title ?></a>
 
-								<?php if ($page->hits != 1): ?>
-									(<?= sprintf($this->lang->line('n_hits'), $page->hits) ?>)
+								<?php if ($page->access_count != 1): ?>
+									(<?= sprintf($this->lang->line('n_hits'), $page->access_count) ?>)
 								<?php else: ?>
-									(<?= sprintf($this->lang->line('n_hit'), $page->hits) ?>)
+									(<?= sprintf($this->lang->line('n_hit'), $page->access_count) ?>)
 								<?php endif ?>
 							</li>
 						<?php endforeach ?>

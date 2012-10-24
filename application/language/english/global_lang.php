@@ -33,6 +33,7 @@ $lang['site_offline_exp']		= 'This site is down for maintenance';
 $lang['feature_unavailable']	= 'Feature unavailable';
 $lang['login_disabled']			= 'The site administrator has disabled user login for this site';
 $lang['registration_disabled']	= 'The site administrator has disabled user registration for this site';
+$lang['config_writable']		= 'The database configuration file is world writable. Please adjust the permissions accordingly to eliminate any security risks involved.';
 
 
 /* End of file global_lang.php */

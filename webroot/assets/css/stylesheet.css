@@ -4177,18 +4177,6 @@ input[type="submit"].btn
 	background-color: #222222;
 }
 
-.btn-group[data-toggle=buttons-radio] input[type=radio]
-{
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	opacity: 0;
-	filter: alpha(Opacity=0);
-}
-
 .btn .caret
 {
 	margin-top: 8px;
@@ -7185,7 +7173,7 @@ button.close
 
 		.page-area.span1 .widget
 		{
-			width: 97.5%;
+			width: 177px;
 		}
 
 	.page-area.span2
@@ -7195,7 +7183,7 @@ button.close
 
 		.page-area.span2 .widget
 		{
-			width: 98.5%;
+			width: 406px;
 		}
 
 	.page-area.span3
@@ -7205,7 +7193,7 @@ button.close
 
 		.page-area.span3 .widget
 		{
-			width: 99.5%;
+			width: 635px;
 		}
 
 .toolbox-area
@@ -8100,15 +8088,30 @@ ol.linenums
 		width: 163px;
 	}
 
+		.page-area.span1 .widget
+		{
+			width: 123px;
+		}
+
 	.page-area.span2
 	{
 		width: 338px;
 	}
 
+		.page-area.span2 .widget
+		{
+			width: 298px;
+		}
+
 	.page-area.span3
 	{
 		width: 513px;
 	}
+
+		.page-area.span3 .widget
+		{
+			width: 473px;
+		}
 }
 
 @media (min-width: 1200px)
@@ -8629,13 +8632,28 @@ ol.linenums
 		width: 273px;
 	}
 
+			.page-area.span1 .widget
+		{
+			width: 233px;
+		}
+
 	.page-area.span2
 	{
 		width: 558px;
 	}
 
+		.page-area.span2 .widget
+		{
+			width: 518px;
+		}
+
 	.page-area.span3
 	{
 		width: 843px;
 	}
+
+		.page-area.span3 .widget
+		{
+			width: 803px;
+		}
 }

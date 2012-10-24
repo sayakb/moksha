@@ -344,6 +344,12 @@ $config['schema']['site_pages'] = array(
 		'widgets' => array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
+		),
+		'access_count' => array(
+			'type'				=> 'BIGINT',
+			'constraint'		=> 15,
+			'null'				=> FALSE,
+			'default'			=> 0
 		)
 	),
 	'keys' => array(
@@ -397,31 +403,25 @@ $config['schema']['site_config'] = array(
 
 $config['schema']['site_stats'] = array(
 	'fields' => array(
-		'session_id' => array(
-			'type'			=> 'VARCHAR',
-			'constraint'	=> 40,
-			'null'			=> FALSE,
-			'default'		=> '0'
-		),
-		'ip_address' => array(
-			'type'			=> 'VARCHAR',
-			'constraint'	=> 45,
-			'null'			=> FALSE,
-			'default'		=> '0'
-		),
-		'sess_create_time' => array(
+		'year' => array(
 			'type'			=> 'INT',
-			'constraint'	=> 10,
-			'unsigned'		=> TRUE,
-			'null'			=> FALSE,
-			'default'		=> '0'
+			'constraint'	=> 4,
+			'null'			=> FALSE
 		),
-		'page_visits' => array(
-			'type'			=> 'TEXT'
+		'month' => array(
+			'type'			=> 'INT',
+			'constraint'	=> 2,
+			'null'			=> FALSE
+		),
+		'visitors' => array(
+			'type'			=> 'BIGINT',
+			'constraint'	=> 15,
+			'null'			=> FALSE,
+			'default'		=> 0
 		)
 	),
 	'keys' => array(
-		'session_id'		=> TRUE
+		'year,month'		=> TRUE
 	)
 );
 

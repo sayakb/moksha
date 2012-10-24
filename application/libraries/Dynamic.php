@@ -405,7 +405,7 @@ class Dynamic {
 		$this->CI->session->set_flashdata($notice, $message);
 
 		// Redirect if set
-		$url = "page_{$status}_url";
+		$url = "{$status}_url";
 
 		if ( ! empty($this->context->page->$url))
 		{
