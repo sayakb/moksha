@@ -325,7 +325,9 @@ class Hub {
 		if ( ! $this->_result = $this->CI->cache->get($key))
 		{
 			$this->_result = $this->obj_by_hub($hub_name)->get($this->details($hub_name)->hub_id, $where, $order_by, $limit);
+
 			$this->CI->cache->write($this->_result, $key);
+			$this->reset();
 		}
 
 		return $this;
@@ -404,6 +406,8 @@ class Hub {
 			if ($count = $this->obj_by_hub($hub_name)->update($this->details($hub_name)->hub_id, $data, $where))
 			{
 				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				$this->reset();
+
 				return $count;
 			}
 		}
@@ -445,6 +449,8 @@ class Hub {
 			if ($count = $this->obj_by_hub($hub_name)->delete($this->details($hub_name)->hub_id, $where))
 			{
 				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				$this->reset();
+
 				return $count;
 			}
 		}
@@ -528,10 +534,7 @@ class Hub {
 	 */
 	public function result()
 	{
-		$result = $this->_result;
-		$this->reset();
-
-		return $result;
+		return $this->_result;
 	}
 
 	// --------------------------------------------------------------------
@@ -773,7 +776,6 @@ class Hub {
 	 */
 	private function reset()
 	{
-		$this->_result	= array();
 		$this->_filters	= array(
 			'where'		=> array(
 				'AND'	=> array(),
