@@ -364,6 +364,8 @@ class Hub {
 			if ($count = $this->obj_by_hub($hub_name)->insert($this->details($hub_name)->hub_id, $data))
 			{
 				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				$this->reset();
+
 				return $count;
 			}
 		}
