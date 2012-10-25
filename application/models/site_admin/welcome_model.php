@@ -96,7 +96,7 @@ class Welcome_model extends CI_Model {
 
 		$query = $this->db->get('information_schema.TABLES');
 
-		if ($query->num_rows() == 1)
+		if ($query !== FALSE AND $query->num_rows() == 1)
 		{
 			$size = $query->row()->size;
 
@@ -114,7 +114,7 @@ class Welcome_model extends CI_Model {
 			return "{$size} {$suffix[$offset]}";
 		}
 
-		return 0;
+		return 'N/A';
 	}
 
 	// --------------------------------------------------------------------

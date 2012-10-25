@@ -53,7 +53,7 @@ class Welcome_model extends CI_Model {
 		$this->db->select_sum('data_length + index_length', 'size');
 		$query = $this->db->get('information_schema.TABLES');
 
-		if ($query->num_rows() == 1)
+		if ($query !== FALSE AND $query->num_rows() == 1)
 		{
 			$size = $query->row()->size;
 
@@ -71,7 +71,7 @@ class Welcome_model extends CI_Model {
 			return "{$size} {$suffix[$offset]}";
 		}
 
-		return 0;
+		return 'N/A';
 	}
 
 	// --------------------------------------------------------------------
@@ -99,36 +99,22 @@ class Welcome_model extends CI_Model {
 				$load = explode(' ', `uptime`);
 				return $load[count($load) - 1];
 			}
-			else
-			{
-				return FALSE;
-			}
 		}
 		else
 		{
-			if (class_exists('COM'))
+			if (function_exists('exec'))
 			{
-				$wmi	= new COM('WinMgmts:\\\\.');
-				$cpus	= $wmi->InstancesOf('Win32_Processor');
+				$load = array();
+				exec('wmic cpu get loadpercentage', $load);
 
-				$cpuload = 0;
-				$i = 0;
-
-				while ($cpu = $cpus->Next())
+				if ( ! empty($load[1]))
 				{
-					$cpuload += $cpu->LoadPercentage;
-					$i++;
+					return "{$load[1]}%";
 				}
-
-				$cpuload = round($cpuload / $i, 2);
-
-				return "{$cpuload}%";
-			}
-			else
-			{
-				return FALSE;
 			}
 		}
+		
+		return '-';
 	}
 
 	// --------------------------------------------------------------------
@@ -161,37 +147,51 @@ class Welcome_model extends CI_Model {
 
 				return "{$days}{$d} {$hours}{$h} {$mins}{$m} {$secs}{$s}";
 			}
-			else
-			{
-				return FALSE;
-			}
 		}
 		else
 		{
 			if (function_exists('exec'))
 			{
-				// 'systeminfo' can take a while
-				set_time_limit(150);
-
-				$uptime	= exec('systeminfo | find "System Up"');
-
-				$parts	= explode(':', $uptime);
-				$parts	= array_pop($parts);
-				$parts	= explode(',', trim($parts));
-
-				foreach (array('days', 'hours', 'mins', 'secs') as $key => $val)
+				if ( ! $info = $this->cache->get('systeminfo'))
 				{
-					$parts[$key] = explode(' ', trim($parts[$key]));
-					$$val = array_shift($parts[$key]);
+					$info = array();
+
+					set_time_limit(150);
+					exec('systeminfo', $info);
+
+					$this->cache->write($info, 'systeminfo');
 				}
 
-				return "{$days}{$d} {$hours}{$h} {$mins}{$m} {$secs}{$s}";
-			}
-			else
-			{
-				return FALSE;
+				foreach ($info as $line)
+				{
+					if (strpos($line, 'Boot Time:') !== FALSE)
+					{
+						$boot = trim(substr($line, strpos($line, ':') + 1));
+					}
+					else if (strpos($line, 'Time Zone:') !== FALSE)
+					{
+						$pos = strpos($line, 'UTC') + 3;
+
+						$operation	= substr($line, $pos, 1);
+						$offset_h	= substr($line, $pos + 1, 2);
+						$offset_m	= substr($line, $pos + 4, 2);
+					}
+				}
+
+				if (isset($boot) AND isset($operation))
+				{
+					$interval			= date_interval_create_from_date_string("{$offset_h} hours {$offset_m} minutes");
+					$interval->invert	= $operation == '-' ? 1 : 0;
+
+					$current	= date_add(date_create(), $interval);
+					$diff		= date_diff($current, date_create($boot));
+
+					return "{$diff->d}{$d} {$diff->h}{$h} {$diff->i}{$m} {$diff->s}{$s}";
+				}
 			}
 		}
+
+		return '-';
 	}
 
 	// --------------------------------------------------------------------
