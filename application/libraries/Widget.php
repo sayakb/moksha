@@ -34,7 +34,7 @@ class Widget {
 	public function get($widget_id)
 	{
 		$this->CI->db->where('widget_id', $widget_id);
-		$widget = $this->CI->db->get("site_widgets_{$this->CI->bootstrap->site_id}")->row();
+		$widget = $this->CI->db->get("site_widgets_{$this->CI->site->site_id}")->row();
 
 		if (count($widget) != 0)
 		{
@@ -57,7 +57,7 @@ class Widget {
 	 */
 	public function count()
 	{
-		return $this->CI->db->count_all("site_widgets_{$this->CI->bootstrap->site_id}");
+		return $this->CI->db->count_all("site_widgets_{$this->CI->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -78,7 +78,7 @@ class Widget {
 			'widget_data'		=> serialize($widget_data)
 		));
 
-		return $this->CI->db->insert("site_widgets_{$this->CI->bootstrap->site_id}", $data);
+		return $this->CI->db->insert("site_widgets_{$this->CI->site->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -100,7 +100,7 @@ class Widget {
 			'widget_data'		=> serialize($widget_data)
 		));
 
-		return $this->CI->db->update("site_widgets_{$this->CI->bootstrap->site_id}", $data, array('widget_id' => $widget_id));
+		return $this->CI->db->update("site_widgets_{$this->CI->site->site_id}", $data, array('widget_id' => $widget_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -114,7 +114,7 @@ class Widget {
 	 */
 	public function delete($widget_id)
 	{
-		return $this->CI->db->delete("site_widgets_{$this->CI->bootstrap->site_id}", array('widget_id' => $widget_id));
+		return $this->CI->db->delete("site_widgets_{$this->CI->site->site_id}", array('widget_id' => $widget_id));
 	}
 
 	// --------------------------------------------------------------------

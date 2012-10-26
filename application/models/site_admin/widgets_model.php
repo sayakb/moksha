@@ -33,7 +33,7 @@ class Widgets_model extends CI_Model {
 		$config = $this->config->item('pagination');
 		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($config['per_page'], $offset)->get("site_widgets_{$this->bootstrap->site_id}");
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_widgets_{$this->site->site_id}");
 		return $query->result();
 	}
 
@@ -104,7 +104,7 @@ class Widgets_model extends CI_Model {
 	 */
 	public function fetch_roles($ids_only = FALSE)
 	{
-		$roles = $this->db->get("site_roles_{$this->bootstrap->site_id}")->result();
+		$roles = $this->db->get("site_roles_{$this->site->site_id}")->result();
 
 		// Add author and logged-in roles
 		$roles = array_merge(array(

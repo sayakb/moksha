@@ -23,7 +23,6 @@ class Files extends CI_Controller {
 			redirect('admin/login');
 		}
 
-		$this->lang->load('site_admin');
 		$this->load->model('site_admin/files_model');
 	}
 

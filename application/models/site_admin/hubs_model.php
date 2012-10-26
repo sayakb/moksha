@@ -74,7 +74,7 @@ class Hubs_model extends CI_Model {
 	 */
 	public function fetch_hub($hub_id)
 	{
-		$query = $this->db->get_where("site_hubs_{$this->bootstrap->site_id}", array('hub_id' => $hub_id));
+		$query = $this->db->get_where("site_hubs_{$this->site->site_id}", array('hub_id' => $hub_id));
 		return $query->row();
 	}
 
@@ -106,7 +106,7 @@ class Hubs_model extends CI_Model {
 		$config = $this->config->item('pagination');
 		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($config['per_page'], $offset)->get("site_hubs_{$this->bootstrap->site_id}");
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_hubs_{$this->site->site_id}");
 		return $query->result();
 	}
 
@@ -245,7 +245,7 @@ class Hubs_model extends CI_Model {
 	 */
 	public function delete_hub($hub_id)
 	{
-		$hub_table	= "site_hubs_{$this->bootstrap->site_id}";
+		$hub_table	= "site_hubs_{$this->site->site_id}";
 		$hub_name	= $this->db->where('hub_id', $hub_id)->get($hub_table)->row()->hub_name;
 
 		return $this->hub->drop($hub_name);

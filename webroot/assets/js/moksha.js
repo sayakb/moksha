@@ -19,10 +19,13 @@ function initPage() {
 	// Prettify code boxes
 	prettyPrint();
 
+	// Date picker
+	$('.datepicker').datepicker({ dateFormat: "mm/dd/yy" });
+
 	// Prepare the confirm delete modal
 	var modalDelete = $('#modal-delete');
 
-	var btnDelete = $('.btn-delete').click(function() {
+	var btnDelete = $('.btn-delete').click(function () {
 		if ($(this).data('dialog') !== true) {
 			$(this).data('dialog', true);
 			modalDelete.modal('show');
@@ -31,13 +34,18 @@ function initPage() {
 		}
 	});
 
-	$('#modal-yes').click(function() {
+	$('#modal-yes').click(function () {
 		btnDelete.click();
 		return false;
 	});
 
-	$('#modal-no').click(function() {
+	$('#modal-no').click(function () {
 		btnDelete.data('dialog', false);
+	});
+
+	// Preserve tab state for tabbable
+	$('a[data-toggle="tab"]').on('shown', function (e) {
+		localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
 	});
 }
 
@@ -66,24 +74,44 @@ function hasScrollBar(jQobj) {
 }
 
 /**
+ * Restored a saved tab
+ *
+ * @access	public
+ * @param	string	current state
+ * @return	void
+ */
+function setTabState(state) {
+	if (state == 'error') {
+		var lastTab = localStorage.getItem('moksha_last_tab');
+
+		if (lastTab) {
+			$('a[href=' + lastTab + ']').tab('show');
+		}
+	}
+	else if (state == 'success') {
+		localStorage.removeItem('moksha_last_tab');
+	}
+}
+
+/**
  * Returns the minimum value in an array
  *
  * @access	public
  * @return	object
  */
-Array.prototype.min = function(comparer) {
+Array.prototype.min = function (comparer) {
 
-    if (this.length === 0) return null;
-    if (this.length === 1) return this[0];
+	if (this.length === 0) return null;
+	if (this.length === 1) return this[0];
 
-    comparer = (comparer || Math.min);
+	comparer = (comparer || Math.min);
+	var v = this[0];
 
-    var v = this[0];
-    for (var i = 1; i < this.length; i++) {
-        v = comparer(this[i], v);
-    }
+	for (var i = 1; i < this.length; i++) {
+		v = comparer(this[i], v);
+	}
 
-    return v;
+	return v;
 }
 
 /**
@@ -92,17 +120,17 @@ Array.prototype.min = function(comparer) {
  * @access	public
  * @return	object
  */
-Array.prototype.max = function(comparer) {
+Array.prototype.max = function (comparer) {
 
-    if (this.length === 0) return null;
-    if (this.length === 1) return this[0];
+	if (this.length === 0) return null;
+	if (this.length === 1) return this[0];
 
-    comparer = (comparer || Math.max);
+	comparer = (comparer || Math.max);
+	var v = this[0];
 
-    var v = this[0];
-    for (var i = 1; i < this.length; i++) {
-        v = comparer(this[i], v);
-    }
+	for (var i = 1; i < this.length; i++) {
+		v = comparer(this[i], v);
+	}
 
-    return v;
+	return v;
 }

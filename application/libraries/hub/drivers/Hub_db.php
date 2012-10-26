@@ -44,7 +44,7 @@ class Hub_db {
 				'driver'	=> HUB_DATABASE
 			);
 
-			if ($this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data))
+			if ($this->CI->db->insert("site_hubs_{$this->CI->site->site_id}", $data))
 			{
 				$ci_schema	= $this->resolve_ci_schema($schema, TRUE);
 				$fields		= $ci_schema->fields;
@@ -60,7 +60,7 @@ class Hub_db {
 
 				// Now we determine the hub ID and table name, and create the table.
 				$hub_id = $this->CI->db->insert_id();
-				$this->CI->dbforge->create_table("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}");
+				$this->CI->dbforge->create_table("site_hub_{$hub_id}_{$this->CI->site->site_id}");
 			}
 		}
 	}
@@ -79,7 +79,7 @@ class Hub_db {
 		$this->CI->load->dbforge();
 
 		// Drop data table, if it exists
-		$table = "site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}";
+		$table = "site_hub_{$hub_id}_{$this->CI->site->site_id}";
 
 		if ($this->CI->db->table_exists($table))
 		{
@@ -87,7 +87,7 @@ class Hub_db {
 		}
 
 		// Remove the hub entry from hub index table
-		$this->CI->db->delete("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+		$this->CI->db->delete("site_hubs_{$this->CI->site->site_id}", array('hub_id' => $hub_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -105,7 +105,7 @@ class Hub_db {
 		$new_cols = $this->resolve_ci_schema($columns)->fields;
 
 		$this->CI->load->dbforge();
-		$this->CI->dbforge->add_column("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $new_cols);
+		$this->CI->dbforge->add_column("site_hub_{$hub_id}_{$this->CI->site->site_id}", $new_cols);
 	}
 
 	// --------------------------------------------------------------------
@@ -121,7 +121,7 @@ class Hub_db {
 	public function drop_column($hub_id, $column)
 	{
 		$this->CI->load->dbforge();
-		$this->CI->dbforge->drop_column("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $column);
+		$this->CI->dbforge->drop_column("site_hub_{$hub_id}_{$this->CI->site->site_id}", $column);
 	}
 
 	// --------------------------------------------------------------------
@@ -138,7 +138,7 @@ class Hub_db {
 	public function rename_column($hub_id, $old_col, $new_col)
 	{
 		$data_type = NULL;
-		$schema = $this->CI->db->field_data("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}");
+		$schema = $this->CI->db->field_data("site_hub_{$hub_id}_{$this->CI->site->site_id}");
 
 		foreach ($schema as $column)
 		{
@@ -158,7 +158,7 @@ class Hub_db {
 			);
 
 			$this->CI->load->dbforge();
-			$this->CI->dbforge->modify_column("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $coldata);
+			$this->CI->dbforge->modify_column("site_hub_{$hub_id}_{$this->CI->site->site_id}", $coldata);
 		}
 	}
 
@@ -173,7 +173,7 @@ class Hub_db {
 	 */
 	public function schema($hub_id)
 	{
-		$fields = $this->CI->db->field_data("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}");
+		$fields = $this->CI->db->field_data("site_hub_{$hub_id}_{$this->CI->site->site_id}");
 		return $this->resolve_hub_schema($fields);
 	}
 
@@ -210,7 +210,7 @@ class Hub_db {
 		}
 
 		// Finally. let's query the table
-		return $this->CI->db->get("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}")->result();
+		return $this->CI->db->get("site_hub_{$hub_id}_{$this->CI->site->site_id}")->result();
 	}
 
 	// --------------------------------------------------------------------
@@ -224,7 +224,7 @@ class Hub_db {
 	 */
 	public function count_all($hub_id)
 	{
-		return $this->CI->db->count_all("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}");
+		return $this->CI->db->count_all("site_hub_{$hub_id}_{$this->CI->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -241,7 +241,7 @@ class Hub_db {
 	{
 		$this->format_data($hub_id, $data);
 		$this->inject_metadata($data);
-		$this->CI->db->insert("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
+		$this->CI->db->insert("site_hub_{$hub_id}_{$this->CI->site->site_id}", $data);
 
 		return $this->CI->db->affected_rows();
 	}
@@ -262,7 +262,7 @@ class Hub_db {
 		$this->format_data($hub_id, $data);
 		$this->resolve_where($where);
 		$this->inject_metadata($data);
-		$this->CI->db->update("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}", $data);
+		$this->CI->db->update("site_hub_{$hub_id}_{$this->CI->site->site_id}", $data);
 
 		return $this->CI->db->affected_rows();
 	}
@@ -280,7 +280,7 @@ class Hub_db {
 	public function delete($hub_id, $where)
 	{
 		$this->resolve_where($where);
-		$this->CI->db->delete("site_hub_{$hub_id}_{$this->CI->bootstrap->site_id}");
+		$this->CI->db->delete("site_hub_{$hub_id}_{$this->CI->site->site_id}");
 
 		return $this->CI->db->affected_rows();
 	}

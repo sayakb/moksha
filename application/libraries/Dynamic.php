@@ -539,7 +539,7 @@ class Dynamic {
 
 		if ( ! empty($output))
 		{
-			return form_open_multipart(current_url(), array('class' => "{$frame} m-widget-{$class}")).$output.form_close();
+			return "<form action='".current_url()."' class='{$frame} m-widget-{$class}' enctype='multipart/form-data' method='post'>{$output}</form>";
 		}
 		else
 		{

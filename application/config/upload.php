@@ -21,6 +21,18 @@ $config['upload']['admin']['upload_path']	= 'assets/dynamic/';
 $config['upload']['admin']['allowed_types']	= '*';
 $config['upload']['admin']['encrypt_name']	= TRUE;
 
+/*
+| -------------------------------------------------------------------------
+| Temporary files upload
+| -------------------------------------------------------------------------
+| Defines temporary files that will be deleted after reading
+|
+ */
+$config['upload']['temp']['upload_path']	= 'assets/dynamic/files/';
+$config['upload']['temp']['allowed_types']	= '*';
+$config['upload']['temp']['file_name']		= '__site_tpl_file.tpl';
+$config['upload']['temp']['overwrite']		= TRUE;
+
 
 /* End of file upload.php */
 /* Location: ./application/config/upload.php */

@@ -57,10 +57,10 @@ $config = array(
 		array(
 			'field'	=>	'username',
 			'label'	=>	'lang:username',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
-						'trim|'.
 						'is_unique[site_users.user_name]|'.
 						'alpha_dash'
 		),
@@ -78,8 +78,8 @@ $config = array(
 		array(
 			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
-			'rules'	=>	'required|'.
-						'trim|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'valid_email|'.
 						'is_unique[site_users.email_address]'
 		),
@@ -95,9 +95,10 @@ $config = array(
 		array(
 			'field'	=>	'site_url',
 			'label'	=>	'lang:site_url',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'htmlspecialchars|'.
+						'required|'.
 						'max_length[255]|'.
-						'trim|'.
 						'is_unique[central_sites.site_url]'
 		)
 	),
@@ -107,10 +108,10 @@ $config = array(
 		array(
 			'field'	=>	'username',
 			'label'	=>	'lang:username',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
-						'trim|'.
 						'is_unique[central_users.user_name]|'.
 						'alpha_dash'
 		),
@@ -128,8 +129,8 @@ $config = array(
 		array(
 			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
-			'rules'	=>	'required|'.
-						'trim|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'valid_email|'.
 						'is_unique[central_users.email_address]'
 		)
@@ -164,16 +165,38 @@ $config = array(
 		)
 	),
 
+	// Central: export site template
+	'central_admin/export_template' => array(
+		array(
+			'field'	=>	'site',
+			'label'	=>	'lang:site',
+			'rules'	=>	'callback_check_site'
+		)
+	),
+
+	// Central: add/edit site
+	'central_admin/import_template' => array(
+		array(
+			'field'	=>	'site_url',
+			'label'	=>	'lang:site_url',
+			'rules'	=>	'trim|'.
+						'htmlspecialchars|'.
+						'max_length[255]|'.
+						'required|'.
+						'is_unique[central_sites.site_url]'
+		)
+	),
+
 	// Site admin: add hub index page
 	'site_admin/hubs/add/index' => array(
 		array(
 			'field'	=>	'hub_name',
 			'label'	=>	'lang:hub_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
 						'alpha_numeric|'.
-						'trim|'.
 						'is_unique[site_hubs.hub_name]'
 		),
 		array(
@@ -213,11 +236,11 @@ $config = array(
 		array(
 			'field'	=>	'hub_name',
 			'label'	=>	'lang:hub_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
 						'alpha_numeric|'.
-						'trim|'.
 						'is_unique[site_hubs.hub_name]'
 		),
 		array(
@@ -232,11 +255,11 @@ $config = array(
 		array(
 			'field'	=>	'hub_name',
 			'label'	=>	'lang:hub_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
 						'alpha_numeric|'.
-						'trim|'.
 						'is_unique[site_hubs.hub_name]'
 		)
 	),
@@ -246,10 +269,10 @@ $config = array(
 		array(
 			'field'	=>	'column_name',
 			'label'	=>	'lang:column_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'alpha_dash|'.
 						'max_length[64]|'.
-						'trim|'.
 						'callback_check_column_edit',
 		),
 		array(
@@ -270,10 +293,10 @@ $config = array(
 		array(
 			'field'	=>	'column_name',
 			'label'	=>	'lang:column_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'alpha_dash|'.
 						'max_length[64]|'.
-						'trim|'.
 						'callback_check_column_edit',
 		)
 	),
@@ -293,9 +316,9 @@ $config = array(
 		array(
 			'field'	=>	'widget_name',
 			'label'	=>	'lang:widget_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'alpha_dash|'.
-						'trim|'.
 						'is_unique[site_widgets.widget_name]'
 		),
 		array(
@@ -385,10 +408,10 @@ $config = array(
 		array(
 			'field'	=>	'username',
 			'label'	=>	'lang:username',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'min_length[3]|'.
 						'max_length[100]|'.
-						'trim|'.
 						'is_unique[site_users.user_name]|'.
 						'alpha_dash'
 		),
@@ -406,8 +429,8 @@ $config = array(
 		array(
 			'field'	=>	'email_address',
 			'label'	=>	'lang:email_address',
-			'rules'	=>	'required|'.
-						'trim|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'valid_email|'.
 						'is_unique[site_users.email_address]'
 		),
@@ -457,10 +480,10 @@ $config = array(
 		array(
 			'field'	=>	'role_name',
 			'label'	=>	'lang:role_name',
-			'rules'	=>	'required|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'max_length[100]|'.
 						'alpha|'.
-						'trim|'.
 						'is_unique[site_roles.role_name]'
 		)
 	),
@@ -471,14 +494,15 @@ $config = array(
 			'field'	=>	'pg_title',
 			'label'	=>	'lang:page_title',
 			'rules'	=>	'required|'.
+						'htmlspecialchars|'.
 						'max_length[100]|'.
 						'is_unique[site_pages.page_title]'
 		),
 		array(
 			'field'	=>	'pg_url',
 			'label'	=>	'lang:page_url',
-			'rules'	=>	'required|'.
-						'trim|'.
+			'rules'	=>	'trim|'.
+						'required|'.
 						'max_length[255]|'.
 						'is_unique[site_pages.page_url]|'.
 						'callback_check_url'

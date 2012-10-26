@@ -33,7 +33,7 @@ class Files_model extends CI_Model {
 		$config = $this->config->item('pagination');
 		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($config['per_page'], $offset)->get("site_files_{$this->bootstrap->site_id}");
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_files_{$this->site->site_id}");
 		return $query->result();
 	}
 
@@ -63,7 +63,7 @@ class Files_model extends CI_Model {
 	 */
 	public function count_files()
 	{
-		return $this->db->count_all_results("site_files_{$this->bootstrap->site_id}");
+		return $this->db->count_all_results("site_files_{$this->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -98,7 +98,7 @@ class Files_model extends CI_Model {
 				'relative_path'	=> $config['upload_path'].'/'.$file['file_name']
 			);
 
-			if ($this->db->insert("site_files_{$this->bootstrap->site_id}", $data))
+			if ($this->db->insert("site_files_{$this->site->site_id}", $data))
 			{
 				return TRUE;
 			}
@@ -119,7 +119,7 @@ class Files_model extends CI_Model {
 	{
 		// Get the file entry from the DB
 		$this->db->where('file_id', $file_id);
-		$file = $this->db->get("site_files_{$this->bootstrap->site_id}")->row();
+		$file = $this->db->get("site_files_{$this->site->site_id}")->row();
 
 		if ($file !== FALSE)
 		{
@@ -127,10 +127,7 @@ class Files_model extends CI_Model {
 			@unlink(realpath($file->relative_path));
 
 			// Delete the entry from the DB
-			if ($this->db->delete("site_files_{$this->bootstrap->site_id}", array('file_id' => $file_id)))
-			{
-				return TRUE;
-			}
+			return $this->db->delete("site_files_{$this->site->site_id}", array('file_id' => $file_id));
 		}
 
 		return FALSE;

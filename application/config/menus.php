@@ -20,6 +20,14 @@ $config['menus']['central_admin'] = array(
 		'url'	=> 'admin/central/users/manage',
 		'label'	=> 'manage_users'
 	),
+	'templates'	=> array(
+		'url'	=> 'admin/central/templates',
+		'label'	=> 'site_templates'
+	),
+	'logs'		=> array(
+		'url'	=> 'admin/central/logs/view',
+		'label'	=> 'admin_logs'
+	)
 );
 
 $config['menus']['site_admin'] = array(

@@ -32,7 +32,7 @@ class Pages_model extends CI_Model {
 		$config = $this->config->item('pagination');
 		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($config['per_page'], $offset)->get("site_pages_{$this->bootstrap->site_id}");
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_pages_{$this->site->site_id}");
 		return $query->result();
 	}
 
@@ -49,7 +49,7 @@ class Pages_model extends CI_Model {
 	{
 		$this->db->where('page_id', $page_id);
 
-		$page = $this->db->get("site_pages_{$this->bootstrap->site_id}")->row();
+		$page = $this->db->get("site_pages_{$this->site->site_id}")->row();
 		$page->widgets = unserialize($page->widgets);
 
 		return $page;
@@ -66,7 +66,7 @@ class Pages_model extends CI_Model {
 	 */
 	public function fetch_widgets($ids_only = FALSE)
 	{
-		$widgets = $this->db->get("site_widgets_{$this->bootstrap->site_id}")->result();
+		$widgets = $this->db->get("site_widgets_{$this->site->site_id}")->result();
 
 		if ($ids_only)
 		{
@@ -96,7 +96,7 @@ class Pages_model extends CI_Model {
 	 */
 	public function fetch_roles($ids_only = FALSE)
 	{
-		$roles = $this->db->get("site_roles_{$this->bootstrap->site_id}")->result();
+		$roles = $this->db->get("site_roles_{$this->site->site_id}")->result();
 
 		// Add admin and logged-in roles
 		$roles = array_merge(array(
@@ -155,7 +155,7 @@ class Pages_model extends CI_Model {
 	 */
 	public function count_pages()
 	{
-		return $this->db->count_all("site_pages_{$this->bootstrap->site_id}");
+		return $this->db->count_all("site_pages_{$this->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -179,8 +179,8 @@ class Pages_model extends CI_Model {
 			'widgets'		=> serialize($this->populate_widgets())
 		);
 
-		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
-		return $this->db->insert("site_pages_{$this->bootstrap->site_id}", $data);
+		$this->cache->delete_group("pageidx_{$this->site->site_id}");
+		return $this->db->insert("site_pages_{$this->site->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -205,8 +205,8 @@ class Pages_model extends CI_Model {
 			'widgets'		=> serialize($this->populate_widgets())
 		);
 
-		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
-		return $this->db->update("site_pages_{$this->bootstrap->site_id}", $data, array('page_id' => $page_id));
+		$this->cache->delete_group("pageidx_{$this->site->site_id}");
+		return $this->db->update("site_pages_{$this->site->site_id}", $data, array('page_id' => $page_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -220,8 +220,8 @@ class Pages_model extends CI_Model {
 	 */
 	public function delete_page($page_id)
 	{
-		$this->cache->delete_group("pageidx_{$this->bootstrap->site_id}");
-		return $this->db->delete("site_pages_{$this->bootstrap->site_id}", array('page_id' => $page_id));
+		$this->cache->delete_group("pageidx_{$this->site->site_id}");
+		return $this->db->delete("site_pages_{$this->site->site_id}", array('page_id' => $page_id));
 	}
 
 	// --------------------------------------------------------------------

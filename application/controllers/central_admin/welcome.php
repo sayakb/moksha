@@ -21,7 +21,6 @@ class Welcome extends CI_Controller {
 			redirect('admin/central/login');
 		}
 
-		$this->lang->load('central_admin');
 		$this->load->model('central_admin/welcome_model');
 	}
 

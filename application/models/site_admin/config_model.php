@@ -57,7 +57,7 @@ class Config_model extends CI_Model {
 		// Clear the stats table if it was disabled
 		if (site_config('stats') == DISABLED)
 		{
-			$this->db->empty_table("site_stats_{$this->bootstrap->site_id}");
+			$this->db->empty_table("site_stats_{$this->site->site_id}");
 		}
 	}
 

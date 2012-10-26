@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="<?= base_url('assets/js/script.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-lib.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/wysiwyg-editor.js') ?>"></script>
+	<script type="text/javascript" src="<?= base_url('assets/js/prettify.js') ?>"></script>
 	<script type="text/javascript" src="<?= base_url('assets/js/moksha.js') ?>"></script>
 </head>
 <body>

@@ -6,8 +6,9 @@
 | Defines a list of reserved system URLs that cannot be used for pages
 |
 */
-$config['pages']['disallowed_urls'] = array(
+$config['urls']['disallowed_urls'] = array(
 	'admin',
+	'central',
 	'install',
 	'login',
 	'logout',
@@ -17,5 +18,5 @@ $config['pages']['disallowed_urls'] = array(
 );
 
 
-/* End of file pages.php */
-/* Location: ./application/config/pages.php */
+/* End of file urls.php */
+/* Location: ./application/config/urls.php */

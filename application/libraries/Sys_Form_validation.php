@@ -57,7 +57,7 @@ class Sys_Form_validation extends CI_Form_validation {
 		// Non-central tables have a _siteId suffix
 		if ( ! in_central())
 		{
-			$table = "{$table}_{$this->CI->bootstrap->site_id}";
+			$table = "{$table}_{$this->CI->site->site_id}";
 		}
 
 		// Check for exempts and apply them in the query

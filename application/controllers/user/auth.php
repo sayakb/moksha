@@ -17,10 +17,7 @@ class Auth extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->lang->load('auth');
 		$this->load->model('user/auth_model');
-		$this->load->library('form_validation');
 	}
 
 	// --------------------------------------------------------------------

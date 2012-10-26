@@ -23,7 +23,6 @@ class Pages extends CI_Controller {
 			redirect('admin/login');
 		}
 
-		$this->lang->load('site_admin');
 		$this->load->model('site_admin/pages_model');
 	}
 
@@ -255,13 +254,13 @@ class Pages extends CI_Controller {
 	 */
 	public function check_url($url)
 	{
-		$config		= $this->config->item('pages');
+		$config		= $this->config->item('urls');
 		$disallowed	= $config['disallowed_urls'];
 		$url		= str_replace(base_url(), '', $url);
 
 		foreach ($disallowed as $item)
 		{
-			$regex	= '/^\/?'.$item.'(\/(.*?)|$)/';
+			$regex	= '/^\/?'.$item.'(\/(.*?)|$)/i';
 
 			if (preg_match($regex, $url))
 			{

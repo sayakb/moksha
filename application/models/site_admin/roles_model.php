@@ -33,7 +33,7 @@ class Roles_model extends CI_Model {
 		$config = $this->config->item('pagination');
 		$offset = $config['per_page'] * ($page - 1);
 
-		$query = $this->db->limit($config['per_page'], $offset)->get("site_roles_{$this->bootstrap->site_id}");
+		$query = $this->db->limit($config['per_page'], $offset)->get("site_roles_{$this->site->site_id}");
 		return $query->result();
 	}
 
@@ -48,7 +48,7 @@ class Roles_model extends CI_Model {
 	 */
 	public function fetch_role($role_id)
 	{
-		$query = $this->db->get_where("site_roles_{$this->bootstrap->site_id}", array('role_id' => $role_id));
+		$query = $this->db->get_where("site_roles_{$this->site->site_id}", array('role_id' => $role_id));
 		return $query->row();
 	}
 
@@ -62,7 +62,7 @@ class Roles_model extends CI_Model {
 	 */
 	public function count_roles()
 	{
-		return $this->db->count_all_results("site_roles_{$this->bootstrap->site_id}");
+		return $this->db->count_all_results("site_roles_{$this->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -76,7 +76,7 @@ class Roles_model extends CI_Model {
 	public function add_role()
 	{
 		$data = array('role_name' => $this->input->post('role_name'));
-		return $this->db->insert("site_roles_{$this->bootstrap->site_id}", $data);
+		return $this->db->insert("site_roles_{$this->site->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -91,7 +91,7 @@ class Roles_model extends CI_Model {
 	public function update_role($role_id)
 	{
 		$data = array('role_name' => $this->input->post('role_name'));
-		return $this->db->update("site_roles_{$this->bootstrap->site_id}", $data, array('role_id' => $role_id));
+		return $this->db->update("site_roles_{$this->site->site_id}", $data, array('role_id' => $role_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -104,7 +104,7 @@ class Roles_model extends CI_Model {
 	 */
 	public function delete_role($role_id)
 	{
-		return $this->db->delete("site_roles_{$this->bootstrap->site_id}", array('role_id' => $role_id));
+		return $this->db->delete("site_roles_{$this->site->site_id}", array('role_id' => $role_id));
 	}
 
 	// --------------------------------------------------------------------

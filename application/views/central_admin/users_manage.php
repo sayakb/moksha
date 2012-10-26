@@ -9,6 +9,7 @@
 <?= form_open(current_url(), array('class' => 'well form-horizontal')) ?>
 	<?= $this->lang->line('filter_by_username') ?>
 	<?= form_input('user_filter', $this->input->post('user_filter')) ?>
+	&nbsp;
 	<?= form_submit('submit', $this->lang->line('submit'), 'class="btn"') ?>
 <?= form_close() ?>
 

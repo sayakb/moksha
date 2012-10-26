@@ -44,10 +44,10 @@ class Hub {
 		}
 
 		// Look up the data from cache or DB
-		else if ( ! $hub = $this->CI->cache->get("hubidx_{$this->CI->bootstrap->site_id}_{$hub_name}"))
+		else if ( ! $hub = $this->CI->cache->get("hubidx_{$this->CI->site->site_id}_{$hub_name}"))
 		{
-			$hub = $this->CI->db->get_where("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_name' => $hub_name))->row();
-			$this->CI->cache->write($hub, "hubidx_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			$hub = $this->CI->db->get_where("site_hubs_{$this->CI->site->site_id}", array('hub_name' => $hub_name))->row();
+			$this->CI->cache->write($hub, "hubidx_{$this->CI->site->site_id}_{$hub_name}");
 		}
 
 		return $hub;
@@ -64,10 +64,10 @@ class Hub {
 	 */
 	public function fetch_list()
 	{
-		if ( ! $list = $this->CI->cache->get("hubidx_{$this->CI->bootstrap->site_id}"))
+		if ( ! $list = $this->CI->cache->get("hubidx_{$this->CI->site->site_id}"))
 		{
-			$list = $this->CI->db->get("site_hubs_{$this->CI->bootstrap->site_id}")->result();
-			$this->CI->cache->write($list, "hubidx_{$this->CI->bootstrap->site_id}");
+			$list = $this->CI->db->get("site_hubs_{$this->CI->site->site_id}")->result();
+			$this->CI->cache->write($list, "hubidx_{$this->CI->site->site_id}");
 		}
 
 		return $list;
@@ -86,7 +86,7 @@ class Hub {
 	{
 		if ($hub_id != '-1')
 		{
-			$hub = $this->CI->db->get_where("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+			$hub = $this->CI->db->get_where("site_hubs_{$this->CI->site->site_id}", array('hub_id' => $hub_id));
 
 			if ($hub->num_rows() == 1)
 			{
@@ -107,7 +107,7 @@ class Hub {
 	 */
 	public function count_list()
 	{
-		return $this->CI->db->count_all("site_hubs_{$this->CI->bootstrap->site_id}");
+		return $this->CI->db->count_all("site_hubs_{$this->CI->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -124,7 +124,7 @@ class Hub {
 	public function create($hub_name, $driver, $data = FALSE)
 	{
 		$this->obj_by_driver($driver)->create($hub_name, $data);
-		$this->CI->cache->delete_group("hubidx_{$this->CI->bootstrap->site_id}");
+		$this->CI->cache->delete_group("hubidx_{$this->CI->site->site_id}");
 
 		return $this;
 	}
@@ -142,8 +142,8 @@ class Hub {
 	public function modify($hub_name, $new_data)
 	{
 		$this->CI->db->where('hub_name', $hub_name);
-		$this->CI->db->update("site_hubs_{$this->CI->bootstrap->site_id}", $new_data);
-		$this->CI->cache->delete_group("hubidx_{$this->CI->bootstrap->site_id}");
+		$this->CI->db->update("site_hubs_{$this->CI->site->site_id}", $new_data);
+		$this->CI->cache->delete_group("hubidx_{$this->CI->site->site_id}");
 
 		return $this;
 	}
@@ -160,7 +160,7 @@ class Hub {
 	public function drop($hub_name)
 	{
 		$this->obj_by_hub($hub_name)->drop($this->details($hub_name)->hub_id);
-		$this->CI->cache->delete_group("hubidx_{$this->CI->bootstrap->site_id}");
+		$this->CI->cache->delete_group("hubidx_{$this->CI->site->site_id}");
 
 		return $this;
 	}
@@ -180,7 +180,7 @@ class Hub {
 		if ($this->is_writable($hub_name))
 		{
 			$this->obj_by_hub($hub_name)->add_column($this->details($hub_name)->hub_id, $columns);
-			$this->CI->cache->delete_group("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			$this->CI->cache->delete_group("hubschema_{$this->CI->site->site_id}_{$hub_name}");
 		}
 
 		return $this;
@@ -201,7 +201,7 @@ class Hub {
 		if ($this->is_writable($hub_name))
 		{
 			$this->obj_by_hub($hub_name)->drop_column($this->details($hub_name)->hub_id, $column);
-			$this->CI->cache->delete_group("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			$this->CI->cache->delete_group("hubschema_{$this->CI->site->site_id}_{$hub_name}");
 		}
 
 		return $this;
@@ -223,7 +223,7 @@ class Hub {
 		if ($this->is_writable($hub_name))
 		{
 			$this->obj_by_hub($hub_name)->rename_column($this->details($hub_name)->hub_id, $old_col, $new_col);
-			$this->CI->cache->delete_group("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			$this->CI->cache->delete_group("hubschema_{$this->CI->site->site_id}_{$hub_name}");
 		}
 
 		return $this;
@@ -240,10 +240,10 @@ class Hub {
 	 */
 	public function schema($hub_name)
 	{
-		if ( ! $schema = $this->CI->cache->get("hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}"))
+		if ( ! $schema = $this->CI->cache->get("hubschema_{$this->CI->site->site_id}_{$hub_name}"))
 		{
 			$schema = $this->obj_by_hub($hub_name)->schema($this->details($hub_name)->hub_id);
-			$this->CI->cache->write($schema, "hubschema_{$this->CI->bootstrap->site_id}_{$hub_name}");
+			$this->CI->cache->write($schema, "hubschema_{$this->CI->site->site_id}_{$hub_name}");
 		}
 
 		return $schema;
@@ -320,7 +320,7 @@ class Hub {
 		$s_limit = serialize($limit);
 
 		// Get the hub data and store locally
-		$key = "hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}_{$s_where}{$s_order}{$s_limit}";
+		$key = "hubdata_{$this->CI->site->site_id}_{$hub_name}_{$s_where}{$s_order}{$s_limit}";
 		
 		if ( ! $this->_result = $this->CI->cache->get($key))
 		{
@@ -363,7 +363,7 @@ class Hub {
 		{
 			if ($count = $this->obj_by_hub($hub_name)->insert($this->details($hub_name)->hub_id, $data))
 			{
-				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				$this->CI->cache->delete_group("hubdata_{$this->CI->site->site_id}_{$hub_name}");
 				$this->reset();
 
 				return $count;
@@ -407,7 +407,7 @@ class Hub {
 
 			if ($count = $this->obj_by_hub($hub_name)->update($this->details($hub_name)->hub_id, $data, $where))
 			{
-				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				$this->CI->cache->delete_group("hubdata_{$this->CI->site->site_id}_{$hub_name}");
 				$this->reset();
 
 				return $count;
@@ -450,7 +450,7 @@ class Hub {
 
 			if ($count = $this->obj_by_hub($hub_name)->delete($this->details($hub_name)->hub_id, $where))
 			{
-				$this->CI->cache->delete_group("hubdata_{$this->CI->bootstrap->site_id}_{$hub_name}");
+				$this->CI->cache->delete_group("hubdata_{$this->CI->site->site_id}_{$hub_name}");
 				$this->reset();
 
 				return $count;

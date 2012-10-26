@@ -51,6 +51,7 @@ class Welcome_model extends CI_Model {
 	{
 		// Get the table size from information schema
 		$this->db->select_sum('data_length + index_length', 'size');
+		$this->db->where('table_schema', $this->db->database);
 		$query = $this->db->get('information_schema.TABLES');
 
 		if ($query !== FALSE AND $query->num_rows() == 1)
@@ -114,7 +115,7 @@ class Welcome_model extends CI_Model {
 			}
 		}
 
-		return '-';
+		return 'N/A';
 	}
 
 	// --------------------------------------------------------------------
@@ -191,7 +192,7 @@ class Welcome_model extends CI_Model {
 			}
 		}
 
-		return '-';
+		return 'N/A';
 	}
 
 	// --------------------------------------------------------------------

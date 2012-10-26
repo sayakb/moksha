@@ -42,7 +42,7 @@ class Welcome_model extends CI_Model {
 	{
 		$info = new stdClass();
 
-		$info->site_id		= $this->bootstrap->site_id;
+		$info->site_id		= $this->site->site_id;
 		$info->tables		= count($this->config->item('schema'));
 		$info->db_size		= $this->fetch_size();
 		$info->user_count	= $this->fetch_count('users') - 1;
@@ -91,8 +91,9 @@ class Welcome_model extends CI_Model {
 	{
 		// Get the table size from information schema
 		$this->db->select_sum('data_length + index_length', 'size');
+		$this->db->where('table_schema', $this->db->database);
 		$this->db->like('table_name', "site_", 'after');
-		$this->db->like('table_name', "_{$this->bootstrap->site_id}", 'before');
+		$this->db->like('table_name', "_{$this->site->site_id}", 'before');
 
 		$query = $this->db->get('information_schema.TABLES');
 
@@ -129,7 +130,7 @@ class Welcome_model extends CI_Model {
 	 */
 	public function fetch_count($item, $filters = FALSE)
 	{
-		$table = "site_{$item}_{$this->bootstrap->site_id}";
+		$table = "site_{$item}_{$this->site->site_id}";
 
 		if ($this->db->table_exists($table))
 		{
@@ -162,7 +163,7 @@ class Welcome_model extends CI_Model {
 		$this->db->order_by('access_count', 'desc');
 		$this->db->limit(10);
 
-		return $this->db->get("site_pages_{$this->bootstrap->site_id}")->result();
+		return $this->db->get("site_pages_{$this->site->site_id}")->result();
 	}
 
 	// --------------------------------------------------------------------
@@ -185,7 +186,7 @@ class Welcome_model extends CI_Model {
 		}
 
 		// Get the stats for the current year
-		$stats = $this->db->get_where("site_stats_{$this->bootstrap->site_id}", array('year' => $year))->result();
+		$stats = $this->db->get_where("site_stats_{$this->site->site_id}", array('year' => $year))->result();
 
 		// Populate data for each month
 		foreach ($stats as $stat)

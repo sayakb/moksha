@@ -29,10 +29,10 @@ class Sys_Session extends CI_Session {
 			}
 			else
 			{
-				$key = crc32("{$cookie_name}{$this->CI->bootstrap->site_id}");
+				$key = crc32("{$cookie_name}{$this->CI->site->site_id}");
 
 				$params['sess_cookie_name']	= "moksha_{$key}";
-				$params['sess_table_name']	= "site_{$table_name}_{$this->CI->bootstrap->site_id}";
+				$params['sess_table_name']	= "site_{$table_name}_{$this->CI->site->site_id}";
 			}
 
 			parent::__construct($params);
@@ -79,7 +79,7 @@ class Sys_Session extends CI_Session {
 			// Get visitor count
 			$this->CI->db->where('year', date('Y'));
 			$this->CI->db->where('month', date('m'));
-			$query = $this->CI->db->get("site_stats_{$this->CI->bootstrap->site_id}");
+			$query = $this->CI->db->get("site_stats_{$this->CI->site->site_id}");
 
 			if ($query->num_rows() == 0)
 			{
@@ -89,7 +89,7 @@ class Sys_Session extends CI_Session {
 					'visitors'	=> 1
 				);
 
-				$this->CI->db->insert("site_stats_{$this->CI->bootstrap->site_id}", $data);
+				$this->CI->db->insert("site_stats_{$this->CI->site->site_id}", $data);
 			}
 			else
 			{
@@ -97,7 +97,7 @@ class Sys_Session extends CI_Session {
 
 				$this->CI->db->where('year', date('Y'));
 				$this->CI->db->where('month', date('m'));
-				$this->CI->db->update("site_stats_{$this->CI->bootstrap->site_id}", array('visitors' => $visitors + 1));
+				$this->CI->db->update("site_stats_{$this->CI->site->site_id}", array('visitors' => $visitors + 1));
 			}
 		}
 

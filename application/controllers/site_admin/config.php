@@ -21,7 +21,6 @@ class Config extends CI_Controller {
 			redirect('admin/login');
 		}
 
-		$this->lang->load('site_admin');
 		$this->load->model('site_admin/config_model');
 	}
 

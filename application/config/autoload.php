@@ -47,7 +47,7 @@ $autoload['packages'] = array();
 | These are the classes located in the system/libraries folder
 | or in your application/libraries folder.
 |
-| !! IMPORTANT !! Always load the bootstrap library first
+| !! IMPORTANT !! Always load the site library first
 |
 | Prototype:
 |
@@ -55,7 +55,7 @@ $autoload['packages'] = array();
 */
 
 $autoload['libraries'] = array(
-	'bootstrap',
+	'site',
 	'cache',
 	'template',
 	'session',
@@ -79,10 +79,8 @@ $autoload['libraries'] = array(
 
 $autoload['helper'] = array(
 	'url',
-	'form',
 	'control',
 	'auth',
-	'array',
 	'expression',
 	'site'
 );
@@ -102,12 +100,13 @@ $autoload['helper'] = array(
 */
 
 $autoload['config'] = array(
+	'conditionals',
 	'pagination',
 	'cache',
 	'upload',
 	'expressions',
 	'widgets',
-	'pages'
+	'urls'
 );
 
 

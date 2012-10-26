@@ -45,7 +45,7 @@ class Hub_rss {
 				'source'	=> $source
 			);
 
-			$this->CI->db->insert("site_hubs_{$this->CI->bootstrap->site_id}", $data);
+			$this->CI->db->insert("site_hubs_{$this->CI->site->site_id}", $data);
 		}
 	}
 
@@ -60,7 +60,7 @@ class Hub_rss {
 	 */
 	public function drop($hub_id)
 	{
-		$this->CI->db->delete("site_hubs_{$this->CI->bootstrap->site_id}", array('hub_id' => $hub_id));
+		$this->CI->db->delete("site_hubs_{$this->CI->site->site_id}", array('hub_id' => $hub_id));
 	}
 
 	// --------------------------------------------------------------------
@@ -263,14 +263,14 @@ class Hub_rss {
 	 */
 	public function fetch_feed($hub_id)
 	{
-		if ( ! $raw_feed = $this->CI->cache->get("hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}"))
+		if ( ! $raw_feed = $this->CI->cache->get("hubfeed_{$this->CI->site->site_id}_{$hub_id}"))
 		{
-			$query = $this->CI->db->where('hub_id', $hub_id)->get("site_hubs_{$this->CI->bootstrap->site_id}");
+			$query = $this->CI->db->where('hub_id', $hub_id)->get("site_hubs_{$this->CI->site->site_id}");
 			
 			if ($query->num_rows() === 1)
 			{
 				$raw_feed = @file_get_contents($query->row()->source);
-				$this->CI->cache->write($raw_feed, "hubfeed_{$this->CI->bootstrap->site_id}_{$hub_id}");
+				$this->CI->cache->write($raw_feed, "hubfeed_{$this->CI->site->site_id}_{$hub_id}");
 			}
 		}
 

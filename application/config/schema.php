@@ -107,6 +107,27 @@ $config['schema']['central_users'] = array(
 	)
 );
 
+$config['schema']['central_logs'] = array(
+	'fields' => array(
+		'site_id' => array(
+			'type'			=> 'BIGINT',
+			'constraint'	=> 20,
+			'null'			=> FALSE
+		),
+		'message' => array(
+			'type'			=> 'TEXT',
+			'null'			=> FALSE
+		),
+		'log_time' => array(
+			'type'			=> 'INT',
+			'constraint'	=> 10,
+			'unsigned'		=> TRUE,
+			'null'			=> FALSE,
+			'default'		=> '0'
+		)
+	)
+);
+
 $config['schema']['site_sessions'] = array(
 	'fields' => array(
 		'session_id' => array(

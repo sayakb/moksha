@@ -52,7 +52,7 @@ class Auth_model extends CI_Model {
 		}
 		else
 		{
-			$table = "site_users_{$this->bootstrap->site_id}";
+			$table = "site_users_{$this->site->site_id}";
 		}
 
 		$filter = array(
@@ -110,7 +110,7 @@ class Auth_model extends CI_Model {
 				'ip_address'	=> $this->input->ip_address()
 			);
 
-			$this->db->insert("site_captcha_{$this->bootstrap->site_id}", $data);
+			$this->db->insert("site_captcha_{$this->site->site_id}", $data);
 
 			// Return the captcha image
 			return $captcha['image'];
@@ -137,14 +137,14 @@ class Auth_model extends CI_Model {
 
 			// Delete expired captchas
 			$expiration = time() - $config['expiration'];
-			$this->db->delete("site_captcha_{$this->bootstrap->site_id}", array("captcha_time <" => $expiration));
+			$this->db->delete("site_captcha_{$this->site->site_id}", array("captcha_time <" => $expiration));
 
 			// Now we fetch the captcha for the user
 			$this->db->where('word', $this->input->post('captcha'));
 			$this->db->where('ip_address', $this->input->ip_address());
 			$this->db->where('captcha_time >', $expiration);
 
-			$query = $this->db->get("site_captcha_{$this->bootstrap->site_id}");
+			$query = $this->db->get("site_captcha_{$this->site->site_id}");
 
 			// Return true if we got some data
 			return $query->num_rows() === 1;
@@ -172,7 +172,7 @@ class Auth_model extends CI_Model {
 			'email_address'	=> $this->input->post('email_address')
 		);
 
-		return $this->db->insert("site_users_{$this->bootstrap->site_id}", $data);
+		return $this->db->insert("site_users_{$this->site->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------

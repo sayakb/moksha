@@ -133,22 +133,6 @@
 			</div>
 		</div>
 	</div>
-
-	<script type="text/javascript">
-		$(function() {
-			// Go to the saved tab, if it is set
-			var lastTab = localStorage.getItem('moksha_last_tab');
-
-			if (lastTab) {
-				$('a[href=' + lastTab + ']').tab('show');
-			}
-		});
-
-		// Save the current table to local storage
-		$('a[data-toggle="tab"]').on('shown', function (e) {
-			localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
-		});
-	</script>
 <?php elseif ($hub->driver == HUB_RSS): ?>
 	<?= form_open(current_url(), array('class' => 'form-horizontal')) ?>
 		<legend>

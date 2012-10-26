@@ -31,7 +31,7 @@ class Users_model extends CI_Model {
 	public function fetch_user($user_id)
 	{
 		$this->db->where('user_id', $user_id);
-		return $this->db->get("site_users_{$this->bootstrap->site_id}")->row();
+		return $this->db->get("site_users_{$this->site->site_id}")->row();
 	}
 
 	// --------------------------------------------------------------------
@@ -58,7 +58,7 @@ class Users_model extends CI_Model {
 		$this->db->limit($config['per_page'], $offset);
 		$this->db->order_by('user_name');
 
-		$query = $this->db->get("site_users_{$this->bootstrap->site_id}");
+		$query = $this->db->get("site_users_{$this->site->site_id}");
 		return $query->result();
 	}
 
@@ -73,7 +73,7 @@ class Users_model extends CI_Model {
 	 */
 	public function fetch_roles($ids_only = FALSE)
 	{
-		$roles = $this->db->get("site_roles_{$this->bootstrap->site_id}")->result();
+		$roles = $this->db->get("site_roles_{$this->site->site_id}")->result();
 
 		// Add admin role
 		$roles = array_merge(array(
@@ -110,7 +110,7 @@ class Users_model extends CI_Model {
 	 */
 	public function count_users()
 	{
-		return $this->db->count_all_results("site_users_{$this->bootstrap->site_id}");
+		return $this->db->count_all_results("site_users_{$this->site->site_id}");
 	}
 
 	// --------------------------------------------------------------------
@@ -124,7 +124,7 @@ class Users_model extends CI_Model {
 	 */
 	public function check_founder($user_id)
 	{
-		$query = $this->db->get_where("site_users_{$this->bootstrap->site_id}", array('user_id' => $user_id));
+		$query = $this->db->get_where("site_users_{$this->site->site_id}", array('user_id' => $user_id));
 
 		if ($query->num_rows() == 1)
 		{
@@ -154,7 +154,7 @@ class Users_model extends CI_Model {
 			'roles'			=> $this->input->post('roles')
 		);
 
-		return $this->db->insert("site_users_{$this->bootstrap->site_id}", $data);
+		return $this->db->insert("site_users_{$this->site->site_id}", $data);
 	}
 
 	// --------------------------------------------------------------------
@@ -191,12 +191,12 @@ class Users_model extends CI_Model {
 			$data['password'] = password_hash($password);
 		}
 
-		$status = $this->db->update("site_users_{$this->bootstrap->site_id}", $data, array('user_id' => $user_id));
+		$status = $this->db->update("site_users_{$this->site->site_id}", $data, array('user_id' => $user_id));
 
 		// Update session data if updating self
 		if (user_data('user_id') == $user_id)
 		{
-			$user_data = $this->db->get_where("site_users_{$this->bootstrap->site_id}", $data, array('user_id' => $user_id))->row();
+			$user_data = $this->db->get_where("site_users_{$this->site->site_id}", $data, array('user_id' => $user_id))->row();
 			$user_data->roles .= '|'.ROLE_LOGGED_IN;
 
 			$this->session->set_userdata('user', $user_data);
@@ -215,7 +215,7 @@ class Users_model extends CI_Model {
 	 */
 	public function delete_user($user_id)
 	{
-		return $this->db->delete("site_users_{$this->bootstrap->site_id}", array('user_id' => $user_id));
+		return $this->db->delete("site_users_{$this->site->site_id}", array('user_id' => $user_id));
 	}
 
 	// --------------------------------------------------------------------

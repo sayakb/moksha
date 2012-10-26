@@ -30,8 +30,7 @@ class Sites_model extends CI_Model {
 	 */
 	public function fetch_site($site_id)
 	{
-		$query = $this->db->get_where('central_sites', array('site_id' => $site_id));
-		return $query->row();
+		return $this->site->fetch($site_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -75,76 +74,8 @@ class Sites_model extends CI_Model {
 	 */
 	public function add_site()
 	{
-		$this->load->dbforge();
-		$this->config->load('schema');
-
-		$success = $this->db->insert('central_sites', array('site_url' => $this->input->post('site_url')));
-		$site_id = $this->db->insert_id();
-
-		if ($success)
-		{
-			// Generate site specific tables
-			foreach ($this->config->item('schema') as $table => $schema)
-			{
-				if (substr($table, 0, 5) == 'site_')
-				{
-					// Add fields to the table
-					$this->dbforge->add_field($schema['fields']);
-
-					// Add keys if any are set
-					if (isset($schema['keys']) AND is_array($schema['keys']))
-					{
-						foreach ($schema['keys'] as $columns => $is_primary)
-						{
-							if (strpos($columns, ',') !== FALSE)
-							{
-								$columns = explode(',', $columns);
-							}
-
-							$this->dbforge->add_key($columns, $is_primary);
-						}
-					}
-
-					// Drop table if it exists
-					if ($this->db->table_exists("{$table}_{$site_id}"))
-					{
-						$this->dbforge->drop_table("{$table}_{$site_id}");
-					}
-
-					$this->dbforge->create_table("{$table}_{$site_id}");
-				}
-			}
-
-			// Write the site configuration
-			site_config('status',		ONLINE, $site_id);
-			site_config('login',		ENABLED, $site_id);
-			site_config('registration',	ENABLED, $site_id);
-			site_config('captcha',		ENABLED, $site_id);
-			site_config('stats',		ENABLED, $site_id);
-
-			// Create anonymous user
-			$anonymous = array(
-				'user_name'		=> 'anonymous',
-				'password'		=> 'anonymous',
-				'email_address'	=> 'anonymous',
-				'roles'			=> '',
-				'founder'		=> 0
-			);
-
-			// Create admin user with the same credentials of currently logged in user
-			$admin = array(
-				'user_name'		=> user_data('user_name'),
-				'password'		=> user_data('password'),
-				'email_address'	=> user_data('email_address'),
-				'roles'			=> ROLE_ADMIN,
-				'founder'		=> 1
-			);
-			
-			$this->db->insert("site_users_{$site_id}", $anonymous);
-			$this->db->insert("site_users_{$site_id}", $admin);
-		}
-
-		return $success;
+		$site_url = $this->input->post('site_url');
+		return $this->site->add($site_url);
 	}
 
 	// --------------------------------------------------------------------
@@ -157,8 +88,8 @@ class Sites_model extends CI_Model {
 	 */
 	public function update_site($site_id)
 	{
-		$data = array('site_url' => $this->input->post('site_url'));
-		return $this->db->update('central_sites', $data, array('site_id' => $site_id));
+		$site_url = $this->input->post('site_url');
+		return $this->site->update($site_id, $site_url);
 	}
 
 	// --------------------------------------------------------------------
@@ -171,37 +102,7 @@ class Sites_model extends CI_Model {
 	 */
 	public function delete_site($site_id)
 	{
-		$this->load->dbforge();
-		$this->config->load('schema');
-
-		$success = $this->db->delete('central_sites', array('site_id' => $site_id));
-
-		if ($success)
-		{
-			// Drop all hubs
-			$hubs = $this->db->get("site_hubs_{$site_id}")->result();
-
-			foreach ($hubs as $hub)
-			{
-				$table = "site_hub_{$hub->hub_id}_{$site_id}";
-
-				if ($hub->driver == HUB_DATABASE AND $this->db->table_exists($table))
-				{
-					$this->dbforge->drop_table($table);
-				}
-			}
-
-			// Drop all site tables
-			foreach ($this->config->item('schema') as $table => $schema)
-			{
-				if (substr($table, 0, 5) == 'site_')
-				{
-					$this->dbforge->drop_table("{$table}_{$site_id}");
-				}
-			}
-		}
-
-		return $success;
+		return $this->site->delete($site_id);
 	}
 
 	// --------------------------------------------------------------------

@@ -21,8 +21,6 @@ class Welcome extends CI_Controller {
 			redirect('admin/login');
 		}
 
-		$this->lang->load('site_admin');
-		$this->lang->load('calendar');
 		$this->load->model('site_admin/welcome_model');
 	}
 

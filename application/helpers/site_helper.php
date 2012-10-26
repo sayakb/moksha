@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * Moksha Site Configuration Helper
+ * Moksha Site Operation Helper
  *
  * @package		Moksha
  * @category	Helpers
@@ -27,9 +27,9 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 	// Get the current site ID, if not passed
 	if ($site_id === FALSE)
 	{
-		if ($CI->bootstrap->site_id > 0)
+		if ($CI->site->site_id > 0)
 		{
-			$site_id = $CI->bootstrap->site_id;
+			$site_id = $CI->site->site_id;
 		}
 		else
 		{
@@ -77,6 +77,20 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 	}
 
 	return FALSE;
+}
+
+// --------------------------------------------------------------------
+
+/**
+ * Checks if we are in an admin panel
+ *
+ * @access	public
+ * @return	bool	true if we are in admin
+ */
+function in_admin()
+{
+	$CI =& get_instance();
+	return $CI->uri->segment(1) == 'admin';
 }
 
 // --------------------------------------------------------------------

@@ -23,7 +23,6 @@ class Roles extends CI_Controller {
 			redirect('admin/login');
 		}
 
-		$this->lang->load('site_admin');
 		$this->load->model('site_admin/roles_model');
 	}
 

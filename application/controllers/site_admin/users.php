@@ -24,7 +24,6 @@ class Users extends CI_Controller {
 		}
 
 		$this->load->model('site_admin/users_model');
-		$this->lang->load('site_admin');
 	}
 
 	// --------------------------------------------------------------------

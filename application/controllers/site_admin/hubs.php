@@ -23,7 +23,6 @@ class Hubs extends CI_Controller {
 			redirect('admin/login');
 		}
 
-		$this->lang->load('site_admin');
 		$this->load->model('site_admin/hubs_model');
 	}
 
@@ -457,13 +456,10 @@ class Hubs extends CI_Controller {
 		$hub_columns	= $this->hubs_model->fetch_columns($hub_name);
 
 		// Disallow deleting reserved columns
-		foreach ($column_names as $name)
+		if (in_array($column_name, array('_moksha_author', '_moksha_timestamp')))
 		{
-			if (in_array($name, array('_moksha_author', '_moksha_timestamp')))
-			{
-				$this->form_validation->set_message('check_column_delete', $this->lang->line('reserved_no_del'));
-				return FALSE;
-			}
+			$this->form_validation->set_message('check_column_delete', $this->lang->line('reserved_no_del'));
+			return FALSE;
 		}
 
 		// Disallow deleting the last column

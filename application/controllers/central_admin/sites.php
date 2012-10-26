@@ -24,7 +24,6 @@ class Sites extends CI_Controller {
 		}
 
 		$this->load->model('central_admin/sites_model');
-		$this->lang->load('central_admin');
 	}
 
 	// --------------------------------------------------------------------
@@ -68,7 +67,7 @@ class Sites extends CI_Controller {
 	{
 		if ($this->form_validation->run('central_admin/sites'))
 		{
-			if ($this->sites_model->add_site())
+			if ($this->sites_model->add_site() !== FALSE)
 			{
 				$this->session->set_flashdata('success_msg', $this->lang->line('site_added'));
 				redirect(base_url('admin/central/sites/manage'), 'refresh');
@@ -155,7 +154,7 @@ class Sites extends CI_Controller {
 			}
 		}
 
-		redirect(base_url('admin/central/sites/manage'), 'refresh');
+		redirect(base_url('admin/central/sites/manage'));
 	}
 
 	// --------------------------------------------------------------------

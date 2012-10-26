@@ -30,12 +30,12 @@ class Output_model extends CI_Model {
 	public function fetch_page()
 	{
 		// Get the page list
-		if ( ! $pages = $this->cache->get("pageidx_{$this->bootstrap->site_id}"))
+		if ( ! $pages = $this->cache->get("pageidx_{$this->site->site_id}"))
 		{
 			$this->db->order_by('length(page_url)', 'desc');
-			$pages = $this->db->get("site_pages_{$this->bootstrap->site_id}")->result();
+			$pages = $this->db->get("site_pages_{$this->site->site_id}")->result();
 
-			$this->cache->write($pages, "pageidx_{$this->bootstrap->site_id}");
+			$this->cache->write($pages, "pageidx_{$this->site->site_id}");
 		}
 
 		if (count($pages) > 0)
@@ -71,7 +71,7 @@ class Output_model extends CI_Model {
 						if ( ! in_array($page->page_id, $page_visits))
 						{
 							$this->db->where('page_id', $page->page_id);
-							$this->db->update("site_pages_{$this->bootstrap->site_id}", array('access_count' => $page->access_count + 1));
+							$this->db->update("site_pages_{$this->site->site_id}", array('access_count' => $page->access_count + 1));
 
 							$page_visits[] = $page->page_id;
 							$this->session->set_userdata('page_visits', $page_visits);
@@ -106,10 +106,10 @@ class Output_model extends CI_Model {
 		$header = '';
 
 		// Get the page files
-		if ( ! $files = $this->cache->get("pagefiles_{$this->bootstrap->site_id}"))
+		if ( ! $files = $this->cache->get("pagefiles_{$this->site->site_id}"))
 		{
-			$files = $this->db->get("site_files_{$this->bootstrap->site_id}")->result();
-			$this->cache->write($files, "pagefiles_{$this->bootstrap->site_id}");
+			$files = $this->db->get("site_files_{$this->site->site_id}")->result();
+			$this->cache->write($files, "pagefiles_{$this->site->site_id}");
 		}
 
 		// Generate the header

@@ -253,13 +253,6 @@
 			});
 		}
 
-		// Go to the saved tab, if it is set
-		var lastTab = localStorage.getItem('moksha_last_tab');
-
-		if (lastTab) {
-			$('a[href=' + lastTab + ']').tab('show');
-		}
-
 		// Add widget names to local storage
 		$('.widget').each(function() {
 			var key = $(this).attr('data-widget-id');
@@ -290,11 +283,6 @@
 		$('[name=access_roles]').val(access_roles.join('|'));
 	});
 
-	// Save the current table to local storage
-	$('a[data-toggle="tab"]').on('shown', function (e) {
-		localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
-	});
-	
 	// Set page layout
 	$('#page-layout button').click(changeLayout);
 	

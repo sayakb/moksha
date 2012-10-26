@@ -17,9 +17,7 @@ class Install extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->lang->load('install');
-		$this->load->model('system/install_model');		
+		$this->load->model('system/install_model');
 	}
 
 	// --------------------------------------------------------------------

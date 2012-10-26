@@ -97,6 +97,17 @@ define('OFFLINE',	0);
 define('ENABLED',	1);
 define('DISABLED',	0);
 
+/*
+|--------------------------------------------------------------------------
+| Site constants
+|--------------------------------------------------------------------------
+|
+| These define special site constants
+|
+ */
+define('SITE_NONE',		'-1');
+define('SITE_CENTRAL',	'0');
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

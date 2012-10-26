@@ -6849,6 +6849,12 @@ to
 		border-top: 1px solid #dddddd;
 	}
 
+	.well .form-actions
+	{
+		margin-bottom: 0;
+		padding-bottom: 0;
+	}
+
 .well-large
 {
 	padding: 24px;
@@ -6863,6 +6869,21 @@ to
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
+}
+
+.well-narrow .control-label
+{
+	width: 80px;
+}
+
+.well-narrow .controls
+{
+	margin-left: 100px;
+}
+
+.well-narrow .form-actions
+{
+	padding-left: 100px;
 }
 
 .close
