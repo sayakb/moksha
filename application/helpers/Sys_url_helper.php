@@ -21,6 +21,17 @@
  */
 function base_url($uri = '')
 {
+	$CI =& get_instance();
+
+	// Strip off admin/central if we are in central but the URL
+	// does not contain any those segments. This is needed as we
+	// support a dedicated URL for central
+	if (in_central() AND $CI->uri->segment(1) != 'admin' AND $CI->uri->segment(2) != 'central')
+	{
+		$uri = substr($uri, 13);
+	}
+
+	// Do not format links if its already formatted
 	if (substr($uri, 0, 4) != 'http')
 	{
 		$CI =& get_instance();

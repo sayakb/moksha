@@ -90,7 +90,11 @@ function site_config($key, $value = FALSE, $site_id = FALSE)
 function in_admin()
 {
 	$CI =& get_instance();
-	return $CI->uri->segment(1) == 'admin';
+
+	$subdir	= $CI->router->fetch_directory();
+	$sgmt	= $CI->uri->segment(1);
+
+	return $subdir == 'central_admin/' OR $subdir == 'site_admin/' OR $sgmt == 'admin';
 }
 
 // --------------------------------------------------------------------
@@ -104,7 +108,12 @@ function in_admin()
 function in_central()
 {
 	$CI =& get_instance();
-	return $CI->uri->segment(1) == 'admin' AND $CI->uri->segment(2) == 'central';
+
+	$subdir	= $CI->router->fetch_directory();
+	$sgmt1	= $CI->uri->segment(1);
+	$sgmt2	= $CI->uri->segment(2);
+
+	return $subdir == 'central_admin/' OR ($sgmt1 == 'admin' AND $sgmt2 == 'central');
 }
 
 // --------------------------------------------------------------------

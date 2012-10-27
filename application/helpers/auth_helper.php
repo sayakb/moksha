@@ -93,6 +93,11 @@ function user_data($key)
 		}
 		else
 		{
+			if (in_central() AND ! isset($user_data->roles))
+			{
+				$user_data->roles = array(ROLE_ADMIN);
+			}
+
 			// Convert the roles into array so that it is readily usable
 			if ( ! is_array($user_data->roles))
 			{
