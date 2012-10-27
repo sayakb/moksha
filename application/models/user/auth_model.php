@@ -38,7 +38,7 @@ class Auth_model extends CI_Model {
 		$in_central	= in_central();
 
 		// Cannot log in as anonymous user
-		if (trim(strtolower($username)) == 'anonymous')
+		if (trim(strtolower($username)) == ANONYMOUS)
 		{
 			return FALSE;
 		}
@@ -66,16 +66,15 @@ class Auth_model extends CI_Model {
 		{
 			$user = $query->row();
 
-			// Set the admin role for central, as there is no role data in the DB
-			if ($in_central)
+			// Credentials are valid, see if the user has been banned
+			if ($user->active == BLOCKED)
 			{
-				$user->roles = ROLE_ADMIN;
+				show_error($this->lang->line('resource_403'));
 			}
 
-			// Add additional roles
-			$user->roles .= '|'.ROLE_LOGGED_IN;
-
+			// Create the user session
 			$this->session->set_userdata('user', $user);
+
 			return TRUE;
 		}
 		else

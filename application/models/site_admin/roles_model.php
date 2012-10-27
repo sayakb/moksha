@@ -49,7 +49,15 @@ class Roles_model extends CI_Model {
 	public function fetch_role($role_id)
 	{
 		$query = $this->db->get_where("site_roles_{$this->site->site_id}", array('role_id' => $role_id));
-		return $query->row();
+
+		if ($query->num_rows() == 1)
+		{
+			return $query->row();
+		}
+		else
+		{
+			show_error($this->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -76,6 +84,8 @@ class Roles_model extends CI_Model {
 	public function add_role()
 	{
 		$data = array('role_name' => $this->input->post('role_name'));
+		$this->admin_log->add('role_create', $data['role_name']);
+
 		return $this->db->insert("site_roles_{$this->site->site_id}", $data);
 	}
 
@@ -91,6 +101,8 @@ class Roles_model extends CI_Model {
 	public function update_role($role_id)
 	{
 		$data = array('role_name' => $this->input->post('role_name'));
+		$this->admin_log->add('role_modify', $data['role_name']);
+
 		return $this->db->update("site_roles_{$this->site->site_id}", $data, array('role_id' => $role_id));
 	}
 
@@ -104,6 +116,9 @@ class Roles_model extends CI_Model {
 	 */
 	public function delete_role($role_id)
 	{
+		$role_name = $this->fetch_role($role_id)->role_name;
+		$this->admin_log->add('role_delete', $role_name);
+
 		return $this->db->delete("site_roles_{$this->site->site_id}", array('role_id' => $role_id));
 	}
 

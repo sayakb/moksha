@@ -48,11 +48,19 @@ class Pages_model extends CI_Model {
 	public function fetch_page($page_id)
 	{
 		$this->db->where('page_id', $page_id);
+		$query = $this->db->get("site_pages_{$this->site->site_id}");
 
-		$page = $this->db->get("site_pages_{$this->site->site_id}")->row();
-		$page->widgets = unserialize($page->widgets);
+		if ($query->num_rows() == 1)
+		{
+			$page = $query->row();
+			$page->widgets = unserialize($page->widgets);
 
-		return $page;
+			return $page;
+		}
+		else
+		{
+			show_error($this->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -180,6 +188,8 @@ class Pages_model extends CI_Model {
 		);
 
 		$this->cache->delete_group("pageidx_{$this->site->site_id}");
+		$this->admin_log->add('page_create', $data['page_url']);
+
 		return $this->db->insert("site_pages_{$this->site->site_id}", $data);
 	}
 
@@ -206,6 +216,8 @@ class Pages_model extends CI_Model {
 		);
 
 		$this->cache->delete_group("pageidx_{$this->site->site_id}");
+		$this->admin_log->add('page_modify', $data['page_url']);
+
 		return $this->db->update("site_pages_{$this->site->site_id}", $data, array('page_id' => $page_id));
 	}
 
@@ -220,7 +232,11 @@ class Pages_model extends CI_Model {
 	 */
 	public function delete_page($page_id)
 	{
+		$page_url = $this->fetch_page($page_id)->page_url;
+
 		$this->cache->delete_group("pageidx_{$this->site->site_id}");
+		$this->admin_log->add('page_delete', $page_url);
+
 		return $this->db->delete("site_pages_{$this->site->site_id}", array('page_id' => $page_id));
 	}
 

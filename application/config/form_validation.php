@@ -435,6 +435,11 @@ $config = array(
 						'is_unique[site_users.email_address]'
 		),
 		array(
+			'field'	=>	'active',
+			'label'	=>	'lang:user_status',
+			'rules'	=>	'required'
+		),
+		array(
 			'field'	=>	'roles',
 			'label'	=>	'lang:roles',
 			'rules'	=>	'callback_check_roles'
@@ -467,6 +472,11 @@ $config = array(
 			'rules'	=>	'required|'.
 						'valid_email|'.
 						'is_unique[site_users.email_address]'
+		),
+		array(
+			'field'	=>	'active',
+			'label'	=>	'lang:user_status',
+			'rules'	=>	'required'
 		),
 		array(
 			'field'	=>	'roles',

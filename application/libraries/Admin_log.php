@@ -30,15 +30,18 @@ class Admin_log {
 	 *
 	 * @access	public
 	 * @param	string	message to log
+	 * @param	mixed	arg1, arg2... argument for formatting the message
 	 * @return	void
 	 */
-	public function add($message)
+	public function add()
 	{
-		$lang = $this->CI->lang->line($message);
+		$args		= func_get_args();
+		$message	= array_shift($args);
+		$local_msg	= vsprintf($this->CI->lang->line($message), $args);
 
 		$entry = array(
-			'site_id'	=> $this->CI->site->site_id,
-			'message'	=> $lang ? $lang : $message,
+			'site_id'	=> in_central() ? 0 : $this->CI->site->site_id,
+			'message'	=> $local_msg ? $local_msg : $message,
 			'log_time'	=> time()
 		);
 
@@ -107,12 +110,12 @@ class Admin_log {
 
 			if (isset($filters['from_date']))
 			{
-				$this->CI->db->where('central_logs.log_time >=', $filters['from_date']);
+				$this->CI->db->where('log_time >=', $filters['from_date']);
 			}
 
 			if (isset($filters['to_date']))
 			{
-				$this->CI->db->where('central_logs.log_time <=', $filters['to_date']);
+				$this->CI->db->where('log_time <=', $filters['to_date']);
 			}
 		}
 
@@ -122,6 +125,7 @@ class Admin_log {
 
 		$this->CI->db->join('central_sites', 'central_logs.site_id = central_sites.site_id', 'left');
 		$this->CI->db->limit($config['per_page'], $offset);
+		$this->CI->db->order_by('log_time', 'desc');
 
 		return $this->CI->db->get('central_logs')->result();
 	}

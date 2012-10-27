@@ -31,7 +31,15 @@ class Users_model extends CI_Model {
 	public function fetch_user($user_id)
 	{
 		$query = $this->db->get_where('central_users', array('user_id' => $user_id));
-		return $query->row();
+
+		if ($query->num_rows() == 1)
+		{
+			return $query->row();
+		}
+		else
+		{
+			show_error($this->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -110,6 +118,7 @@ class Users_model extends CI_Model {
 			'email_address'	=> $this->input->post('email_address')
 		);
 
+		$this->admin_log->add('user_create', $data['user_name']);
 		return $this->db->insert('central_users', $data);
 	}
 
@@ -137,16 +146,13 @@ class Users_model extends CI_Model {
 			$data['password'] = password_hash($password);
 		}
 
+		$this->admin_log->add('user_modify', $data['user_name']);
 		$status = $this->db->update('central_users', $data, array('user_id' => $user_id));
 
 		// Update session data if updating self
-		if (user_data('user_id') == $user_id)
-		{
-			$user_data = $this->db->get_where('central_users', $data, array('user_id' => $user_id))->row();
-			$user_data->roles = ROLE_ADMIN.'|'.ROLE_LOGGED_IN;
-			
-			$this->session->set_userdata('user', $user_data);
-		}
+		// Update the user session so that changes take effect immediately
+		$data = $this->db->get_where('central_users', $data, array('user_id' => $user_id))->row();
+		update_user_data($data);
 
 		return $status;
 	}
@@ -161,6 +167,9 @@ class Users_model extends CI_Model {
 	 */
 	public function delete_user($user_id)
 	{
+		$user_name = $this->fetch_user($user_id)->user_name;
+		$this->admin_log->add('user_delete', $user_name);
+
 		return $this->db->delete('central_users', array('user_id' => $user_id));
 	}
 

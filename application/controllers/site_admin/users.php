@@ -18,11 +18,7 @@ class Users extends CI_Controller {
 	{
 		parent::__construct();
 
-		if ( ! check_roles(ROLE_ADMIN))
-		{
-			redirect('admin/login');
-		}
-
+		$this->site->admin_only();
 		$this->load->model('site_admin/users_model');
 	}
 
@@ -87,7 +83,9 @@ class Users extends CI_Controller {
 			'username'		=> set_value('username'),
 			'email_address'	=> set_value('email_address'),
 			'user_roles'	=> set_value('user_roles'),
-			'adm_disabled'	=> NULL
+			'active'		=> set_radio('active', ACTIVE),
+			'blocked'		=> set_radio('active', BLOCKED),
+			'is_founder'	=> FALSE
 		);
 
 		// Load the view
@@ -150,7 +148,9 @@ class Users extends CI_Controller {
 				'username'		=> set_value('username', $user->user_name),
 				'email_address'	=> set_value('email_address', $user->email_address),
 				'user_roles'	=> set_value('user_roles', $user->roles),
-				'adm_disabled'	=> $user->founder == 1
+				'active'		=> set_radio('active', ACTIVE, $user->active == ACTIVE),
+				'blocked'		=> set_radio('active', BLOCKED, $user->active == BLOCKED),
+				'is_founder'	=> $user->founder == YES
 			);
 
 			// Load the view

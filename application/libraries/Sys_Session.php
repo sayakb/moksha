@@ -106,6 +106,105 @@ class Sys_Session extends CI_Session {
 	}
 
 	// --------------------------------------------------------------------
+
+	/**
+	 * Search user data and return the corresponsing session ID
+	 *
+	 * @access	public
+	 * @param	string	user_data key to look for
+	 * @param	array	value for the key to match
+	 * @return	string	session id against the user data
+	 */
+	public function search_userdata($key, $value)
+	{
+		$result = $this->CI->db->get($this->sess_table_name)->result();
+
+		foreach ($result as $row)
+		{
+			$user_data = $this->_unserialize($row->user_data);
+
+			if (isset($user_data[$key]))
+			{
+				$found = FALSE;
+
+				// Convert objects to arrays
+				if (is_object($value))
+				{
+					$value = (array)$value;
+				}
+
+				if (is_object($user_data[$key]))
+				{
+					$user_data[$key] = (array)$user_data[$key];
+				}
+
+				// Compare strings straight away
+				if (is_string($value) AND is_string($user_data[$key]) AND $user_data[$key] === $value)
+				{
+					$found = TRUE;
+				}
+
+				// Compare each array items
+				else if (is_array($value) AND is_array($user_data[$key]))
+				{
+					foreach ($value as $val_key => $val_data)
+					{
+						if (isset($user_data[$key][$val_key]) AND $user_data[$key][$val_key] === $val_data)
+						{
+							$found = TRUE;
+						}
+					}
+				}
+
+				// Item found?
+				if ($found)
+				{
+					return $row->session_id;
+				}
+			}
+		}
+
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Create a new session
+	 *
+	 * @access	public
+	 * @param	string	session id to update
+	 * @param	mixed	new data key
+	 * @param	mixed	new data value
+	 * @return	void
+	 */
+	public function update_userdata($session_id, $key, $value)
+	{
+		$this->CI->db->where('session_id', $session_id);
+		$session = $this->CI->db->get($this->sess_table_name)->row();
+
+		$user_data = $this->_unserialize($session->user_data);
+		$user_data[$key] = $value;
+
+		$new_data = array('user_data' => $this->_serialize($user_data));
+		return $this->CI->db->update($this->sess_table_name, $new_data, array('session_id' => $session_id));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Deletes a user session
+	 *
+	 * @access	public
+	 * @param	string	session id to flush
+	 * @return	void
+	 */
+	public function flush_session($session_id)
+	{
+		return $this->CI->db->delete($this->sess_table_name, array('session_id' => $session_id));
+	}
+
+	// --------------------------------------------------------------------
 }
 // END Sys_Session Class
 

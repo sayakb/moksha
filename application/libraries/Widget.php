@@ -43,7 +43,7 @@ class Widget {
 		}
 		else
 		{
-			return FALSE;
+			show_error($this->CI->lang->line('resource_404'));
 		}
 	}
 

@@ -48,6 +48,19 @@ function auth_redir($redirect)
 // --------------------------------------------------------------------
 
 /**
+ * Checks if a user is logged in
+ *
+ * @access	public
+ * @return	bool	true if logged in
+ */
+function is_logged_in()
+{
+	return user_data('user_name') != ANONYMOUS;
+}
+
+// --------------------------------------------------------------------
+
+/**
  * Fetches user data from session
  *
  * @access	public
@@ -71,11 +84,12 @@ function user_data($key)
 			$user_data = new stdClass();
 
 			$user_data->user_id			= 0;
-			$user_data->user_name		= 'anonymous';
-			$user_data->password		= 'anonymous';
-			$user_data->email_address	= 'anonymous';
+			$user_data->user_name		= ANONYMOUS;
+			$user_data->password		= ANONYMOUS;
+			$user_data->email_address	= ANONYMOUS;
 			$user_data->roles			= array();
-			$user_data->founder			= 0;
+			$user_data->active			= ACTIVE;
+			$user_data->founder			= NO;
 		}
 		else
 		{
@@ -103,9 +117,59 @@ function user_data($key)
 // --------------------------------------------------------------------
 
 /**
+ * Updates session data for any user
+ *
+ * @access	public
+ * @param	mixed	user data
+ * @return	void
+ */
+function update_user_data($data)
+{
+	$CI =& get_instance();
+
+	$search = new stdClass();
+	$search->user_name = $data->user_name;
+
+	// Find the session ID for this user
+	$session_id = $CI->session->search_userdata('user', $search);
+
+	if ($session_id !== FALSE)
+	{
+		$CI->session->update_userdata($session_id, 'user', $data);
+	}
+}
+
+// --------------------------------------------------------------------
+
+/**
+ * Kills a user session
+ *
+ * @access	public
+ * @param	string	user name
+ * @return	void
+ */
+function kill_session($user_name)
+{
+	$CI =& get_instance();
+
+	$search = new stdClass();
+	$search->user_name = $user_name;
+
+	// Find the session ID for this user
+	$session_id = $CI->session->search_userdata('user', $search);
+
+	if ($session_id !== FALSE)
+	{
+		$CI->session->flush_session($session_id);
+	}
+}
+
+// --------------------------------------------------------------------
+
+/**
  * Checks if the user has the specified roles
  *
- * @access	private
+ * @access	public
  * @param	mixed	array of roles or roles separated by |
  * @return	bool	true if user has all the roles
  */

@@ -18,11 +18,7 @@ class Files extends CI_Controller {
 	{
 		parent::__construct();
 
-		if ( ! check_roles(ROLE_ADMIN))
-		{
-			redirect('admin/login');
-		}
-
+		$this->site->admin_only();
 		$this->load->model('site_admin/files_model');
 	}
 

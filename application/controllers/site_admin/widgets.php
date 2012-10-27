@@ -18,11 +18,7 @@ class Widgets extends CI_Controller {
 	{
 		parent::__construct();
 
-		if ( ! check_roles(ROLE_ADMIN))
-		{
-			redirect('admin/login');
-		}
-
+		$this->site->admin_only();
 		$this->load->model('site_admin/widgets_model');
 	}
 
@@ -92,8 +88,8 @@ class Widgets extends CI_Controller {
 			'access_roles'		=> set_value('access_roles'),
 			'update_key'		=> set_value('update_key'),
 			'empty_tpl'			=> set_value('empty_tpl'),
-			'frame_box'			=> set_radio('frameless', 0),
-			'frame_none'		=> set_radio('frameless', 1),
+			'frame_box'			=> set_radio('frameless', NO),
+			'frame_none'		=> set_radio('frameless', YES),
 			'attached_hub'		=> set_value('attached_hub'),
 			'data_filters'		=> set_value('data_filters'),
 			'order_by'			=> set_value('order_by'),
@@ -149,8 +145,8 @@ class Widgets extends CI_Controller {
 			'access_roles'		=> set_value('access_roles', $widget->access_roles),
 			'update_key'		=> set_value('update_key', $widget->update_key),
 			'empty_tpl'			=> set_value('empty_tpl', $widget->empty_tpl),
-			'frame_box'			=> set_radio('frameless', 0, $widget->frameless == 0),
-			'frame_none'		=> set_radio('frameless', 1, $widget->frameless == 1),
+			'frame_box'			=> set_radio('frameless', NO, $widget->frameless == NO),
+			'frame_none'		=> set_radio('frameless', YES, $widget->frameless == YES),
 			'attached_hub'		=> set_value('attached_hub', $hub_data->attached_hub),
 			'data_filters'		=> set_value('data_filters', $hub_data->data_filters),
 			'order_by'			=> set_value('order_by', $hub_data->order_by),

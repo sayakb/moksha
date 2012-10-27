@@ -162,16 +162,16 @@ class Widgets_model extends CI_Model {
 	 */
 	public function add_widget()
 	{
-		$widget_name	= $this->input->post('widget_name');
+		$widget_name = $this->input->post('widget_name');
 
-		$widget_options	= array(
+		$widget_options = array(
 			'update_key'	=> $this->input->post('update_key'),
 			'access_roles'	=> $this->input->post('access_roles'),
-			'frameless'		=> $this->input->post('frameless') ? 1 : 0,
+			'frameless'		=> $this->input->post('frameless') ? YES : NO,
 			'empty_tpl'		=> $this->input->post('empty_tpl')
 		);
 
-		$widget_data	= (object)array(
+		$widget_data = (object)array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
@@ -182,6 +182,7 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
+		$this->admin_log->add('widget_create', $widget_name);
 		return $this->widget->create($widget_name, $widget_options, $widget_data);
 	}
 
@@ -196,16 +197,16 @@ class Widgets_model extends CI_Model {
 	 */
 	public function update_widget($widget_id)
 	{
-		$widget_name	= $this->input->post('widget_name');
+		$widget_name = $this->input->post('widget_name');
 
-		$widget_options	= array(
+		$widget_options = array(
 			'update_key'	=> $this->input->post('update_key'),
 			'access_roles'	=> $this->input->post('access_roles'),
-			'frameless'		=> $this->input->post('frameless') ? 1 : 0,
+			'frameless'		=> $this->input->post('frameless') ? YES : NO,
 			'empty_tpl'		=> $this->input->post('empty_tpl')
 		);
 
-		$widget_data	= (object)array(
+		$widget_data = (object)array(
 			'controls'	=> $this->populate_controls(),
 			'hub'		=> (object)array(
 				'attached_hub'	=> $this->input->post('attached_hub'),
@@ -216,6 +217,7 @@ class Widgets_model extends CI_Model {
 			)
 		);
 
+		$this->admin_log->add('widget_modify', $widget_name);
 		return $this->widget->modify($widget_id, $widget_name, $widget_options, $widget_data);
 	}
 
@@ -230,6 +232,9 @@ class Widgets_model extends CI_Model {
 	 */
 	public function delete_widget($widget_id)
 	{
+		$widget_name = $this->fetch_widget($widget_id)->widget_name;
+		$this->admin_log->add('widget_delete', $widget_name);
+
 		return $this->widget->delete($widget_id);
 	}
 

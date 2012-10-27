@@ -47,7 +47,25 @@
 		</div>
 	</div>
 
-	<div class="control-group user-roles">
+	<div class="control-group">
+		<label class="control-label">
+			<?= $this->lang->line('user_status') ?>
+		</label>
+
+		<div id="user-status" class="controls">
+			<label class="radio inline">
+				<?= form_radio('active', ACTIVE, $active) ?>
+				<?= $this->lang->line('active') ?>
+			</label>
+
+			<label class="radio inline">
+				<?= form_radio('active', BLOCKED, $blocked) ?>
+				<?= $this->lang->line('blocked') ?>
+			</label>
+		</div>
+	</div>
+
+	<div class="control-group">
 		<label class="control-label">
 			<?= $this->lang->line('roles') ?>
 		</label>
@@ -96,7 +114,8 @@
 	});
 
 	// Disable the admin checkbox
-	<?php if ($adm_disabled): ?>
-		$('.user-roles input[value=<?= ROLE_ADMIN ?>]').attr('disabled', 'disabled');
+	<?php if ($is_founder): ?>
+		$('#user-roles input[value=<?= ROLE_ADMIN ?>]').attr('disabled', 'disabled');
+		$('#user-status input[type=radio]').attr('disabled', 'disabled');
 	<?php endif ?>
 </script>

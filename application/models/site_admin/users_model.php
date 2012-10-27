@@ -31,7 +31,16 @@ class Users_model extends CI_Model {
 	public function fetch_user($user_id)
 	{
 		$this->db->where('user_id', $user_id);
-		return $this->db->get("site_users_{$this->site->site_id}")->row();
+		$query = $this->db->get("site_users_{$this->site->site_id}");
+
+		if ($query->num_rows() == 1)
+		{
+			return $query->row();
+		}
+		else
+		{
+			show_error($this->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -128,7 +137,7 @@ class Users_model extends CI_Model {
 
 		if ($query->num_rows() == 1)
 		{
-			return $query->row()->founder == 1;
+			return $query->row()->founder == YES;
 		}
 		else
 		{
@@ -151,9 +160,11 @@ class Users_model extends CI_Model {
 			'user_name'		=> $this->input->post('username'),
 			'password'		=> password_hash($this->input->post('password')),
 			'email_address'	=> $this->input->post('email_address'),
+			'active'		=> $this->input->post('active') == ACTIVE ? ACTIVE : BLOCKED,
 			'roles'			=> $this->input->post('roles')
 		);
 
+		$this->admin_log->add('user_create', $data['user_name']);
 		return $this->db->insert("site_users_{$this->site->site_id}", $data);
 	}
 
@@ -167,19 +178,27 @@ class Users_model extends CI_Model {
 	 */
 	public function update_user($user_id, $is_founder)
 	{
+		$status		= $this->input->post('active');
 		$roles		= $this->input->post('roles');
 		$roles_ary	= explode('|', $roles);
 
 		// Admin role must be there for a founder user
-		if ($is_founder && ! in_array(ROLE_ADMIN, $roles_ary))
+		if ($is_founder AND ! in_array(ROLE_ADMIN, $roles_ary))
 		{
 			$roles_ary[] = ROLE_ADMIN;
+		}
+
+		// Founder cannot be banned
+		if ($is_founder AND $status == BLOCKED)
+		{
+			$status = ACTIVE;
 		}
 
 		// Add user data
 		$data = array(
 			'user_name'		=> $this->input->post('username'),
 			'email_address'	=> $this->input->post('email_address'),
+			'active'		=> $status == BLOCKED ? BLOCKED : ACTIVE,
 			'roles'			=> implode('|', $roles_ary)
 		);
 
@@ -191,15 +210,17 @@ class Users_model extends CI_Model {
 			$data['password'] = password_hash($password);
 		}
 
+		$this->admin_log->add('user_modify', $data['user_name']);
 		$status = $this->db->update("site_users_{$this->site->site_id}", $data, array('user_id' => $user_id));
 
-		// Update session data if updating self
-		if (user_data('user_id') == $user_id)
-		{
-			$user_data = $this->db->get_where("site_users_{$this->site->site_id}", $data, array('user_id' => $user_id))->row();
-			$user_data->roles .= '|'.ROLE_LOGGED_IN;
+		// Update the user session so that changes take effect immediately
+		$data = $this->db->get_where("site_users_{$this->site->site_id}", array('user_id' => $user_id))->row();
+		update_user_data($data);
 
-			$this->session->set_userdata('user', $user_data);
+		// Kill the user session if blocked
+		if ($data->active == BLOCKED)
+		{
+			kill_session($data->user_name);
 		}
 
 		return $status;
@@ -215,6 +236,9 @@ class Users_model extends CI_Model {
 	 */
 	public function delete_user($user_id)
 	{
+		$user_name = $this->fetch_user($user_id)->user_name;
+		$this->admin_log->add('user_delete', $user_name);
+
 		return $this->db->delete("site_users_{$this->site->site_id}", array('user_id' => $user_id));
 	}
 

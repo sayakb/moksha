@@ -100,6 +100,7 @@ class Files_model extends CI_Model {
 
 			if ($this->db->insert("site_files_{$this->site->site_id}", $data))
 			{
+				$this->admin_log->add('file_create', $file_type, $file['orig_name']);
 				return TRUE;
 			}
 		}
@@ -119,18 +120,23 @@ class Files_model extends CI_Model {
 	{
 		// Get the file entry from the DB
 		$this->db->where('file_id', $file_id);
-		$file = $this->db->get("site_files_{$this->site->site_id}")->row();
+		$query = $this->db->get("site_files_{$this->site->site_id}");
 
-		if ($file !== FALSE)
+		if ($query->num_rows() == 1)
 		{
+			$file = $query->row();
+			$this->admin_log->add('file_delete', $file->file_type, $file->file_name);
+
 			// Delete the actual file
 			@unlink(realpath($file->relative_path));
 
 			// Delete the entry from the DB
 			return $this->db->delete("site_files_{$this->site->site_id}", array('file_id' => $file_id));
 		}
-
-		return FALSE;
+		else
+		{
+			show_error($this->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------

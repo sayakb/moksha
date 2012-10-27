@@ -220,6 +220,12 @@ $config['schema']['site_users'] = array(
 		'roles' => array(
 			'type'				=> 'TEXT'
 		),
+		'active' => array(
+			'type'				=> 'TINYINT',
+			'constraint'		=> 1,
+			'null'				=> FALSE,
+			'default'			=> 1
+		),
 		'founder' => array(
 			'type'				=> 'TINYINT',
 			'constraint'		=> 1,

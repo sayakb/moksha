@@ -18,11 +18,7 @@ class Users extends CI_Controller {
 	{
 		parent::__construct();
 
-		if ( ! check_roles(ROLE_ADMIN))
-		{
-			redirect('admin/central/login');
-		}
-
+		$this->site->admin_only();
 		$this->load->model('central_admin/users_model');
 	}
 

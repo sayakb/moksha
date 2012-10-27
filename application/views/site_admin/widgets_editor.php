@@ -198,12 +198,12 @@
 
 						<div class="controls">
 							<label class="radio">
-								<?= form_radio('frameless', 0, $frame_box) ?>
+								<?= form_radio('frameless', NO, $frame_box) ?>
 								<?= $this->lang->line('box') ?>
 							</label>
 
 							<label class="radio">
-								<?= form_radio('frameless', 1, $frame_none) ?>
+								<?= form_radio('frameless', YES, $frame_none) ?>
 								<?= $this->lang->line('frameless') ?>
 							</label>
 						</div>

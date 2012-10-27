@@ -64,12 +64,13 @@ define('DBTYPE_DATETIME',	'datetime');
 
 /*
 |--------------------------------------------------------------------------
-| User roles
+| User constants
 |--------------------------------------------------------------------------
 |
-| These define the different system level user roles
+| These define the different system level user constants
 |
  */
+define('ANONYMOUS',			'anonymous');
 define('ROLE_ADMIN',		'0');
 define('ROLE_AUTHOR',		'-1');
 define('ROLE_LOGGED_IN',	'-2');
@@ -86,16 +87,20 @@ define('PER_PAGE', 10);
 
 /*
 |--------------------------------------------------------------------------
-| Configuration constants
+| Flag constants
 |--------------------------------------------------------------------------
 |
-| Site config constants
+| Define user-readable flag names
 |
  */
-define('ONLINE',	1);
-define('OFFLINE',	0);
-define('ENABLED',	1);
-define('DISABLED',	0);
+define('ONLINE',	'1');
+define('OFFLINE',	'0');
+define('ENABLED',	'1');
+define('DISABLED',	'0');
+define('ACTIVE',	'1');
+define('BLOCKED',	'0');
+define('YES',		'1');
+define('NO',		'0');
 
 /*
 |--------------------------------------------------------------------------

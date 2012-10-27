@@ -75,7 +75,15 @@ class Hubs_model extends CI_Model {
 	public function fetch_hub($hub_id)
 	{
 		$query = $this->db->get_where("site_hubs_{$this->site->site_id}", array('hub_id' => $hub_id));
-		return $query->row();
+
+		if ($query->num_rows() == 1)
+		{
+			return $query->row();
+		}
+		else
+		{
+			show_error($this->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -171,6 +179,7 @@ class Hubs_model extends CI_Model {
 
 		if ($hub_type == HUB_RSS)
 		{
+			$this->admin_log->add('hub_create', $hub_name);
 			return $this->hub->create($hub_name, HUB_RSS, $source);
 		}
 		else if ($hub_type == HUB_DATABASE)
@@ -199,6 +208,8 @@ class Hubs_model extends CI_Model {
 				}
 
 				$this->session->unset_userdata('hub_name');
+				$this->admin_log->add('hub_create', $hub_name);
+
 				return $this->hub->create($hub_name, HUB_DATABASE, $col_data);
 			}
 			else
@@ -232,6 +243,8 @@ class Hubs_model extends CI_Model {
 		}
 
 		$this->hub->modify($hub_name, $new_data);
+		$this->admin_log->add('hub_modify', $hub_name);
+
 		return TRUE;
 	}
 
@@ -245,9 +258,9 @@ class Hubs_model extends CI_Model {
 	 */
 	public function delete_hub($hub_id)
 	{
-		$hub_table	= "site_hubs_{$this->site->site_id}";
-		$hub_name	= $this->db->where('hub_id', $hub_id)->get($hub_table)->row()->hub_name;
+		$hub_name = $this->fetch_hub($hub_id)->hub_name;
 
+		$this->admin_log->add('hub_delete', $hub_name);
 		return $this->hub->drop($hub_name);
 	}
 
@@ -265,6 +278,8 @@ class Hubs_model extends CI_Model {
 		$colum_data	= array($this->input->post('column_name') => $this->input->post('column_datatype'));
 
 		$this->hub->add_column($hub_name, $colum_data);
+		$this->admin_log->add('hub_modify', $hub_name);
+
 		return TRUE;
 	}
 
@@ -283,6 +298,8 @@ class Hubs_model extends CI_Model {
 		$new_column	= $this->input->post('column_name');
 
 		$this->hub->rename_column($hub_name, $old_column, $new_column);
+		$this->admin_log->add('hub_modify', $hub_name);
+
 		return TRUE;
 	}
 
@@ -300,6 +317,8 @@ class Hubs_model extends CI_Model {
 		$column_name	= $this->input->post('column_name_existing');
 
 		$this->hub->drop_column($hub_name, $column_name);
+		$this->admin_log->add('hub_modify', $hub_name);
+
 		return TRUE;
 	}
 

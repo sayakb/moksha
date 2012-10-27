@@ -75,6 +75,8 @@ class Sites_model extends CI_Model {
 	public function add_site()
 	{
 		$site_url = $this->input->post('site_url');
+		$this->admin_log->add('site_create', $site_url);
+
 		return $this->site->add($site_url);
 	}
 
@@ -89,6 +91,8 @@ class Sites_model extends CI_Model {
 	public function update_site($site_id)
 	{
 		$site_url = $this->input->post('site_url');
+		$this->admin_log->add('site_modify', $site_url);
+
 		return $this->site->update($site_id, $site_url);
 	}
 
@@ -102,6 +106,9 @@ class Sites_model extends CI_Model {
 	 */
 	public function delete_site($site_id)
 	{
+		$site_url = $this->fetch_site($site_id)->site_url;
+		$this->admin_log->add('site_delete', $site_url);
+
 		return $this->site->delete($site_id);
 	}
 

@@ -17,7 +17,7 @@ class Site {
 	/**
 	 * Current site ID and URL. This is 0 for central
 	 *
-	 * @access public
+	 * @access	public
 	 * @var int
 	 */	
 	var $site_id;
@@ -46,7 +46,15 @@ class Site {
 	public function fetch($site_id)
 	{
 		$query = $this->CI->db->get_where('central_sites', array('site_id' => $site_id));
-		return $query->row();
+
+		if ($query->num_rows() == 1)
+		{
+			return $query->row();
+		}
+		else
+		{
+			show_error($this->CI->lang->line('resource_404'));
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -109,9 +117,9 @@ class Site {
 
 			// Create anonymous user
 			$anonymous = array(
-				'user_name'		=> 'anonymous',
-				'password'		=> 'anonymous',
-				'email_address'	=> 'anonymous',
+				'user_name'		=> ANONYMOUS,
+				'password'		=> ANONYMOUS,
+				'email_address'	=> ANONYMOUS,
 				'roles'			=> '',
 				'founder'		=> 0
 			);
@@ -196,9 +204,9 @@ class Site {
 	/**
 	 * Initialize environment variables we need later
 	 *
-	 * @access	private
+	 * @access	public
 	 */
-	private function init()
+	public function init()
 	{
 		// Set the default timezone to GMT
 		date_default_timezone_set('GMT');
@@ -215,9 +223,9 @@ class Site {
 	/**
 	 * Validates the Moksha installation
 	 *
-	 * @access	private
+	 * @access	public
 	 */
-	private function check_installation()
+	public function check_installation()
 	{
 		$file_path = APPPATH.'config/database.php';
 
@@ -243,9 +251,9 @@ class Site {
 	/**
 	 * Initializes the site identification and ACL
 	 *
-	 * @access	private
+	 * @access	public
 	 */
-	private function load_site()
+	public function load_site()
 	{
 		if ( ! in_install())
 		{
@@ -315,6 +323,43 @@ class Site {
 					}
 				}
 			}
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Restricts a site module to an admin user only
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function admin_only()
+	{
+		// Let the user log in if not logged in
+		if ( ! is_logged_in())
+		{
+			if (in_central())
+			{
+				$login_url = 'admin/central/login';
+			}
+			else if (in_admin())
+			{
+				$login_url = 'admin/login';
+			}
+			else
+			{
+				$login_url = 'login';
+			}
+
+			redirect(base_url($login_url));
+		}
+
+		// For central, being logged in is sufficient
+		// For site admin, we check for the admin role as well
+		if ( ! in_central() AND ! check_roles(ROLE_ADMIN))
+		{
+			show_error($this->CI->lang->line('resource_403'));
 		}
 	}
 

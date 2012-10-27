@@ -85,7 +85,7 @@ class Dynamic {
 
 			if ($empty)
 			{
-				show_404();
+				show_error($this->CI->lang->line('resource_403'));
 			}
 			else
 			{
@@ -94,7 +94,7 @@ class Dynamic {
 		}
 		else
 		{
-			show_403();
+			show_error($this->CI->lang->line('resource_404'));
 		}
 	}
 

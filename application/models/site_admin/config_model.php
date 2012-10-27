@@ -59,6 +59,8 @@ class Config_model extends CI_Model {
 		{
 			$this->db->empty_table("site_stats_{$this->site->site_id}");
 		}
+
+		$this->admin_log->add('site_conf_update');
 	}
 
 	// --------------------------------------------------------------------
