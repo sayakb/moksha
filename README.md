@@ -16,4 +16,4 @@ With Moksha, you can build a fully blown blog or wiki in a matter of minutes.
 --------------------------------------------------------------------------------
 
 Moksha is currently in its inception phase. However, the first usable version
-is now available and has been tagged as version 1.0.
+is now available and has been tagged as version 1.0
