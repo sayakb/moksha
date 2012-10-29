@@ -1,5 +1,5 @@
 Moksha: Site building application
-=================================
+==================================
 
 Copyright (c) 2012 Sayak Banerjee <sayakb@kde.org>
 
