@@ -198,7 +198,7 @@ class Widgets extends CI_Controller {
 		$hub_id		= $this->input->post('attached_hub');
 		$hub_name	= $this->widgets_model->fetch_hub_name($hub_id);
 
-		if (empty($path))
+		if ($hub_name == HUB_NONE OR empty($path))
 		{
 			return TRUE;
 		}

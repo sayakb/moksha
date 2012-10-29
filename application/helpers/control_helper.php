@@ -501,7 +501,7 @@ function control_select($name, $options, $data = FALSE)
 	{
 		if (substr($item, 0, 1) == '-')
 		{
-			$item		= trim(substr($item, 1));
+			$item		= strip_tags(trim(substr($item, 1)));
 			$selected	= $item == $value ? "selected='selected'" : '';
 
 			$options	= "<option value='{$item}' {$selected}>{$item}</option>";
@@ -547,7 +547,7 @@ function control_multiselect($name, $options, $data = FALSE)
 		{
 			if (substr($item, 0, 1) == '-')
 			{
-				$item		= trim(substr($item, 1));
+				$item		= strip_tags(trim(substr($item, 1)));
 				$selected	= in_array($item, $values) ? "selected='selected'" : '';
 
 				$options	= "<option value='{$item}' {$selected}>{$item}</option>";
@@ -573,7 +573,7 @@ function control_multiselect($name, $options, $data = FALSE)
  */
 function control_submit_button($name, $options, $data = FALSE)
 {
-	$text = expr($options->disp_src, $data);
+	$text = strip_tags(expr($options->disp_src, $data));
 	return "<input name='{$name}' type='submit' value='{$text}' class='btn {$options->classes}' />";
 }
 
@@ -590,7 +590,7 @@ function control_submit_button($name, $options, $data = FALSE)
  */
 function control_delete_link($name, $options, $data = FALSE)
 {
-	$text = expr($options->disp_src, $data);
+	$text = strip_tags(expr($options->disp_src, $data));
 	return "<input name='{$name}' type='submit' value='{$text}' class='btn btn-link btn-delete {$options->classes}' />";
 }
 
@@ -607,7 +607,7 @@ function control_delete_link($name, $options, $data = FALSE)
  */
 function control_reset_button($name, $options, $data = FALSE)
 {
-	$text = expr($options->disp_src, $data);
+	$text = strip_tags(expr($options->disp_src, $data));
 	return "<input name='{$name}' type='reset' value='{$text}' class='btn{$options->classes}' />";
 }
 
