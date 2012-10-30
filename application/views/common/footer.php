@@ -6,10 +6,12 @@
 		<?php endif ?>
 	</script>
 
-	<div class="row">
-		<div class="span12">
-			<footer><?= $page_copyright ?></footer>
+	<?php if ($page_dir != 'sites/'): ?>
+		<div class="row">
+			<div class="span12">
+				<footer><?= $page_copyright ?></footer>
+			</div>
 		</div>
-	</div>
+	<?php endif ?>
 </body>
 </html>

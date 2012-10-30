@@ -64,6 +64,7 @@ class Template {
 			'page_menu'			=> $this->fetch_menu(),
 			'page_logout'		=> $this->fetch_logout(),
 			'page_notice'		=> NULL,
+			'page_dir'			=> NULL,
 		);
 	}
 
@@ -111,6 +112,29 @@ class Template {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Displays an authentication box as popup
+	 *
+	 * @access	public
+	 * @return	string	entered password
+	 */
+	public function password_box()
+	{
+		if (isset($_POST['submit']))
+		{
+			return $this->CI->input->post('password');
+		}
+
+		if (isset($_POST['cancel']))
+		{
+			return FALSE;
+		}
+
+		exit($this->load('common/password_box', array(), TRUE));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Load the page template
 	 *
 	 * @access	public
@@ -141,7 +165,7 @@ class Template {
 		$success_flash = $this->CI->session->flashdata('success_msg');
 
 		// Get the current sub-directory
-		$subdir = $this->CI->router->fetch_directory();
+		$data['page_dir'] = $this->CI->router->fetch_directory();
 
 		// Override local error messages with validation/session messages
 		if ( ! empty($validation_msgs))
@@ -176,14 +200,14 @@ class Template {
 		// We assume that output is being returned
 		$parsed .= $this->CI->load->view("common/header", $data, $output);
 
-		if ($subdir == 'central_admin/' OR $subdir == 'site_admin/')
+		if ($data['page_dir'] == 'central_admin/' OR $data['page_dir'] == 'site_admin/')
 		{
 			$parsed .= $this->CI->load->view("common/header_admin", $data, $output);
 		}
 
 		$parsed .= $this->CI->load->view($view, $data, $output);
 
-		if ($subdir == 'central_admin/' OR $subdir == 'site_admin/')
+		if ($data['page_dir'] == 'central_admin/' OR $data['page_dir'] == 'site_admin/')
 		{
 			$parsed .= $this->CI->load->view("common/footer_admin", $data, $output);
 		}
@@ -207,7 +231,7 @@ class Template {
 		$output = '';
 
 		// Get current route info
-		$subdir = substr($this->CI->router->fetch_directory(), 0, -1);
+		$page_dir = substr($this->CI->router->fetch_directory(), 0, -1);
 		$controller = $this->CI->router->fetch_class();
 
 		// Load the menu configuration
@@ -216,9 +240,9 @@ class Template {
 		// Grab all the menus
 		$menus = $this->CI->config->item('menus');
 
-		if (isset($menus[$subdir]) AND is_array($menus[$subdir]))
+		if (isset($menus[$page_dir]) AND is_array($menus[$page_dir]))
 		{
-			foreach ($menus[$subdir] as $key => $item)
+			foreach ($menus[$page_dir] as $key => $item)
 			{
 				$label = $this->CI->lang->line($item['label']);
 
@@ -250,19 +274,19 @@ class Template {
 	 */
 	public function fetch_logout()
 	{
-		$subdir = $this->CI->router->fetch_directory();
+		$page_dir = $this->CI->router->fetch_directory();
 
-		if ($subdir == 'central_admin/')
+		if ($page_dir == 'central_admin/')
 		{
 			$url = base_url('admin/central/logout');
 		}
-		else if ($subdir == 'site_admin/')
+		else if ($page_dir == 'site_admin/')
 		{
 			$url = base_url('admin/logout');
 		}
-		else
+		else if (site_config('login') == ENABLED)
 		{
-			// Implement logout logic here
+			$url = base_url('logout');
 		}
 
 		if (isset($url))

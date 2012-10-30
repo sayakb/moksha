@@ -22,14 +22,16 @@
 	<div class="container">
 		<div class="row">
 			<div class="span12">
-				<div class="page-header">
-					<div class="page-logout">
-						<?= $page_logout ?>
-					</div>
+				<?php if ($page_dir != 'sites/'): ?>
+					<div class="page-header">
+						<div class="page-logout">
+							<?= $page_logout ?>
+						</div>
 
-					<h1><?= $page_title ?></h1>
-					<p><?= $page_desc ?></p>
-				</div>
+						<h1><?= $page_title ?></h1>
+						<p><?= $page_desc ?></p>
+					</div>
+				<?php endif ?>
 
 				<?php if (isset($page_notice)): ?>
 					<div class="alert alert-<?= $page_notice['type'] ?>">

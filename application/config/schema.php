@@ -307,6 +307,10 @@ $config['schema']['site_widgets'] = array(
 			'type'				=> 'TEXT',
 			'null'				=> FALSE
 		),
+		'password_path' => array(
+			'type'				=> 'VARCHAR',
+			'constraint'		=> 64
+		),
 		'frameless' => array(
 			'type'				=> 'TINYINT',
 			'constraint'		=> 1,

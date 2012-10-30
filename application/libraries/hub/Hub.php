@@ -350,6 +350,20 @@ class Hub {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Returns count of each item in a hub column
+	 *
+	 * @access	public
+	 * @param	string	hub name
+	 * @return	int		item count
+	 */
+	public function count_items($hub_name, $column)
+	{
+		return $this->obj_by_hub($hub_name)->count_items($this->details($hub_name)->hub_id, $column);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Inserts data into a writable hub
 	 *
 	 * @access	public
@@ -801,7 +815,14 @@ class Hub {
 	 */
 	private function obj_by_hub($hub_name)
 	{
-		return $this->obj_by_driver($this->details($hub_name)->driver);
+		if ( ! empty($hub_name) AND $hub_name != HUB_NONE)
+		{
+			return $this->obj_by_driver($this->details($hub_name)->driver);
+		}
+		else
+		{
+			show_error($this->CI->lang->line('resource_500'));
+		}
 	}
 
 	// --------------------------------------------------------------------

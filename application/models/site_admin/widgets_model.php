@@ -168,6 +168,7 @@ class Widgets_model extends CI_Model {
 			'update_key'	=> $this->input->post('update_key'),
 			'access_roles'	=> $this->input->post('access_roles'),
 			'frameless'		=> $this->input->post('frameless') ? YES : NO,
+			'password_path'	=> $this->input->post('password_path'),
 			'empty_tpl'		=> $this->input->post('empty_tpl')
 		);
 
@@ -203,6 +204,7 @@ class Widgets_model extends CI_Model {
 			'update_key'	=> $this->input->post('update_key'),
 			'access_roles'	=> $this->input->post('access_roles'),
 			'frameless'		=> $this->input->post('frameless') ? YES : NO,
+			'password_path'	=> $this->input->post('password_path'),
 			'empty_tpl'		=> $this->input->post('empty_tpl')
 		);
 
@@ -259,6 +261,7 @@ class Widgets_model extends CI_Model {
 			$control_disp_srcs		= $this->input->post('control_disp_srcs');
 			$control_get_paths		= $this->input->post('control_get_paths');
 			$control_set_paths		= $this->input->post('control_set_paths');
+			$control_groups			= $this->input->post('control_groups');
 			$control_formats		= $this->input->post('control_formats');
 			$control_validations	= $this->input->post('control_validations');
 			$control_roles			= $this->input->post('control_roles');
@@ -279,6 +282,7 @@ class Widgets_model extends CI_Model {
 					$control->disp_src		= $control_disp_srcs[$idx];
 					$control->get_path		= $control_get_paths[$idx];
 					$control->set_path		= $control_set_paths[$idx];
+					$control->group			= $control_groups[$idx];
 					$control->format		= $control_formats[$idx];
 					$control->validations	= $control_validations[$idx];
 					$control->roles			= $control_roles[$idx];

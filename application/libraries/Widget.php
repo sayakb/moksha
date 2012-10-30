@@ -74,8 +74,8 @@ class Widget {
 	public function create($widget_name, $widget_options, $widget_data)
 	{
 		$data = array_merge($widget_options, array(
-			'widget_name'		=> $widget_name,
-			'widget_data'		=> serialize($widget_data)
+			'widget_name' => $widget_name,
+			'widget_data' => serialize($widget_data)
 		));
 
 		return $this->CI->db->insert("site_widgets_{$this->CI->site->site_id}", $data);
@@ -96,8 +96,8 @@ class Widget {
 	public function modify($widget_id, $widget_name, $widget_options, $widget_data)
 	{
 		$data = array_merge($widget_options, array(
-			'widget_name'		=> $widget_name,
-			'widget_data'		=> serialize($widget_data)
+			'widget_name' => $widget_name,
+			'widget_data' => serialize($widget_data)
 		));
 
 		return $this->CI->db->update("site_widgets_{$this->CI->site->site_id}", $data, array('widget_id' => $widget_id));

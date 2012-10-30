@@ -2,7 +2,7 @@
 	<?= $this->lang->line('admin_logs') ?>
 </legend>
 
-<?= form_open(current_url(), array('class' => 'well well-narrow form-horizontal')) ?>
+<?= form_open(current_url(), array('class' => 'well form-horizontal form-narrow')) ?>
 	<div class="control-group">
 		<label class="control-label">
 			<?= $this->lang->line('site') ?>

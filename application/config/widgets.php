@@ -52,6 +52,10 @@ $config['widgets']['controls'] = array(
 		'icon'	=> 'textarea',
 		'label'	=> 'field_textarea'
 	),
+	'date_picker' => (object)array(
+		'icon'	=> 'datepicker',
+		'label'	=> 'field_date_picker'
+	),
 	'wysiwyg' => (object)array(
 		'icon'	=> 'wysiwyg',
 		'label'	=> 'field_wysiwyg'
@@ -95,6 +99,22 @@ $config['widgets']['controls'] = array(
 	'multiselect' => (object)array(
 		'icon'	=> 'multiselect',
 		'label'	=> 'field_multiselect'
+	),
+	'progress_bar' => (object)array(
+		'icon'	=> 'progressbar',
+		'label'	=> 'field_progress_bar'
+	),
+	'popup_message' => (object)array(
+		'icon'	=> 'modal',
+		'label'	=> 'field_modal'
+	),
+	'drop_links' => (object)array(
+		'icon'	=> 'droplinks',
+		'label'	=> 'field_drop_links'
+	),
+	'carousel' => (object)array(
+		'icon'	=> 'carousel',
+		'label'	=> 'field_carousel'
 	),
 	'submit_button' => (object)array(
 		'icon'	=> 'button',

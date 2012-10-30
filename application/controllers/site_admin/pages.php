@@ -214,21 +214,41 @@ class Pages extends CI_Controller {
 			return FALSE;
 		}
 
-		$column1_ary = explode('|', $column1);
-		$column2_ary = explode('|', $column2);
-		$column3_ary = explode('|', $column3);
-		$widgets_ary = array_merge($column1_ary, $column2_ary, $column3_ary);
+		$has_protected	= FALSE;
+		$column1_ary	= explode('|', $column1);
+		$column2_ary	= explode('|', $column2);
+		$column3_ary	= explode('|', $column3);
+		$widgets_ary	= array_merge($column1_ary, $column2_ary, $column3_ary);
 
 		if (is_array($widgets_ary))
 		{
-			$valid_widgets = $this->pages_model->fetch_widgets(TRUE);
+			$widget_paswd = $this->pages_model->fetch_widgets(FALSE, TRUE);
+			$widget_valid = $this->pages_model->fetch_widgets(TRUE);
 
 			foreach ($widgets_ary as $widget)
 			{
-				if ( ! empty($widget) AND ! in_array($widget, $valid_widgets))
+				if ( ! empty($widget))
 				{
-					$this->form_validation->set_message('check_widgets', $this->lang->line('invalid_widget'));
-					return FALSE;
+					// Check if the widget actually exists
+					if ( ! in_array($widget, $widget_valid))
+					{
+						$this->form_validation->set_message('check_widgets', $this->lang->line('invalid_widget'));
+						return FALSE;
+					}
+
+					// Check if more than one widget is password protected
+					if (in_array($widget, $widget_paswd))
+					{
+						if ($has_protected)
+						{
+							$this->form_validation->set_message('check_widgets', $this->lang->line('one_password_widget'));
+							return FALSE;
+						}
+						else
+						{
+							$has_protected = TRUE;
+						}
+					}
 				}
 			}
 

@@ -69,17 +69,18 @@ class Pages_model extends CI_Model {
 	 * Fetches a list of widgets for the site
 	 *
 	 * @access	public
-	 * @param	int		page number for the list
+	 * @param	bool	fetch widget ids only
+	 * @param	bool	fetch protected widgets only
 	 * @return	array	list of widgets
 	 */
-	public function fetch_widgets($ids_only = FALSE)
+	public function fetch_widgets($ids_only = FALSE, $protected_only = FALSE)
 	{
-		$widgets = $this->db->get("site_widgets_{$this->site->site_id}")->result();
+		$widget_ids	= array();
+		$widgets	= $this->db->get("site_widgets_{$this->site->site_id}")->result();
 
+		// Populate IDs only
 		if ($ids_only)
 		{
-			$widget_ids = array();
-
 			foreach ($widgets as $widget)
 			{
 				$widget_ids[] = $widget->widget_id;
@@ -87,10 +88,22 @@ class Pages_model extends CI_Model {
 
 			return $widget_ids;
 		}
-		else
+
+		// Populate protected widget IDs
+		else if ($protected_only)
 		{
-			return $widgets;
+			foreach ($widgets as $widget)
+			{
+				if ( ! empty($widget->password_path))
+				{
+					$widget_ids[] = $widget->widget_id;
+				}
+			}
+
+			return $widget_ids;
 		}
+
+		return $widgets;
 	}
 
 	// --------------------------------------------------------------------

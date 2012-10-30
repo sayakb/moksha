@@ -5,4 +5,3 @@
 	<?= form_submit('yes', $this->lang->line('yes'), 'class="btn btn-primary"') ?>
 	<?= form_submit('no', $this->lang->line('no'), 'class="btn"') ?>
 <?= form_close() ?>
-

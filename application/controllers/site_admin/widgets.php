@@ -61,7 +61,7 @@ class Widgets extends CI_Controller {
 	 */
 	public function add()
 	{
-		if ($this->form_validation->run('site_admin/widgets/add'))
+		if ($this->form_validation->run('site_admin/widgets'))
 		{
 			if ($this->widgets_model->add_widget())
 			{
@@ -90,6 +90,7 @@ class Widgets extends CI_Controller {
 			'empty_tpl'			=> set_value('empty_tpl'),
 			'frame_box'			=> set_radio('frameless', NO),
 			'frame_none'		=> set_radio('frameless', YES),
+			'password_path'		=> set_value('password_path'),
 			'attached_hub'		=> set_value('attached_hub'),
 			'data_filters'		=> set_value('data_filters'),
 			'order_by'			=> set_value('order_by'),
@@ -118,7 +119,7 @@ class Widgets extends CI_Controller {
 		$this->form_validation->unique_exempts = array('widget_name' => $widget->widget_name);
 
 		// Process the request
-		if ($this->form_validation->run('site_admin/widgets/add'))
+		if ($this->form_validation->run('site_admin/widgets'))
 		{
 			if ($this->widgets_model->update_widget($widget_id))
 			{
@@ -147,6 +148,7 @@ class Widgets extends CI_Controller {
 			'empty_tpl'			=> set_value('empty_tpl', $widget->empty_tpl),
 			'frame_box'			=> set_radio('frameless', NO, $widget->frameless == NO),
 			'frame_none'		=> set_radio('frameless', YES, $widget->frameless == YES),
+			'password_path'		=> set_value('password_path', $widget->password_path),
 			'attached_hub'		=> set_value('attached_hub', $hub_data->attached_hub),
 			'data_filters'		=> set_value('data_filters', $hub_data->data_filters),
 			'order_by'			=> set_value('order_by', $hub_data->order_by),
@@ -445,6 +447,48 @@ class Widgets extends CI_Controller {
 
 		$this->form_validation->set_message('check_roles', $this->lang->line('invalid_role'));
 		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Validates the password path for a widget
+	 *
+	 * @access	public
+	 * @param	int		password path
+	 * @return	bool	true if valid
+	 */
+	public function check_password_path($path)
+	{
+		$path		= trim($path);
+		$hub_id		= $this->input->post('attached_hub');
+		$hub_name	= $this->widgets_model->fetch_hub_name($hub_id);
+
+		if ($hub_name == HUB_NONE OR empty($path))
+		{
+			return TRUE;
+		}
+
+		if ($hub_name != HUB_NONE)
+		{
+			$schema = $this->hub->schema($hub_name);
+
+			// Check if path exists
+			if ( ! isset($schema[$path]))
+			{
+				$this->form_validation->set_message('check_password_path', $this->lang->line('password_path_404'));
+				return FALSE;
+			}
+
+			// The path must point to a password column
+			if ($schema[$path] != DBTYPE_PASSWORD)
+			{
+				$this->form_validation->set_message('check_password_path', $this->lang->line('password_path_invalid'));
+				return FALSE;
+			}
+		}
+
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

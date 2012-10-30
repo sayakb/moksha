@@ -152,7 +152,7 @@ class Templates_model extends CI_Model {
 
 			// Process the template
 			$template = $this->encrypt->decode($template, 'moksha');
-			$template = unserialize($template);
+			$template = @unserialize($template);
 
 			if (is_array($template))
 			{
@@ -194,7 +194,7 @@ class Templates_model extends CI_Model {
 						$hub_name = $this->hub->fetch_name($hub_id);
 
 						// Remove this hub from the index table and create the new hub
-						$this->hub->drop($hub_name);
+						$this->db->truncate("site_hubs_{$site_id}");
 						$this->hub->create($hub_name, HUB_DATABASE, $template["hub_{$hub_id}"]);
 					}
 

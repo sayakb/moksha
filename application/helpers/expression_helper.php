@@ -35,12 +35,6 @@ function expr($text, $data = FALSE, $format = FALSE)
 			$type	= $types[$idx];
 			$value	= $values[$idx];
 
-			// Check if value contains an expression. If so, parse it first
-			if (preg_match('/\{(.*?):(.*?})\}/i', $value))
-			{
-				$value = expr($value, $data);
-			}
-
 			// Parse the expression
 			if (isset($expressions[$type]))
 			{

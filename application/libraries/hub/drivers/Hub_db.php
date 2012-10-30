@@ -230,6 +230,34 @@ class Hub_db {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Returns count of each item in a hub column
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	int		item count
+	 */
+	public function count_items($hub_id, $column)
+	{
+		// Get the item counts
+		$this->CI->db->select("`{$column}`, COUNT(`{$column}`) AS itemcount");
+		$this->CI->db->group_by($column);
+
+		$counts = $this->CI->db->get("site_hub_{$hub_id}_{$this->CI->site->site_id}")->result();
+
+		// Build up a friendly array out of it
+		$count_ary = array();
+
+		foreach ($counts as $count)
+		{
+			$count_ary[$count->$column] = $count->itemcount;
+		}
+
+		return $count_ary;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Inserts data into a writable hub
 	 *
 	 * @access	public

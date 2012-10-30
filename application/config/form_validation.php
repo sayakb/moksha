@@ -311,8 +311,8 @@ $config = array(
 		)
 	),
 
-	// Site admin: add widget
-	'site_admin/widgets/add' => array(
+	// Site admin: add / edit widget
+	'site_admin/widgets' => array(
 		array(
 			'field'	=>	'widget_name',
 			'label'	=>	'lang:widget_name',
@@ -338,6 +338,13 @@ $config = array(
 			'rules'	=>	'trim'
 		),
 		array(
+			'field'	=>	'password_path',
+			'label'	=>	'lang:password_path',
+			'rules'	=>	'trim|'.
+						'max_length[64]|'.
+						'callback_check_password_path'
+		),
+		array(
 			'field'	=>	'empty_tpl',
 			'label'	=>	'lang:empty_notice',
 			'rules'	=>	'trim|'.
@@ -358,6 +365,11 @@ $config = array(
 			'label'	=>	'lang:control_set_path',
 			'rules'	=>	'trim|'.
 						'callback_check_set_paths'
+		),
+		array(
+			'field'	=>	'control_groups[]',
+			'label'	=>	'lang:control_group',
+			'rules'	=>	'trim'
 		),
 		array(
 			'field'	=>	'control_formats[]',

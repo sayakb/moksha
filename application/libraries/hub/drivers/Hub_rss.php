@@ -255,6 +255,37 @@ class Hub_rss {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Returns count of each item in a hub column
+	 *
+	 * @access	public
+	 * @param	int		hub unique identifier
+	 * @return	int		item count
+	 */
+	public function count_items($hub_id, $column)
+	{
+		$items = $this->get($hub_id, NULL, NULL, NULL);
+
+		// Build up a friendly count array from the feed
+		$count_ary = array();
+
+		foreach ($items as $item)
+		{
+			if (isset($count_ary[$item->$column]))
+			{
+				$count_ary[$item->$column]++;
+			}
+			else
+			{
+				$count_ary[$item->$column] = 1;
+			}
+		}
+
+		return $count_ary;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Fetches raw feed data for a specific hub
 	 *
 	 * @access	public

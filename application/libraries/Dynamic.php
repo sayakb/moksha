@@ -342,7 +342,16 @@ class Dynamic {
 						if ($control->key != $this->context->config['upload'])
 						{
 							$this->CI->form_validation->set_rules($name, $label, $control->validations);
-							$ctrl_data[$control->set_path] = trim($this->CI->input->post($name));
+							$postdata = $this->CI->input->post($name);
+
+							if ( is_array($postdata))
+							{
+								$ctrl_data[$control->set_path] = serialize($postdata);
+							}
+							else
+							{
+								$ctrl_data[$control->set_path] = trim($postdata);
+							}
 						}
 						else
 						{
@@ -448,12 +457,53 @@ class Dynamic {
 				}
 				else
 				{
+					$hub_name	= HUB_NONE;
 					$hub_data	= array();
 				}
 
 				// Store the widget and returned row count in context
 				$this->context->widget	= $widget;
+				$this->context->hub		= $hub_name;
 				$this->context->rows	= count($hub_data);
+
+				// If password protected, show password box only if one instance of
+				// the widget is parsed. We cannot authenticate for all rows at once.
+				if (count($hub_data) == 1 AND ! empty($widget->password_path))
+				{
+					$authed = $this->CI->session->userdata('widget_auth');
+
+					if ( ! is_array($authed))
+					{
+						$authed = array();
+					}
+
+					// If user already authenticated once, we need not show the
+					// password box again.
+					if ( ! in_array($widget->widget_id, $authed))
+					{
+						$password = $this->CI->template->password_box();
+
+						if ($password !== FALSE)
+						{
+							$path = $widget->password_path;
+							$hash = password_hash($password);
+
+							if (isset($hub_data[0]->$path) AND $hash != $hub_data[0]->$path)
+							{
+								show_error($this->CI->lang->line('resource_403'));
+							}
+							else
+							{
+								$authed[] = $widget->widget_id;
+								$this->CI->session->set_userdata('widget_auth', $authed);
+							}
+						}
+						else
+						{
+							show_error($this->CI->lang->line('resource_403'));
+						}
+					}
+				}
 
 				// If hard bound, repeat each control N times for N hub rows
 				if (count($hub_data) > 0)
@@ -510,24 +560,40 @@ class Dynamic {
 		{
 			if ($this->restrict_access($control->roles, $data) AND function_exists("control_{$control->key}"))
 			{
-				$name = 'm-ctrl'.crc32($widget->widget_id.$unique_id.$index++);
-				$names[$key] = $name;
+				// If the groupname is set, we determine the name in a way that
+				// controls with same group name have the same name
+				if (empty($control->group))
+				{
+					$name = 'm-ctrl'.crc32($widget->widget_id.$unique_id.$index++);
+				}
+				else
+				{
+					$name = 'm-ctrl'.crc32($widget->widget_id.$unique_id.$control->group);
+				}
 
+				if ( ! in_array($name, $names))
+				{
+					$names[$key] = $name;
+				}
+
+				// Separate out submit buttons
 				if ($control->key == $this->context->config['submit'])
 				{
 					$this->context->submit_btns["{$widget->widget_id}|{$unique_id}"][] = $name;
 				}
 
+				// We separate out delete buttons as well
 				if ($control->key == $this->context->config['delete'])
 				{
 					$this->context->delete_btns["{$widget->widget_id}|{$unique_id}"] = $name;
 				}
 
-				$output	.= eval("return control_{$control->key}(\$name, \$control, \$data);");
+				$output	.= eval("return control_{$control->key}(\$name, \$control, \$data, \$this->context);");
 			}
 		}
 
 		// Save control names to the submit button metadata
+		// We do this to scan each button and its corresponding controls
 		if (isset($this->context->submit_btns["{$widget->widget_id}|{$unique_id}"]))
 		{
 			$this->context->submit_btns["{$widget->widget_id}|{$unique_id}"][] = $names;
