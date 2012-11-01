@@ -7638,6 +7638,11 @@ ol.linenums
 		margin-right: 0.7em;
 	}
 
+.datepicker
+{
+	width: 85%;
+}
+
 #captcha-image
 {
 	padding: 4px;
