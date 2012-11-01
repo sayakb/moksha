@@ -7633,7 +7633,7 @@ ol.linenums
 
 	.m-widget input[type="submit"],
 	.m-widget input[type="reset"],
-	.m-widget .dropdown
+	.m-widget span.dropdown
 	{
 		margin-right: 0.7em;
 	}

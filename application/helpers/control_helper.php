@@ -814,19 +814,7 @@ function control_carousel($name, $options, $data = FALSE, $context = NULL)
 					"<a class='carousel-control right' href='#{$name}' data-slide='next'>&rsaquo;</a>".
 				"</div>";
 
-	$resize	=	"<script type='text/javascript'>".
-					"var max{$key} = 0;".
-					"$('#{$name} img').load(function() {".
-						"var imgWidth = $(this).width();".
-						"if (imgWidth > max{$key}) {".
-							"max{$key} = imgWidth;".
-							"$('#{$name}').width(imgWidth);".
-						"}".
-						"$('.carousel-control').show();".
-					"});".
-				"</script>";
-
-	return $ctrl.$resize;
+	return $ctrl;
 }
 
 // ------------------------------------------------------------------------

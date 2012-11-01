@@ -43,6 +43,23 @@ function initPage() {
 		btnDelete.data('dialog', false);
 	});
 
+	// Auto resize images for carousels
+	$(window).load(function() {
+		$('.carousel').each(function() {
+			var max = 0;
+
+			$(this).find('img').each(function() {
+				if ($(this).width() > max) {
+					max = $(this).width();
+				}
+			});
+
+			if (max > 0) {
+				$(this).width(max);
+			}
+		});
+	});
+
 	// Preserve tab state for tabbable
 	$('a[data-toggle="tab"]').on('shown', function (e) {
 		localStorage.setItem('moksha_last_tab', $(e.target).attr('href'));
