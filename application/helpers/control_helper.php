@@ -722,19 +722,111 @@ function control_drop_links($name, $options, $data = FALSE, $context = NULL)
 			$menu .= "<li><a href='{$link}'>{$text}</a></li>";
 		}
 
-		$ctrl = "<div class='dropdown'>".
+		$ctrl = "<span class='dropdown'>".
 					"<a class='dropdown-toggle' data-toggle='dropdown' href='#'>".
 						$toggle."<b class='caret'></b>".
 					"</a>".
 					"<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'>".
 						$menu.
 					"</ul>".
-				"</div>";
+				"</span>";
 
 		return $ctrl;
 	}
 
 	return NULL;
+}
+
+// ------------------------------------------------------------------------
+
+/**
+ * Creates a carousel control
+ *
+ * @access	public
+ * @param	string	name of the control
+ * @param	object	control options
+ * @param	object	data context for expressions
+ * @param	object	dynamic data context
+ * @return	string	control markup
+ */
+function control_carousel($name, $options, $data = FALSE, $context = NULL)
+{
+	$key		= crc32($name);
+	$text		= trim(expr($options->disp_src, $data));
+	$interval	= trim(expr($options->get_path, $data));
+	$markup		= explode('<br>', $text);
+	$images		= array();
+	$index		= -1;
+	$offset		= 0;
+	$inner		= '';
+	$active		= 'active';
+
+	foreach ($markup as $line)
+	{
+		if (substr($line, 0, 1) == '-')
+		{
+			$images[++$index]['image'] = trim(strip_tags(substr($line, 1)));
+			$offset = 0;
+		}
+		else if ($offset++ == 0)
+		{
+			$images[$index]['caption_head'] = trim($line);
+		}
+		else
+		{
+			$images[$index]['caption_body'][] = trim($line);
+		}
+	}
+
+	if ( ! empty($interval))
+	{
+		$interval = "data-interval='{$interval}'";
+	}
+
+
+	foreach ($images as $image)
+	{
+		if (isset($image['image']))
+		{
+			$inner .= "<div class='item {$active}'><img src='{$image['image']}' alt='' />";
+
+			if (isset($image['caption_head']))
+			{
+				$inner .= "<div class='carousel-caption'><h4>{$image['caption_head']}</h4>";
+
+				if (isset($image['caption_body']) AND is_array($image['caption_body']))
+				{
+					$body	 = implode('<br />', $image['caption_body']);
+					$inner	.= "<p>{$body}</p>";
+				}
+
+				$inner .= '</div>';
+			}
+
+			$inner	.= '</div>';
+			$active	 = '';
+		}
+	}
+
+	$ctrl	=	"<div id='{$name}' {$interval} class='carousel slide {$options->classes}'>".
+					"<div class='carousel-inner'>{$inner}</div>".
+					"<a class='carousel-control left' href='#{$name}' data-slide='prev'>&lsaquo;</a>".
+					"<a class='carousel-control right' href='#{$name}' data-slide='next'>&rsaquo;</a>".
+				"</div>";
+
+	$resize	=	"<script type='text/javascript'>".
+					"var max{$key} = 0;".
+					"$('#{$name} img').load(function() {".
+						"var imgWidth = $(this).width();".
+						"if (imgWidth > max{$key}) {".
+							"max{$key} = imgWidth;".
+							"$('#{$name}').width(imgWidth);".
+						"}".
+						"$('.carousel-control').show();".
+					"});".
+				"</script>";
+
+	return $ctrl.$resize;
 }
 
 // ------------------------------------------------------------------------

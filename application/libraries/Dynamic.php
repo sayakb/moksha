@@ -558,6 +558,14 @@ class Dynamic {
 		// Generate control data
 		foreach ($controls as $key => $control)
 		{
+			// Decode control metadata
+			$control->classes	= html_entity_decode($control->classes);
+			$control->disp_src	= html_entity_decode($control->disp_src);
+			$control->get_path	= html_entity_decode($control->get_path);
+			$control->set_path	= html_entity_decode($control->set_path);
+			$control->group		= html_entity_decode($control->group);
+			$control->format	= html_entity_decode($control->format);
+
 			if ($this->restrict_access($control->roles, $data) AND function_exists("control_{$control->key}"))
 			{
 				// If the groupname is set, we determine the name in a way that

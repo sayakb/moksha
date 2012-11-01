@@ -431,12 +431,12 @@
 	// Write data to hidden fields when closing
 	$('#modal-submit').click(function() {
 		// Get the modal form data
-		var classes		= $('[name=control_class]').val();
-		var disp_src	= $('[name=control_disp_src]').val().replace(/<br>$/, '');
-		var get_path	= $('[name=control_get_path]').val();
-		var set_path	= $('[name=control_set_path]').val();
-		var group		= $('[name=control_group]').val();
-		var format		= $('[name=control_format]').val();
+		var classes		= htmlentities($('[name=control_class]').val());
+		var disp_src	= htmlentities($('[name=control_disp_src]').val().replace(/<br>$/, ''));
+		var get_path	= htmlentities($('[name=control_get_path]').val());
+		var set_path	= htmlentities($('[name=control_set_path]').val());
+		var group		= htmlentities($('[name=control_group]').val());
+		var format		= htmlentities($('[name=control_format]').val());
 		var validations	= new Array();
 		var roles		= new Array();
 
@@ -511,7 +511,7 @@
 	});
 
 	// Initialize the WYSIWYG editor for display source
-	$('[name=control_disp_src]').wysihtml5();
+	$('[name=control_disp_src]').wysihtml5({ autoLink: false });
 
 	// Resets the modal body scroll position
 	function resetScroll() {
@@ -557,12 +557,12 @@
 				localStorage.setItem('moksha_current_control', ctrl_hash);
 
 				// Populate data from hidden fields
-				var classes		= $parent.children('[name="control_classes[]"]').first().val();
-				var disp_src	= $parent.children('[name="control_disp_srcs[]"]').first().val();
-				var get_path	= $parent.children('[name="control_get_paths[]"]').first().val();
-				var set_path	= $parent.children('[name="control_set_paths[]"]').first().val();
-				var group		= $parent.children('[name="control_groups[]"]').first().val();
-				var format		= $parent.children('[name="control_formats[]"]').first().val();
+				var classes		= html_entity_decode($parent.children('[name="control_classes[]"]').first().val());
+				var disp_src	= html_entity_decode($parent.children('[name="control_disp_srcs[]"]').first().val());
+				var get_path	= html_entity_decode($parent.children('[name="control_get_paths[]"]').first().val());
+				var set_path	= html_entity_decode($parent.children('[name="control_set_paths[]"]').first().val());
+				var group		= html_entity_decode($parent.children('[name="control_groups[]"]').first().val());
+				var format		= html_entity_decode($parent.children('[name="control_formats[]"]').first().val());
 				var validations	= $parent.children('[name="control_validations[]"]').first().val();
 				var roles		= $parent.children('[name="control_roles[]"]').first().val();
 

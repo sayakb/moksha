@@ -7632,9 +7632,10 @@ ol.linenums
 }
 
 	.m-widget input[type="submit"],
-	.m-widget input[type="reset"]
+	.m-widget input[type="reset"],
+	.m-widget .dropdown
 	{
-		margin-right: 0.5em;
+		margin-right: 0.7em;
 	}
 
 #captcha-image
