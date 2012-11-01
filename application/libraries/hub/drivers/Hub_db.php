@@ -37,6 +37,7 @@ class Hub_db {
 		if (is_array($schema) AND count($schema) != 0)
 		{
 			$this->CI->load->dbforge();
+			$this->CI->db->query("SET default_storage_engine=MYISAM");
 
 			// First, insert into the index table
 			$data = array(

@@ -70,6 +70,7 @@ class Site {
 	{
 		$this->CI->load->dbforge();
 		$this->CI->config->load('schema');
+		$this->CI->db->query("SET default_storage_engine=MYISAM");
 
 		$success = $this->CI->db->insert('central_sites', array('site_url' => $site_url));
 		$site_id = $this->CI->db->insert_id();

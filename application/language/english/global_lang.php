@@ -6,6 +6,7 @@ $lang['homepage']				= 'Home';
 $lang['default_copyright']		= '&copy; 2012 <a href="http://sayakbanerjee.com">Sayak Banerjee</a>';
 $lang['central']				= 'Central';
 $lang['submit']					= 'Submit';
+$lang['filter']					= 'Filter';
 $lang['actions']				= 'Actions';
 $lang['edit']					= 'Edit';
 $lang['delete']					= 'Delete';

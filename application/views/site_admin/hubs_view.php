@@ -6,6 +6,25 @@
 	<?= $hub_title ?>
 </legend>
 
+<?= form_open(current_url(), array('class' => 'well form-horizontal')) ?>
+	<?php foreach ($hub_columns as $key => $column): ?>
+		<div class="control-group">
+			<label class="control-label">
+				<?= $column ?>
+			</label>
+
+			<div class="controls">
+				<?= form_input('filters[]', $filters ? $filters[$index++] : '') ?>
+				<?= form_hidden('columns[]', $column) ?>
+			</div>
+		</div>
+	<?php endforeach ?>
+
+	<div class="form-actions">
+		<?= form_submit('filter', $this->lang->line('filter'), 'class="btn"') ?>
+	</div>
+<?= form_close() ?>
+
 <div class="viewport">
 	<table class="table table-bordered table-striped">
 		<thead>

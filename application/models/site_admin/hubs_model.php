@@ -131,6 +131,21 @@ class Hubs_model extends CI_Model {
 		$config = $this->config->item('pagination');
 		$offset = $config['per_page'] * ($page - 1);
 
+		// Apply filters
+		$filters = $this->input->post('filters');
+		$columns = $this->input->post('columns');
+
+		if (is_array($filters) AND count($filters) == count($columns))
+		{
+			foreach ($filters as $key => $filter)
+			{
+				if ( ! empty($filter))
+				{
+					$this->hub->where($columns[$key], $filter);
+				}
+			}
+		}
+
 		$query = $this->hub->limit($config['per_page'], $offset)->get($hub_name);
 		return $query->result();
 	}

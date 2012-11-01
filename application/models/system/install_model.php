@@ -70,6 +70,7 @@ class Install_model extends CI_Model {
 
 		// Load the database with the new config
 		$this->load->database();
+		$this->db->query("SET default_storage_engine=MYISAM");
 
 		// Create the central tables
 		foreach ($this->config->item('schema') as $table => $schema)

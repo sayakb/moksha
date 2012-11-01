@@ -25,9 +25,10 @@ class Hubs extends CI_Controller {
 	// --------------------------------------------------------------------
 
 	/**
-	 * View data stored within a hub
+	 * View the hub data
 	 *
 	 * @access	public
+	 * @param	int		hub identitifer
 	 * @param	int		page number for the site list
 	 */
 	public function view($hub_id, $page = 1)
@@ -49,7 +50,8 @@ class Hubs extends CI_Controller {
 		$this->pagination->initialize(
 			array_merge($this->config->item('pagination'), array(
 				'base_url'		=> base_url('admin/hubs/view'),
-				'total_rows'	=> $this->hubs_model->count_rows($hub->hub_name)
+				'total_rows'	=> $this->hubs_model->count_rows($hub->hub_name),
+				'uri_segment'	=> 6
 			))
 		);
 
@@ -60,7 +62,9 @@ class Hubs extends CI_Controller {
 			'hub_title'		=> sprintf($this->lang->line('viewing_hub'), $hub_title),
 			'hub_columns'	=> $this->hubs_model->fetch_columns($hub->hub_name),
 			'hub_data'		=> $this->hubs_model->fetch_hub_data($hub->hub_name, $page),
-			'pagination'	=> $this->pagination->create_links()
+			'filters'		=> $this->input->post('filters'),
+			'pagination'	=> $this->pagination->create_links(),
+			'index'			=> 0
 		);
 
 		// Load the view
