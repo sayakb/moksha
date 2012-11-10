@@ -256,6 +256,39 @@ class Site {
 	 */
 	public function load_site()
 	{
+		// Load conditional resources
+		$resources	= $this->CI->config->item('conditional');
+		$uri_key	= $this->CI->uri->segment(1);
+
+		if (isset($resources[$uri_key]))
+		{
+			$resource = $resources[$uri_key];
+
+			if (isset($resource['libraries']))
+			{
+				foreach ($resource['libraries'] as $library)
+				{
+					$this->CI->load->library($library);
+				}
+			}
+
+			if (isset($resource['helpers']))
+			{
+				foreach ($resource['helpers'] as $helper)
+				{
+					$this->CI->load->helper($helper);
+				}
+			}
+
+			if (isset($resource['languages']))
+			{
+				foreach ($resource['languages'] as $language)
+				{
+					$this->CI->lang->load($language);
+				}
+			}
+		}
+
 		if ( ! in_install())
 		{
 			if (isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] == 'on')
@@ -290,39 +323,6 @@ class Site {
 			else
 			{
 				show_error($this->CI->lang->line('invalid_site'));
-			}
-
-			// Load conditional resources
-			$resources	= $this->CI->config->item('conditional');
-			$uri_key	= $this->CI->uri->segment(1);
-
-			if (isset($resources[$uri_key]))
-			{
-				$resource = $resources[$uri_key];
-
-				if (isset($resource['libraries']))
-				{
-					foreach ($resource['libraries'] as $library)
-					{
-						$this->CI->load->library($library);
-					}
-				}
-
-				if (isset($resource['helpers']))
-				{
-					foreach ($resource['helpers'] as $helper)
-					{
-						$this->CI->load->helper($helper);
-					}
-				}
-
-				if (isset($resource['languages']))
-				{
-					foreach ($resource['languages'] as $language)
-					{
-						$this->CI->lang->load($language);
-					}
-				}
 			}
 		}
 	}
