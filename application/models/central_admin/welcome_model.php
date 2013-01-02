@@ -50,13 +50,17 @@ class Welcome_model extends CI_Model {
 	public function fetch_size()
 	{
 		// Get the table size from information schema
-		$this->db->select_sum('data_length + index_length', 'size');
-		$this->db->where('table_schema', $this->db->database);
-		$query = $this->db->get('information_schema.TABLES');
+		$query = $this->db->query('SHOW TABLE STATUS');
 
-		if ($query !== FALSE AND $query->num_rows() == 1)
+		if ($query->num_rows() > 0)
 		{
-			$size = $query->row()->size;
+			// Calculate the total size
+			$size = 0;
+
+			foreach ($query->result() as $row)
+			{
+				$size += $row->Data_length + $row->Index_length;
+			}
 
 			// Format the size
 			$suffix = array('bytes', 'KB', 'MB', 'GB', 'TB', 'PB');

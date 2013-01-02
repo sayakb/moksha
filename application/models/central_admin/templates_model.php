@@ -78,41 +78,43 @@ class Templates_model extends CI_Model {
 		$template	= array();
 
 		// Get a list of tables
-		$this->db->select('table_name');
-		$this->db->like('table_name', "site_", 'after');
-		$this->db->like('table_name', "_{$site_id}", 'before');
-
-		$table_list = $this->db->get('information_schema.TABLES')->result();
+		$prefix		= $this->db->dbprefix('site_');
+		$prefix		= str_replace('_', '\_', $prefix);
+		$suffix		= '\_'.$site_id;
+		$table_list	= $this->db->list_tables();
 
 		foreach ($table_list as $table)
 		{
-			$table_ary = explode('_', $table->table_name);
-			$table_key = $table_ary[1];
+			if (preg_match("/{$prefix}(.*){$suffix}/", $table))
+			{
+				$table_ary = explode('_', $table);
+				$table_key = $table_ary[1];
 
-			// Extract the hub ID from hub tables
-			if (count($table_ary) == 4)
-			{
-				$hub_id = $table_ary[2];
-			}
-			else
-			{
-				$hub_id = 0;
-			}
-
-			if (in_array($table_key, $this->tables))
-			{
-				// For hub tables, we dump the schema in the template
-				// For others, we dump the data
-				if ($hub_id == 0)
+				// Extract the hub ID from hub tables
+				if (count($table_ary) == 4)
 				{
-					$template[$table_key] = $this->db->get($table->table_name)->result_array();
+					$hub_id = $table_ary[2];
 				}
 				else
 				{
-					$table_key	.= "_{$hub_id}";
-					$hub_name	 = $this->hub->fetch_name($hub_id);
+					$hub_id = 0;
+				}
 
-					$template[$table_key] = $this->hub->schema($hub_name);
+				if (in_array($table_key, $this->tables))
+				{
+					// For hub tables, we dump the schema in the template
+					// For others, we dump the data
+					if ($hub_id == 0)
+					{
+						$template[$table_key] = $this->db->get($table)->result_array();
+					}
+					else
+					{
+						$table_key	.= "_{$hub_id}";
+						$hub_name	 = $this->hub->fetch_name($hub_id);
+
+						$template[$table_key] = $this->hub->schema($hub_name);
+					}
 				}
 			}
 		}

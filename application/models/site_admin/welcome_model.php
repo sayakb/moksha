@@ -90,16 +90,23 @@ class Welcome_model extends CI_Model {
 	public function fetch_size()
 	{
 		// Get the table size from information schema
-		$this->db->select_sum('data_length + index_length', 'size');
-		$this->db->where('table_schema', $this->db->database);
-		$this->db->like('table_name', "site_", 'after');
-		$this->db->like('table_name', "_{$this->site->site_id}", 'before');
+		$prefix	= $this->db->dbprefix('site_');
+		$prefix	= str_replace('_', '\_', $prefix);
+		$suffix	= '\_'.$this->site->site_id;
+		$query	= $this->db->query('SHOW TABLE STATUS');
 
-		$query = $this->db->get('information_schema.TABLES');
-
-		if ($query !== FALSE AND $query->num_rows() == 1)
+		if ($query->num_rows() > 0)
 		{
-			$size = $query->row()->size;
+			// Calculate the total size
+			$size = 0;
+
+			foreach ($query->result() as $row)
+			{
+				if (preg_match("/{$prefix}(.*){$suffix}/", $row->Name))
+				{
+					$size += $row->Data_length + $row->Index_length;
+				}
+			}
 
 			// Format the size
 			$suffix = array('bytes', 'KB', 'MB', 'GB', 'TB', 'PB');
