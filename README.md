@@ -1,7 +1,7 @@
 Moksha: Site building application
 ==================================
 
-Copyright (c) 2012 Sayak Banerjee <sayakb@kde.org>
+Copyright (c) 2012 Sayak Banerjee <mail@sayakbanerjee.com>
 
 Moksha is a powerful site building utility that makes your life easy!
 
